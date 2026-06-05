@@ -1,0 +1,9 @@
+# Premium dark fintech theme for the Streamlit app (matches the Candor landing).
+# No code change needed — drop this file at .streamlit/config.toml in the repo.
+[theme]
+base = "dark"
+primaryColor = "#19B66A"
+backgroundColor = "#0B0D10"
+secondaryBackgroundColor = "#14181F"
+textColor = "#F4EFE6"
+font = "sans serif"

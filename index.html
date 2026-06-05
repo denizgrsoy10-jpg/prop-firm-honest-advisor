@@ -1,0 +1,303 @@
+<!-- Candor RealityCheck — premium dark landing -->
+<!-- Live app -->
+<!-- https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Candor RealityCheck — Know your real odds before you pay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0D10; --bg2:#0f1318; --panel:#14181f; --panel2:#191e26;
+    --line:#232a33; --line-soft:#1a1f27;
+    --cream:#F4EFE6; --muted:#9aa3ad; --faint:#5b636d;
+    --green:#19B66A; --green-dim:#0f5e38; --red:#FF4D4F; --gold:#C7A45D;
+    --maxw:1140px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg); color:var(--cream);
+    font-family:'Hanken Grotesk',sans-serif; font-size:17px; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    background-image:
+      radial-gradient(900px 500px at 80% -5%, rgba(25,182,106,.10), transparent 60%),
+      radial-gradient(700px 400px at 0% 20%, rgba(199,164,93,.06), transparent 60%),
+      linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+    background-size:auto,auto,44px 44px,44px 44px;
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+  h1,h2,h3{font-family:'Fraunces',serif;font-weight:500;letter-spacing:-.015em;line-height:1.04}
+  .mono{font-family:'Spline Sans Mono',monospace}
+  .eyebrow{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+  a{color:inherit;text-decoration:none}
+  .rise{opacity:0;transform:translateY(16px);animation:rise .9s cubic-bezier(.2,.7,.2,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.rise{animation:none;opacity:1;transform:none}}
+
+  /* logo mark */
+  .mark{width:30px;height:30px;flex:0 0 auto}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand .name{font-family:'Fraunces',serif;font-size:23px;font-weight:600;letter-spacing:-.02em}
+  .brand .tag{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);border:1px solid var(--line);border-radius:3px;padding:3px 7px;margin-left:2px}
+
+  nav{position:sticky;top:0;z-index:60;background:rgba(11,13,16,.72);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--line-soft)}
+  nav .row{display:flex;align-items:center;justify-content:space-between;height:72px}
+  .nav-links{display:flex;align-items:center;gap:30px}
+  .nav-links a.txt{font-size:14.5px;color:var(--muted);transition:color .2s}
+  .nav-links a.txt:hover{color:var(--cream)}
+  @media(max-width:820px){.nav-links a.txt,.brand .tag{display:none}}
+
+  .btn{display:inline-flex;align-items:center;gap:9px;background:var(--green);color:#04130b;font-weight:700;font-size:15px;padding:12px 22px;border-radius:4px;border:1px solid var(--green);transition:transform .15s,box-shadow .2s;white-space:nowrap}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 10px 30px -10px rgba(25,182,106,.6)}
+  .btn .arr{transition:transform .2s}.btn:hover .arr{transform:translateX(3px)}
+  .btn.ghost{background:transparent;color:var(--cream);border-color:var(--line)}
+  .btn.ghost:hover{border-color:var(--cream);box-shadow:none}
+
+  /* hero */
+  .hero{padding:90px 0 70px;border-bottom:1px solid var(--line-soft)}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:center}
+  @media(max-width:940px){.hero-grid{grid-template-columns:1fr;gap:46px}.hero{padding:58px 0 50px}}
+  h1.head{font-size:clamp(42px,6.2vw,70px);font-weight:500;margin:22px 0}
+  h1.head em{font-style:italic;font-weight:400;color:var(--green)}
+  .sub{font-size:19px;color:var(--muted);max-width:32em;margin-bottom:34px}
+  .cta-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+  .cta-note{font-size:13px;color:var(--faint);margin-top:16px;font-family:'Spline Sans Mono',monospace;letter-spacing:.02em}
+
+  /* sample report card */
+  .report{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:0 30px 70px -40px rgba(0,0,0,.9)}
+  .report-top{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.02)}
+  .report-top .t{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .report-top .stamp{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.08em;color:var(--green);border:1px solid var(--green-dim);border-radius:3px;padding:3px 8px}
+  .frow{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;border-bottom:1px solid var(--line-soft)}
+  .frow .fn{font-family:'Fraunces',serif;font-size:17px}
+  .frow .fr{display:flex;align-items:center;gap:12px}
+  .prob{font-family:'Spline Sans Mono',monospace;font-weight:600;font-size:17px}
+  .vtag{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.1em;padding:3px 8px;border-radius:3px;border:1px solid}
+  .v-go{color:var(--green);border-color:var(--green-dim)} .p-go{color:var(--green)}
+  .v-wait{color:var(--gold);border-color:#5a4a23} .p-wait{color:var(--gold)}
+  .v-skip{color:var(--red);border-color:#5a2526} .p-skip{color:var(--red)}
+  .killer{padding:15px 18px;background:rgba(255,77,79,.05)}
+  .killer .k{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+  .killer .kv{font-family:'Fraunces',serif;font-size:19px;color:var(--cream);margin-top:3px}
+  .killer .kv b{color:var(--red)}
+
+  /* trust strip */
+  .strip{border-bottom:1px solid var(--line-soft);background:rgba(255,255,255,.012)}
+  .strip .wrap{display:flex;gap:30px;align-items:center;justify-content:center;padding:18px 28px;flex-wrap:wrap}
+  .strip span{font-family:'Spline Sans Mono',monospace;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .strip b{color:var(--cream);font-weight:500}
+  .strip .dot{color:var(--green)}
+
+  section{padding:84px 0;border-bottom:1px solid var(--line-soft)}
+  @media(max-width:780px){section{padding:58px 0}}
+  .sec-head{display:flex;align-items:baseline;gap:18px;margin-bottom:42px}
+  .sec-no{font-family:'Spline Sans Mono',monospace;font-size:13px;color:var(--gold);letter-spacing:.1em}
+  .sec-title{font-size:clamp(28px,4vw,42px)}
+  .lede{font-size:20px;color:var(--muted);max-width:34em;line-height:1.55}
+
+  /* feature cards */
+  .feat{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:780px){.feat{grid-template-columns:1fr}}
+  .fcard{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:30px 28px;transition:border-color .2s,transform .2s}
+  .fcard:hover{border-color:#33414f;transform:translateY(-2px)}
+  .fcard .ftag{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+  .fcard h3{font-size:23px;margin:13px 0 11px;font-weight:500}
+  .fcard p{font-size:15px;color:var(--muted)}
+  .fcard p b{color:var(--cream);font-weight:600}
+
+  /* why honest */
+  .why{display:grid;grid-template-columns:1fr 1fr;gap:54px;align-items:center}
+  @media(max-width:820px){.why{grid-template-columns:1fr;gap:32px}}
+  .why .big{font-family:'Fraunces',serif;font-size:clamp(24px,3.2vw,34px);font-weight:400;line-height:1.3}
+  .why .big em{font-style:italic;color:var(--green)}
+  .principles{display:grid;gap:2px}
+  .principles div{padding:16px 0;border-bottom:1px solid var(--line-soft);display:flex;gap:14px}
+  .principles div:last-child{border-bottom:none}
+  .principles .n{font-family:'Spline Sans Mono',monospace;font-size:12px;color:var(--gold);flex:0 0 auto;padding-top:3px}
+  .principles b{display:block;font-size:16px}
+  .principles span{font-size:14.5px;color:var(--muted)}
+
+  /* pricing */
+  .price{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  @media(max-width:900px){.price{grid-template-columns:1fr 1fr}}
+  @media(max-width:520px){.price{grid-template-columns:1fr}}
+  .plan{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:26px 22px;display:flex;flex-direction:column}
+  .plan.hot{border-color:var(--green);box-shadow:0 20px 50px -30px rgba(25,182,106,.5);position:relative}
+  .plan .pn{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .plan .amt{font-family:'Fraunces',serif;font-size:40px;font-weight:500;margin:10px 0 4px}
+  .plan .pd{font-size:13px;color:var(--faint);margin-bottom:16px}
+  .plan ul{list-style:none;display:grid;gap:9px;flex:1;margin-bottom:18px}
+  .plan li{font-size:14px;color:var(--muted);display:flex;gap:9px}
+  .plan li::before{content:"+";color:var(--green);font-weight:700}
+  .pill{position:absolute;top:-10px;right:18px;background:var(--green);color:#04130b;font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.06em;padding:3px 9px;border-radius:3px;text-transform:uppercase;font-weight:600}
+
+  /* coming soon */
+  .soon{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:780px){.soon{grid-template-columns:1fr}}
+  .scard{border:1px dashed var(--line);border-radius:8px;padding:24px;background:rgba(255,255,255,.012)}
+  .scard .badge{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);border:1px solid var(--line);border-radius:3px;padding:3px 8px}
+  .scard h3{font-size:20px;margin:12px 0 7px;font-weight:500}
+  .scard p{font-size:14px;color:var(--muted)}
+
+  /* close */
+  .close{text-align:center;padding:100px 0}
+  .close h2{font-size:clamp(32px,5vw,56px);margin-bottom:18px}
+  .close h2 em{font-style:italic;color:var(--green)}
+  .close p{font-size:19px;color:var(--muted);max-width:30em;margin:0 auto 30px}
+
+  /* footer */
+  footer{padding:50px 0;background:var(--bg2);border-top:1px solid var(--line)}
+  .foot-top{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:flex-start}
+  .foot-links{display:flex;gap:24px;flex-wrap:wrap}
+  .foot-links a{font-size:14px;color:var(--muted)}.foot-links a:hover{color:var(--cream)}
+  .legal{font-size:12px;color:var(--faint);max-width:70em;margin-top:24px;line-height:1.7}
+</style>
+
+<svg width="0" height="0" style="position:absolute"><defs>
+  <symbol id="candormark" viewBox="0 0 40 40">
+    <circle cx="20" cy="20" r="17.5" fill="none" stroke="#F4EFE6" stroke-width="1.4" opacity=".9"/>
+    <path d="M28 12.5 A11 11 0 1 0 28 27.5" fill="none" stroke="#F4EFE6" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="20" y1="20" x2="31" y2="13.5" stroke="#19B66A" stroke-width="1.4" stroke-linecap="round" opacity=".85"/>
+    <path d="M17 20.5 l2.6 2.6 L25 17.5" fill="none" stroke="#19B66A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+</defs></svg>
+
+<nav>
+  <div class="wrap row">
+    <div class="brand">
+      <svg class="mark"><use href="#candormark"/></svg>
+      <span class="name">Candor</span>
+      <span class="tag">RealityCheck</span>
+    </div>
+    <div class="nav-links">
+      <a class="txt" href="#finds">What it finds</a>
+      <a class="txt" href="#why">Why honest</a>
+      <a class="txt" href="#pricing">Pricing</a>
+      <a class="btn" href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Run free RealityCheck <span class="arr">→</span></a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow rise" style="animation-delay:.05s">No guarantees · only the odds</div>
+      <h1 class="head rise" style="animation-delay:.12s">Before you pay a prop firm, know your <em>real</em> odds.</h1>
+      <p class="sub rise" style="animation-delay:.2s">Upload your trading history. Candor replays it against <b style="color:var(--cream);font-weight:600">verified</b> prop firm rules and shows your pass odds, the rule most likely to eliminate you, and your expected fee burn.</p>
+      <div class="cta-row rise" style="animation-delay:.28s">
+        <a class="btn" href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Run my free RealityCheck <span class="arr">→</span></a>
+        <a class="btn ghost" href="#sample">See sample report</a>
+      </div>
+      <p class="cta-note rise" style="animation-delay:.34s">First report preview is free · no card</p>
+    </div>
+
+    <div class="report rise" id="sample" style="animation-delay:.4s">
+      <div class="report-top"><span class="t">Sample odds report</span><span class="stamp">Verified rules</span></div>
+      <div class="frow"><span class="fn">Apex — EOD 50K</span><span class="fr"><span class="vtag v-go">GO</span><span class="prob p-go">69.9%</span></span></div>
+      <div class="frow"><span class="fn">E8 Markets — E8 One</span><span class="fr"><span class="vtag v-wait">WAIT</span><span class="prob p-wait">32.0%</span></span></div>
+      <div class="frow"><span class="fn">FTMO — 2-Step</span><span class="fr"><span class="vtag v-skip">SKIP</span><span class="prob p-skip">1.6%</span></span></div>
+      <div class="killer">
+        <div class="k">Your killer rule</div>
+        <div class="kv"><b>Trailing drawdown</b> — the rule most likely to eliminate you.</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- TRUST STRIP -->
+<div class="strip"><div class="wrap">
+  <span><b>No guarantees.</b></span><span class="dot">·</span>
+  <span><b>No signals.</b></span><span class="dot">·</span>
+  <span><b>No hype.</b></span><span class="dot">·</span>
+  <span>Just the ugly math before you pay.</span>
+</div></div>
+
+<!-- WHAT IT FINDS -->
+<section id="finds">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">01</span><h2 class="sec-title">What Candor finds</h2></div>
+    <div class="feat">
+      <div class="fcard"><span class="ftag">Killer rule</span><h3>The one rule that ends your run</h3><p>Daily loss, trailing drawdown, consistency caps, or lot size that <b>explodes after a loss</b> — we name the rule most likely to eliminate you.</p></div>
+      <div class="fcard"><span class="ftag">Expected fee burn</span><h3>The retry loop is the real cost</h3><p>A pricey challenge with low odds becomes an <b>expensive habit</b>. We show whether the fee makes statistical sense before you pay it.</p></div>
+      <div class="fcard"><span class="ftag">What-if simulator</span><h3>See what would change your odds</h3><p>Cut risk per trade, skip news days, switch to a static-drawdown firm — we show how each move <b>shifts your probability</b>.</p></div>
+      <div class="fcard"><span class="ftag">Fine-print scanner</span><h3>Rules aren't just numbers</h3><p>Daily loss, trailing drawdown, consistency, payout, news and lot limits — checked against your <b>real history</b>, not the headline target.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY HONEST -->
+<section id="why">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">02</span><h2 class="sec-title">Why honest?</h2></div>
+    <div class="why">
+      <p class="big">Prop firms make money when you fail and pay again. We sell the one thing nobody else will: <em>a straight answer</em> — even when it means telling you not to attempt at all.</p>
+      <div class="principles">
+        <div><span class="n">P—01</span><div><b>Probabilities, not promises</b><span>Every number ships with the assumption behind it, and a confidence level.</span></div></div>
+        <div><span class="n">P—02</span><div><b>Verified rules</b><span>Each firm's rules are checked against the official source, with a ruleset version on every report.</span></div></div>
+        <div><span class="n">P—03</span><div><b>Advice against ourselves</b><span>If the honest answer is "don't attempt," that's the answer you get — paid or not.</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">03</span><h2 class="sec-title">Pricing</h2></div>
+    <div class="price">
+      <div class="plan"><span class="pn">Free preview</span><div class="amt">$0</div><div class="pd">one simulation</div><ul><li>Best & toughest firm</li><li>Pass-odds range</li><li>Your killer rule</li></ul><a class="btn ghost" href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Start free</a></div>
+      <div class="plan hot"><span class="pill">Best value</span><span class="pn">Full report</span><div class="amt">$19</div><div class="pd">per report</div><ul><li>Every firm scored</li><li>Killer rule per firm</li><li>Expected fee burn</li><li>What-if simulator</li><li>PDF download</li></ul><a class="btn" href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Get full report</a></div>
+      <div class="plan"><span class="pn">Rerun</span><div class="amt">$9</div><div class="pd">after a strategy change</div><ul><li>Re-upload &amp; compare</li><li>Before / after odds</li></ul><a class="btn ghost" href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Rerun</a></div>
+      <div class="plan"><span class="pn">Bundle · 3</span><div class="amt">$49</div><div class="pd">three full reports</div><ul><li>Test different risk settings</li><li>Best value per run</li></ul><a class="btn ghost" href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Get bundle</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- COMING SOON -->
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">04</span><h2 class="sec-title">Coming soon</h2></div>
+    <div class="soon">
+      <div class="scard"><span class="badge">Soon</span><h3>Candor Watchtower</h3><p>Prop firms change their rules. Get alerted when a change moves your pass odds — plus reruns.</p></div>
+      <div class="scard"><span class="badge">Soon</span><h3>Risk DNA</h3><p>A monthly read on your personal trading weaknesses — the patterns that quietly cost you.</p></div>
+      <div class="scard"><span class="badge">Later</span><h3>Signal Scanner</h3><p>Scan a Telegram, X or YouTube "signal" for red flags before it scans your wallet.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSE -->
+<section class="close">
+  <div class="wrap">
+    <h2>Get the <em>honest</em> answer first.</h2>
+    <p>Five minutes and your trade history is all it takes to find out where you stand.</p>
+    <a class="btn" href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Run my free RealityCheck <span class="arr">→</span></a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="brand"><svg class="mark"><use href="#candormark"/></svg><span class="name" style="font-size:20px">Candor</span><span class="tag">RealityCheck</span></div>
+      <div class="foot-links">
+        <a href="#terms">Terms</a><a href="#privacy">Privacy</a><a href="#refund">Refund</a>
+        <a href="#finds">What it finds</a><a href="#pricing">Pricing</a>
+        <a href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Launch app</a>
+      </div>
+    </div>
+    <p class="legal" id="terms">
+      <b>Not financial advice.</b> Candor RealityCheck is a statistical simulation and educational tool. It does not provide
+      financial, investment or trading advice, trading signals, or any guaranteed outcome. Pass-odds are statistical
+      estimates derived from the trade history you provide; past performance does not guarantee future results, and no
+      outcome with any prop firm is guaranteed. Prop firm names and rules are referenced for compatibility and remain the
+      property of their respective owners. <span id="privacy"><b>Privacy:</b> your trade history is used only to run your
+      simulation and is not sold.</span> <span id="refund"><b>Refunds:</b> because reports are generated and delivered
+      instantly as digital goods, sales are generally final; contact support for issues with a purchase.</span>
+      © 2026 Candor.
+    </p>
+  </div>
+</footer>
