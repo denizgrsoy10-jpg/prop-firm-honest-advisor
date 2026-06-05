@@ -31,11 +31,14 @@ ss.setdefault("meta", None)
 ss.setdefault("preview", None)
 ss.setdefault("unlocked", False)
 ss.setdefault("checkout", None)
+ss.setdefault("market_label", None)
+ss.setdefault("preview_market", None)
 
 
 def _reset():
-    for k in ("daily_pnls", "meta", "preview", "unlocked", "checkout"):
-        ss[k] = None if k != "unlocked" else False
+    for k in ("daily_pnls", "meta", "preview", "checkout", "market_label", "preview_market"):
+        ss[k] = None
+    ss["unlocked"] = False
 
 
 def _demo_path():
@@ -49,7 +52,29 @@ def _demo_path():
 
 
 def pct(p):
-    return f"{p * 100:.0f}%"
+    return f"{p * 100:.1f}%"
+
+
+MARKET_OPTIONS = {
+    "Forex / CFD firms": "cfd_forex",
+    "Futures firms": "futures",
+    "All firms": "all",
+}
+
+
+def _market_match(firm, market_class):
+    if market_class == "all":
+        return True
+    return firm.get("instrument_class") == market_class
+
+
+def _default_market_label(meta):
+    """If the upload looks like MT4/MT5 (forex), default to Forex and keep
+    futures firms off, so Apex doesn't pop up as a confusing 'best match'."""
+    hint = (meta or {}).get("source_hint", "").lower()
+    if "mt4" in hint or "mt5" in hint:
+        return "Forex / CFD firms"
+    return "All firms"
 
 
 VERDICT_COPY = {
@@ -75,7 +100,7 @@ up = st.file_uploader("Trade history (.csv)", type=["csv"])
 col_a, col_b = st.columns([1, 1])
 use_demo = col_b.button("Use demo data")
 
-if (up is not None or use_demo) and ss.preview is None:
+if (up is not None or use_demo) and ss.daily_pnls is None:
     analytics.log_event("upload_started", {"demo": bool(use_demo)})
     try:
         if use_demo:
@@ -87,15 +112,35 @@ if (up is not None or use_demo) and ss.preview is None:
         else:
             daily, meta = load_trades_csv(up.getvalue())
         ss.daily_pnls, ss.meta = daily, meta
-        ss.preview = build_preview(daily, firms, meta)
+        ss.market_label = "All firms" if use_demo else _default_market_label(meta)
         analytics.log_event("parse_success", {"n_days": meta["n_days"]})
-        analytics.log_event("preview_viewed")
     except TradeParseError as e:
         analytics.log_event("parse_failed")
         st.error(str(e))
 
-# --- 2) free preview ---------------------------------------------------------
-if ss.preview:
+# --- 2) market filter + build preview ----------------------------------------
+if ss.daily_pnls is not None:
+    labels = list(MARKET_OPTIONS.keys())
+    idx = labels.index(ss.market_label) if ss.market_label in labels else len(labels) - 1
+    chosen = st.radio("Which firms to test?", labels, index=idx, horizontal=True,
+                      help="MT4/MT5 (forex) uploads default to Forex/CFD firms so "
+                           "futures firms like Apex don't show as a confusing best match.")
+    if chosen != ss.market_label:
+        ss.market_label = chosen
+        ss.preview = None  # market changed -> recompute
+
+    market_class = MARKET_OPTIONS[ss.market_label]
+    filtered = [f for f in firms if _market_match(f, market_class)]
+
+    if not filtered:
+        st.warning("No firms in this category yet.")
+    elif ss.preview is None or ss.preview_market != ss.market_label:
+        ss.preview = build_preview(ss.daily_pnls, filtered, ss.meta)
+        ss.preview_market = ss.market_label
+        analytics.log_event("preview_viewed")
+    if ss.preview is None:
+        st.button("Start over", on_click=_reset)
+        st.stop()
     p = ss.preview
     for w in p["data"].get("warnings", []):
         st.info(w, icon="ℹ️")
@@ -116,6 +161,10 @@ if ss.preview:
     # --- 3) paywall / locked full report ------------------------------------
     if not ss.unlocked:
         st.subheader("3 · Unlock the full report — $19")
+        if payments.mode() == "mock":
+            st.warning("DEMO / TEST MODE — clicking unlock does **not** charge "
+                       "anything and is not a real purchase. Live payments are not "
+                       "connected yet.", icon="⚠️")
         st.write("Locked: every firm scored · killer rule per firm · expected fee burn "
                  "· **what-if simulator** · daily breakdown · equity curve · PDF.")
         # blurred teaser
@@ -127,7 +176,9 @@ if ss.preview:
             unsafe_allow_html=True)
         st.write("")
 
-        if st.button("Unlock full report — $19", type="primary"):
+        btn_label = ("Unlock (demo — no charge)" if payments.mode() == "mock"
+                     else "Unlock full report — $19")
+        if st.button(btn_label, type="primary"):
             analytics.log_event("unlock_clicked")
             ss.checkout = payments.create_checkout(
                 "full_report", success_url="?paid=1", cancel_url="?")
@@ -157,6 +208,10 @@ if ss.preview:
             "Verdict": r["verdict"].upper(), "Killer rule": r["killer_rule"],
             "Fee": f"${r['fee']:,}",
         } for r in full["firm_rows"]])
+        if any(r.get("verification_status") == "needs_verification"
+               for r in full["firm_rows"]):
+            st.caption("⚠️ Some rulesets are seed data pending verification. "
+                       "Treat numbers as estimates until each firm's rules are confirmed.")
 
         st.markdown("**Expected fee burn**")
         for r in full["firm_rows"]:
@@ -171,8 +226,11 @@ if ss.preview:
         } for row in full["what_if"]["rows"]])
 
         if full["equity_curve"]:
-            st.markdown("**Sample equity curve (one simulated attempt)**")
-            st.line_chart(full["equity_curve"])
+            start_bal = full.get("equity_start", full["equity_curve"][0])
+            st.markdown(f"**Account equity — one simulated attempt** "
+                        f"(starts at your ${start_bal:,.0f} balance)")
+            st.line_chart({"Account equity ($)": full["equity_curve"]})
+            st.caption("This is account balance over the attempt, not cumulative P/L.")
 
         pdf_bytes = build_pdf(full)
         if st.download_button("Download PDF report", data=pdf_bytes,

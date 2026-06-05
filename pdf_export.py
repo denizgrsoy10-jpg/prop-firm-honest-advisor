@@ -40,7 +40,7 @@ def _styles():
 
 
 def _pct(p):
-    return f"{p * 100:.0f}%"
+    return f"{p * 100:.1f}%"
 
 
 def build_pdf(full_report: dict) -> bytes:

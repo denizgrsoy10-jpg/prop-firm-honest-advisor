@@ -80,6 +80,7 @@ def build_full_report(preview, daily_pnls):
         "firm_rows": firm_rows,
         "best_firm": preview["best_firm"],
         "equity_curve": best.sample_curve,
+        "equity_start": float(best.firm["account_size"]),
         "what_if": {
             "firm": preview["best_firm"],
             "label": WHATIF_LABEL,

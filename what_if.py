@@ -12,7 +12,9 @@ from __future__ import annotations
 from simulator import simulate_firm
 
 WHATIF_LABEL = ("Estimated what-if scenario — based on scaling your historical "
-                "daily risk. A first-order approximation, not a guarantee.")
+                "daily risk. A first-order approximation, not a guarantee. "
+                "Lower risk can reduce drawdown risk, but may also reduce the "
+                "chance of reaching the profit target in time.")
 
 DEFAULT_PRESETS = [1.00, 0.80, 0.65, 0.50]
 
