@@ -25,7 +25,7 @@ For each firm, verify these fields against the official site:
 | FundedNext — Stellar 2-Step | fundednext.com | ☐ needs_verified | — | — |
 | The5ers — New High Stakes | the5ers.com | ☐ needs_verified | — | — |
 | E8 Markets — E8 One | e8markets.com | ☐ needs_verified | — | — |
-| Apex — EOD 50K (Futures) | apextraderfunding.com | ☐ needs_verified | — | — |
+| Apex — EOD 50K (Futures) | apextraderfunding.com | ✅ verified | 2026-06-05 | Candor |
 
 ## Known approximations to resolve or keep disclosed
 - Trailing/intraday drawdown is estimated from end-of-day balances (no intraday data).

@@ -6,15 +6,16 @@
   "account_size": 50000,
   "currency": "USD",
   "phases": [{"name": "Evaluation", "target_pct": 6.0}],
-  "daily_loss_limit_pct": null,
+  "daily_loss_limit_pct": 2.0,
   "max_drawdown_pct": 5.0,
   "drawdown_type": "trailing_eod",
-  "min_trading_days": 7,
+  "min_trading_days": 0,
   "min_profitable_days": 0,
-  "consistency_rule_pct": 50.0,
+  "consistency_rule_pct": null,
   "news_rule": "allowed",
   "fee": 167,
-  "last_verified_date": "2026-01-01",
-  "source_note": "Seed data; futures $ thresholds approximated as % of account. End-of-day trailing drawdown is strict; a large share of evaluations reportedly fail here. Verify on apextraderfunding.com.",
-  "verification_status": "needs_verification"
+  "fee_currency": "USD",
+  "last_verified_date": "2026-06-05",
+  "source_note": "Verified vs Apex help center + multiple 2026 reviews (post-'4.0', Mar 2026). 50K EOD: profit target $3,000 (6%), EOD trailing drawdown $2,500 (5%), Daily Loss Limit $1,000 (2%), NO minimum trading days, 30-day access. EOD trailing LOCKS at the profit-target balance ($53k) on Rithmic/WealthCharts but trails indefinitely on Tradovate - engine uses the non-locking (conservative) version, so real Rithmic odds may be slightly better. The 30% consistency rule applies to FUNDED payouts, not to passing the eval. Fee approximate: 4.0 uses one-time eval (~$20 promo) + $99 PA activation; list varies - verify at checkout.",
+  "verification_status": "verified"
 }
