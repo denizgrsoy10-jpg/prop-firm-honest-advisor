@@ -14,7 +14,9 @@ from __future__ import annotations
 from datetime import date
 
 from simulator import simulate_all, verdict_for
+from rules_engine import ruleset_version
 from what_if import what_if_table, WHATIF_LABEL
+from tracking import make_report_id, confidence_from
 
 
 def _expected_fee_burn(fee, pass_prob):
@@ -52,7 +54,7 @@ def build_preview(daily_pnls, firms, meta, iters=2000):
     }
 
 
-def build_full_report(preview, daily_pnls):
+def build_full_report(preview, daily_pnls, report_id=None):
     results = preview["_results"]
     firm_rows = []
     for r in results:
@@ -73,12 +75,19 @@ def build_full_report(preview, daily_pnls):
 
     best = results[0]
     whatif = what_if_table(daily_pnls, best.firm)
+    firms = [r.firm for r in results]
 
     return {
+        "report_id": report_id or make_report_id(),
+        "ruleset_version": ruleset_version(firms),
+        "simulation_date": preview["generated"],
+        "confidence": confidence_from(preview["data"]),
         "generated": preview["generated"],
         "data": preview["data"],
         "firm_rows": firm_rows,
         "best_firm": preview["best_firm"],
+        "best_pass_prob": best.pass_prob,
+        "best_killer_rule": best.killer_rule_label,
         "equity_curve": best.sample_curve,
         "equity_start": float(best.firm["account_size"]),
         "what_if": {

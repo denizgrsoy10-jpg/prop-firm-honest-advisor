@@ -57,7 +57,10 @@ def build_pdf(full_report: dict) -> bytes:
     d = full_report["data"]
     el.append(Paragraph("Your data", ss["H2c"]))
     el.append(Paragraph(
-        f"Simulation date: {full_report['generated']}<br/>"
+        f"Report ID: {full_report.get('report_id','-')}<br/>"
+        f"Ruleset version: {full_report.get('ruleset_version','-')}<br/>"
+        f"Simulation date: {full_report['generated']} &nbsp;·&nbsp; "
+        f"Confidence: {full_report.get('confidence','-')}<br/>"
         f"Trades read: {d.get('n_trades')} &nbsp;·&nbsp; "
         f"Trading days: {d.get('n_days')} &nbsp;·&nbsp; "
         f"Profitable days: {d.get('profitable_days')}<br/>"

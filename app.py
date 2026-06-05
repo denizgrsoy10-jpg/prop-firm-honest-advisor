@@ -21,6 +21,7 @@ from report_builder import build_preview, build_full_report
 from pdf_export import build_pdf
 import payments
 import analytics
+import tracking
 
 st.set_page_config(page_title="Prop Firm RealityCheck — Candor", layout="centered")
 
@@ -33,12 +34,16 @@ ss.setdefault("unlocked", False)
 ss.setdefault("checkout", None)
 ss.setdefault("market_label", None)
 ss.setdefault("preview_market", None)
+ss.setdefault("report_id", None)
+ss.setdefault("logged", False)
 
 
 def _reset():
-    for k in ("daily_pnls", "meta", "preview", "checkout", "market_label", "preview_market"):
+    for k in ("daily_pnls", "meta", "preview", "checkout", "market_label",
+              "preview_market", "report_id"):
         ss[k] = None
     ss["unlocked"] = False
+    ss["logged"] = False
 
 
 def _demo_path():
@@ -196,9 +201,23 @@ if ss.daily_pnls is not None:
     # --- 4) full report ------------------------------------------------------
     if ss.unlocked:
         analytics.log_event("full_report_viewed")
-        full = build_full_report(p, ss.daily_pnls)
+        if not ss.report_id:
+            ss.report_id = tracking.make_report_id()
+        full = build_full_report(p, ss.daily_pnls, report_id=ss.report_id)
+
+        # admin log + honesty-ledger entry, once per report
+        if not ss.logged:
+            pay_status = "mock" if payments.mode() == "mock" else "paid"
+            tracking.log_report(full["report_id"], ss.market_label, full["best_firm"],
+                                full["best_pass_prob"], full["best_killer_rule"], pay_status)
+            tracking.write_ledger(tracking.ledger_entry(
+                full["report_id"], full["ruleset_version"], full["simulation_date"],
+                full["best_killer_rule"], full["best_pass_prob"], full["confidence"]))
+            ss.logged = True
 
         st.subheader("Full report")
+        st.caption(f"Report ID {full['report_id']} · {full['ruleset_version']} · "
+                   f"Confidence: {full['confidence']}")
         st.write(f"Generated {full['generated']} · {full['data']['n_trades']} trades · "
                  f"{full['data']['n_days']} trading days")
 
@@ -232,9 +251,21 @@ if ss.daily_pnls is not None:
             st.line_chart({"Account equity ($)": full["equity_curve"]})
             st.caption("This is account balance over the attempt, not cumulative P/L.")
 
+        # --- email capture (optional, before download) ----------------------
+        st.divider()
+        st.markdown("**Email me this report (optional)**")
+        ec1, ec2 = st.columns([3, 1])
+        email = ec1.text_input("Email", label_visibility="collapsed",
+                               placeholder="you@example.com", key="email_input")
+        if ec2.button("Send"):
+            if tracking.capture_email(email, full["report_id"], "report"):
+                st.success("Saved. (We'll email this report and rule-change alerts.)")
+            else:
+                st.error("That doesn't look like a valid email.")
+
         pdf_bytes = build_pdf(full)
         if st.download_button("Download PDF report", data=pdf_bytes,
-                              file_name="prop-firm-realitycheck.pdf",
+                              file_name=f"{full['report_id']}.pdf",
                               mime="application/pdf"):
             analytics.log_event("pdf_downloaded")
 
@@ -245,6 +276,19 @@ if ss.daily_pnls is not None:
             analytics.log_event("rerun_clicked")
             st.info("Upload a new CSV to compare before / after.")
         cc2.button("Bundle · 3 reports — $49")
+
+        # --- Watchtower waitlist --------------------------------------------
+        st.markdown("**Candor Watchtower — get alerted when a firm's rules change**")
+        st.caption("Prop firms change their rules. When they do, your pass odds change. "
+                   "Join the waitlist for rule-change alerts + reruns (coming soon).")
+        wc1, wc2 = st.columns([3, 1])
+        wl_email = wc1.text_input("Watchtower email", label_visibility="collapsed",
+                                  placeholder="you@example.com", key="watch_input")
+        if wc2.button("Join waitlist"):
+            if tracking.capture_email(wl_email, full["report_id"], "watchtower"):
+                st.success("You're on the Watchtower waitlist.")
+            else:
+                st.error("That doesn't look like a valid email.")
 
         st.caption("Your data is used only for this simulation. " + full["disclaimer"])
 

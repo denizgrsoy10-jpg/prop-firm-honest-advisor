@@ -138,3 +138,9 @@ def evaluate_phase(daily_pnls: list[float], firm: dict, phase_index: int) -> Pha
     if len(daily_pnls) < min_days:
         return PhaseResult(False, "min_trading_days", len(daily_pnls), balance, curve)
     return PhaseResult(False, "target_not_reached", len(daily_pnls), balance, curve)
+
+
+def ruleset_version(firms: list[dict]) -> str:
+    """A simple version stamp = the latest verification date across loaded firms."""
+    dates = [f.get("last_verified_date") for f in firms if f.get("last_verified_date")]
+    return f"RULESET-{max(dates)}" if dates else "RULESET-unversioned"
