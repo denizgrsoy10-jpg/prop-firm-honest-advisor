@@ -1,0 +1,20 @@
+{
+  "id": "e8_one",
+  "firm_name": "E8 Markets",
+  "product": "E8 One (1-Step)",
+  "instrument_class": "cfd_forex",
+  "account_size": 100000,
+  "currency": "USD",
+  "phases": [{"name": "Evaluation", "target_pct": 8.0}],
+  "daily_loss_limit_pct": 5.0,
+  "max_drawdown_pct": 8.0,
+  "drawdown_type": "trailing_intraday",
+  "min_trading_days": 0,
+  "min_profitable_days": 0,
+  "consistency_rule_pct": 40.0,
+  "news_rule": "allowed",
+  "fee": 268,
+  "last_verified_date": "2026-01-01",
+  "source_note": "Seed data; trailing drawdown + 40% consistency rule. Verify on e8markets.com.",
+  "verification_status": "needs_verification"
+}

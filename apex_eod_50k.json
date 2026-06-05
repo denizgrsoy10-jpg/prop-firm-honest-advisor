@@ -1,0 +1,20 @@
+{
+  "id": "apex_eod_50k",
+  "firm_name": "Apex",
+  "product": "EOD 50K Evaluation (Futures)",
+  "instrument_class": "futures",
+  "account_size": 50000,
+  "currency": "USD",
+  "phases": [{"name": "Evaluation", "target_pct": 6.0}],
+  "daily_loss_limit_pct": null,
+  "max_drawdown_pct": 5.0,
+  "drawdown_type": "trailing_eod",
+  "min_trading_days": 7,
+  "min_profitable_days": 0,
+  "consistency_rule_pct": 50.0,
+  "news_rule": "allowed",
+  "fee": 167,
+  "last_verified_date": "2026-01-01",
+  "source_note": "Seed data; futures $ thresholds approximated as % of account. End-of-day trailing drawdown is strict; a large share of evaluations reportedly fail here. Verify on apextraderfunding.com.",
+  "verification_status": "needs_verification"
+}

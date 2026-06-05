@@ -1,0 +1,20 @@
+{
+  "id": "fundednext_stellar",
+  "firm_name": "FundedNext",
+  "product": "Stellar 2-Step",
+  "instrument_class": "cfd_forex",
+  "account_size": 100000,
+  "currency": "USD",
+  "phases": [{"name": "Phase 1", "target_pct": 8.0}, {"name": "Phase 2", "target_pct": 5.0}],
+  "daily_loss_limit_pct": 5.0,
+  "max_drawdown_pct": 10.0,
+  "drawdown_type": "static",
+  "min_trading_days": 5,
+  "min_profitable_days": 0,
+  "consistency_rule_pct": null,
+  "news_rule": "allowed",
+  "fee": 599,
+  "last_verified_date": "2026-01-01",
+  "source_note": "Seed data. Verify on fundednext.com before relying on it.",
+  "verification_status": "needs_verification"
+}

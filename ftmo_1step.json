@@ -1,0 +1,20 @@
+{
+  "id": "ftmo_1step",
+  "firm_name": "FTMO",
+  "product": "1-Step Challenge",
+  "instrument_class": "cfd_forex",
+  "account_size": 100000,
+  "currency": "USD",
+  "phases": [{"name": "Challenge", "target_pct": 10.0}],
+  "daily_loss_limit_pct": 3.0,
+  "max_drawdown_pct": 10.0,
+  "drawdown_type": "trailing_intraday",
+  "min_trading_days": 4,
+  "min_profitable_days": 0,
+  "consistency_rule_pct": null,
+  "news_rule": "allowed",
+  "fee": 540,
+  "last_verified_date": "2026-01-01",
+  "source_note": "Seed data; newer 1-step uses tighter daily loss + trailing floor + 'best day' rule. Verify on ftmo.com.",
+  "verification_status": "needs_verification"
+}
