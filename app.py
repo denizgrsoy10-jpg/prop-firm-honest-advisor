@@ -12,6 +12,7 @@ Run locally:
 """
 
 from __future__ import annotations
+import os
 import streamlit as st
 
 from rules_engine import load_firms
@@ -35,6 +36,16 @@ ss.setdefault("checkout", None)
 def _reset():
     for k in ("daily_pnls", "meta", "preview", "unlocked", "checkout"):
         ss[k] = None if k != "unlocked" else False
+
+
+def _demo_path():
+    """Find the demo CSV whether it's in data/ or sitting flat in the repo root."""
+    base = os.path.dirname(os.path.abspath(__file__))
+    for p in (os.path.join(base, "data", "demo_trades.csv"),
+              os.path.join(base, "demo_trades.csv")):
+        if os.path.exists(p):
+            return p
+    return None
 
 
 def pct(p):
@@ -68,7 +79,10 @@ if (up is not None or use_demo) and ss.preview is None:
     analytics.log_event("upload_started", {"demo": bool(use_demo)})
     try:
         if use_demo:
-            with open("data/demo_trades.csv", "rb") as fh:
+            dp = _demo_path()
+            if not dp:
+                raise TradeParseError("Demo file not found in the repo.")
+            with open(dp, "rb") as fh:
                 daily, meta = load_trades_csv(fh.read())
         else:
             daily, meta = load_trades_csv(up.getvalue())

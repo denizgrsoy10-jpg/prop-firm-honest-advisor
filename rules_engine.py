@@ -31,14 +31,36 @@ BREACH_LABELS = {
 }
 
 
-def load_firms(firms_dir: str = FIRMS_DIR) -> list[dict]:
-    """Load every *.json ruleset from the firms directory."""
-    firms = []
-    for name in sorted(os.listdir(firms_dir)):
-        if name.endswith(".json"):
-            with open(os.path.join(firms_dir, name), "r", encoding="utf-8") as fh:
-                firms.append(json.load(fh))
-    return firms
+def load_firms(firms_dir: str | None = None) -> list[dict]:
+    """
+    Load every firm ruleset, whether they live in a firms/ subfolder OR sit flat
+    in the repo root (GitHub's web upload sometimes flattens folders). We only
+    accept JSON files that actually look like a ruleset (have firm_name + phases),
+    so other JSON in the repo is ignored. Deduped by id, firms/ wins.
+    """
+    base = os.path.dirname(os.path.abspath(__file__))
+    search_dirs = []
+    if firms_dir:
+        search_dirs.append(firms_dir)
+    search_dirs += [os.path.join(base, "firms"), base]
+
+    firms: dict[str, dict] = {}
+    for d in search_dirs:
+        if not os.path.isdir(d):
+            continue
+        for name in sorted(os.listdir(d)):
+            if not name.endswith(".json"):
+                continue
+            try:
+                with open(os.path.join(d, name), "r", encoding="utf-8") as fh:
+                    data = json.load(fh)
+            except Exception:
+                continue
+            if isinstance(data, dict) and "firm_name" in data and "phases" in data:
+                key = data.get("id", name)
+                if key not in firms:   # first hit wins -> firms/ before root
+                    firms[key] = data
+    return list(firms.values())
 
 
 @dataclass
