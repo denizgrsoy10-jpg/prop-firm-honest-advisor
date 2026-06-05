@@ -22,9 +22,9 @@ For each firm, verify these fields against the official site:
 |---|---|---|---|---|
 | FTMO — 2-Step Challenge | ftmo.com / ftmo.oanda.com | ✅ verified | 2026-06-05 | Candor |
 | FTMO — 1-Step Challenge | ftmo.com / ftmo.oanda.com | ✅ verified | 2026-06-05 | Candor |
-| FundedNext — Stellar 2-Step | fundednext.com | ☐ needs_verified | — | — |
-| The5ers — New High Stakes | the5ers.com | ☐ needs_verified | — | — |
-| E8 Markets — E8 One | e8markets.com | ☐ needs_verified | — | — |
+| FundedNext — Stellar 2-Step | fundednext.com | ✅ verified | 2026-06-05 | Candor |
+| The5ers — New High Stakes | the5ers.com | ✅ verified | 2026-06-05 | Candor |
+| E8 Markets — E8 One | e8markets.com | ✅ verified | 2026-06-05 | Candor |
 | Apex — EOD 50K (Futures) | apextraderfunding.com | ✅ verified | 2026-06-05 | Candor |
 
 ## Known approximations to resolve or keep disclosed

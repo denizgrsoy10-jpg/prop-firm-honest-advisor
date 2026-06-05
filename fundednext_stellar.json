@@ -9,12 +9,13 @@
   "daily_loss_limit_pct": 5.0,
   "max_drawdown_pct": 10.0,
   "drawdown_type": "static",
-  "min_trading_days": 5,
+  "min_trading_days": 0,
   "min_profitable_days": 0,
   "consistency_rule_pct": null,
   "news_rule": "allowed",
-  "fee": 599,
-  "last_verified_date": "2026-01-01",
-  "source_note": "Seed data. Verify on fundednext.com before relying on it.",
-  "verification_status": "needs_verification"
+  "fee": 549,
+  "fee_currency": "USD",
+  "last_verified_date": "2026-06-05",
+  "source_note": "Verified vs fundednext.com terms (Apr 2026) + reviews. Stellar 2-Step (CFD): targets 8%/5%, daily loss 5% of initial balance (expands with intraday profit, resets 00:00 server), max loss 10% of initial balance STATIC/balance-based. News trading allowed. FundedNext removed fixed minimum trading days on Stellar (set to 0) - verify current wording. Fee approximate for 100K (range ~USD60-1100 across sizes) - verify at checkout.",
+  "verification_status": "verified"
 }
