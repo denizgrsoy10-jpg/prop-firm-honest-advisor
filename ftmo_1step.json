@@ -8,13 +8,14 @@
   "phases": [{"name": "Challenge", "target_pct": 10.0}],
   "daily_loss_limit_pct": 3.0,
   "max_drawdown_pct": 10.0,
-  "drawdown_type": "trailing_intraday",
-  "min_trading_days": 4,
+  "drawdown_type": "trailing_eod",
+  "min_trading_days": 0,
   "min_profitable_days": 0,
-  "consistency_rule_pct": null,
+  "consistency_rule_pct": 50.0,
   "news_rule": "allowed",
   "fee": 540,
-  "last_verified_date": "2026-01-01",
-  "source_note": "Seed data; newer 1-step uses tighter daily loss + trailing floor + 'best day' rule. Verify on ftmo.com.",
-  "verification_status": "needs_verification"
+  "fee_currency": "EUR",
+  "last_verified_date": "2026-06-05",
+  "source_note": "Verified against FTMO official comparison table (ftmo.oanda.com), launched Feb 2026. Target 10%, daily loss 3% (vs higher of equity/balance EOD), max loss 10% END-OF-DAY TRAILING, no minimum trading days, Best Day Rule = a single day max 50% of total profit (consistency 50%), unlimited time, not refundable. Engine approximates EOD trailing from end-of-day balances. Fee approximate (~EUR; 1-step may be slightly cheaper than 2-step) - verify exact 100K price at checkout.",
+  "verification_status": "verified"
 }

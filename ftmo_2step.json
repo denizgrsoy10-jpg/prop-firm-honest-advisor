@@ -14,7 +14,8 @@
   "consistency_rule_pct": null,
   "news_rule": "allowed",
   "fee": 540,
-  "last_verified_date": "2026-01-01",
-  "source_note": "Seed data. Verify on ftmo.com before relying on it.",
-  "verification_status": "needs_verification"
+  "fee_currency": "EUR",
+  "last_verified_date": "2026-06-05",
+  "source_note": "Verified against FTMO official comparison table (ftmo.oanda.com) and multiple 2026 reviews. Targets 10%/5%, daily loss 5% of start-of-day balance, max loss 10% STATIC of initial, min 4 trading days/phase, unlimited time, no consistency rule. News restriction applies to FUNDED standard accounts, not the Challenge/Verification, so evaluation = allowed. Fee ~EUR540 list price for the 100K tier; USD site/promos differ (display shows a $ sign) - treat fee as approximate.",
+  "verification_status": "verified"
 }
