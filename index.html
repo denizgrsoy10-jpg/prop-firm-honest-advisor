@@ -1,159 +1,215 @@
-<!-- Candor RealityCheck — premium dark landing -->
-<!-- Live app -->
-<!-- https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app -->
+<!-- Candor RealityCheck — diagnostic-console landing -->
+<!-- Live app: https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Candor RealityCheck — Know your real odds before you pay</title>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/candor-favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="assets/candor-favicon-64.png">
+<meta property="og:title" content="Candor RealityCheck — Know your real odds before you pay">
+<meta property="og:description" content="No guarantees. No signals. Just the ugly math before you pay.">
+<meta property="og:image" content="assets/candor-og-image.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0B0D10; --bg2:#0f1318; --panel:#14181f; --panel2:#191e26;
-    --line:#232a33; --line-soft:#1a1f27;
-    --cream:#F4EFE6; --muted:#9aa3ad; --faint:#5b636d;
-    --green:#19B66A; --green-dim:#0f5e38; --red:#FF4D4F; --gold:#C7A45D;
-    --maxw:1140px;
+    --bg:#0B1117; --bg2:#071018; --panel:#121a23; --panel2:#16202b;
+    --line:#243140; --line-soft:#19232f;
+    --cream:#F7F3EA; --muted:#8A949E; --faint:#5b6672;
+    --green:#16A66A; --green-deep:#0b5236; --red:#FF4D4F; --red-deep:#5a2526;
+    --gold:#D9A332; --gold-deep:#5a4416;
+    --maxw:1180px;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
   body{
-    background:var(--bg); color:var(--cream);
-    font-family:'Hanken Grotesk',sans-serif; font-size:17px; line-height:1.6;
-    -webkit-font-smoothing:antialiased;
+    background:var(--bg);color:var(--cream);
+    font-family:'Hanken Grotesk',sans-serif;font-size:17px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative;
     background-image:
-      radial-gradient(900px 500px at 80% -5%, rgba(25,182,106,.10), transparent 60%),
-      radial-gradient(700px 400px at 0% 20%, rgba(199,164,93,.06), transparent 60%),
-      linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
-    background-size:auto,auto,44px 44px,44px 44px;
+      radial-gradient(1000px 600px at 88% -8%, rgba(217,163,50,.11), transparent 62%),
+      radial-gradient(760px 460px at -5% 12%, rgba(217,163,50,.05), transparent 60%);
   }
-  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
-  h1,h2,h3{font-family:'Fraunces',serif;font-weight:500;letter-spacing:-.015em;line-height:1.04}
+  body::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.05;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");}
+  body::after{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.35;
+    background-image:repeating-linear-gradient(0deg, rgba(255,255,255,.014) 0 1px, transparent 1px 3px);}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 30px;position:relative;z-index:2}
+
+  h1,h2,h3{font-family:'Fraunces',serif;font-weight:500;letter-spacing:-.018em;line-height:1.02}
   .mono{font-family:'Spline Sans Mono',monospace}
-  .eyebrow{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+  .read{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase}
+  .gold{color:var(--gold)} .grn{color:var(--green)} .red{color:var(--red)}
   a{color:inherit;text-decoration:none}
-  .rise{opacity:0;transform:translateY(16px);animation:rise .9s cubic-bezier(.2,.7,.2,1) forwards}
+  .rise{opacity:0;transform:translateY(18px);animation:rise 1s cubic-bezier(.2,.7,.2,1) forwards}
   @keyframes rise{to{opacity:1;transform:none}}
-  @media (prefers-reduced-motion:reduce){.rise{animation:none;opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.rise{animation:none;opacity:1;transform:none}*{animation:none!important}}
 
-  /* logo mark */
-  .mark{width:30px;height:30px;flex:0 0 auto}
-  .brand{display:flex;align-items:center;gap:12px}
-  .brand .name{font-family:'Fraunces',serif;font-size:23px;font-weight:600;letter-spacing:-.02em}
-  .brand .tag{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);border:1px solid var(--line);border-radius:3px;padding:3px 7px;margin-left:2px}
+  .inst{position:relative;border:1px solid var(--line);
+    background:linear-gradient(180deg,#171c24,#10141b);
+    box-shadow:0 1px 0 rgba(255,255,255,.05) inset, 0 22px 48px -28px rgba(0,0,0,.95);}
+  .inst::before,.inst::after{content:"";position:absolute;width:13px;height:13px;pointer-events:none}
+  .inst::before{top:-1px;left:-1px;border-top:2px solid var(--gold);border-left:2px solid var(--gold)}
+  .inst::after{bottom:-1px;right:-1px;border-bottom:2px solid var(--gold);border-right:2px solid var(--gold)}
 
-  nav{position:sticky;top:0;z-index:60;background:rgba(11,13,16,.72);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--line-soft)}
-  nav .row{display:flex;align-items:center;justify-content:space-between;height:72px}
-  .nav-links{display:flex;align-items:center;gap:30px}
-  .nav-links a.txt{font-size:14.5px;color:var(--muted);transition:color .2s}
-  .nav-links a.txt:hover{color:var(--cream)}
-  @media(max-width:820px){.nav-links a.txt,.brand .tag{display:none}}
-
-  .btn{display:inline-flex;align-items:center;gap:9px;background:var(--green);color:#04130b;font-weight:700;font-size:15px;padding:12px 22px;border-radius:4px;border:1px solid var(--green);transition:transform .15s,box-shadow .2s;white-space:nowrap}
-  .btn:hover{transform:translateY(-1px);box-shadow:0 10px 30px -10px rgba(25,182,106,.6)}
-  .btn .arr{transition:transform .2s}.btn:hover .arr{transform:translateX(3px)}
+  .btn{display:inline-flex;align-items:center;gap:10px;background:var(--gold);color:#0B1117;font-weight:700;font-size:15px;padding:13px 24px;border-radius:3px;border:1px solid var(--gold);transition:transform .15s,box-shadow .2s;white-space:nowrap}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 12px 34px -12px rgba(217,163,50,.55)}
+  .btn .arr{transition:transform .2s}.btn:hover .arr{transform:translateX(4px)}
   .btn.ghost{background:transparent;color:var(--cream);border-color:var(--line)}
   .btn.ghost:hover{border-color:var(--cream);box-shadow:none}
 
-  /* hero */
-  .hero{padding:90px 0 70px;border-bottom:1px solid var(--line-soft)}
-  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:center}
-  @media(max-width:940px){.hero-grid{grid-template-columns:1fr;gap:46px}.hero{padding:58px 0 50px}}
-  h1.head{font-size:clamp(42px,6.2vw,70px);font-weight:500;margin:22px 0}
-  h1.head em{font-style:italic;font-weight:400;color:var(--green)}
-  .sub{font-size:19px;color:var(--muted);max-width:32em;margin-bottom:34px}
+  .mark{width:32px;height:32px;flex:0 0 auto}
+  .logo-img{height:34px;width:auto;display:block}
+  .hero-stamp{height:56px;width:auto;margin-bottom:18px;display:block}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand .name{font-family:'Fraunces',serif;font-size:24px;font-weight:600;letter-spacing:-.02em}
+  .brand .tag{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);border:1px solid var(--line);border-radius:3px;padding:3px 7px}
+
+  .ticker{border-bottom:1px solid var(--line-soft);background:rgba(255,255,255,.012);overflow:hidden;position:relative;z-index:3}
+  .ticker .track{display:flex;white-space:nowrap;animation:scroll 32s linear infinite;font-family:'Spline Sans Mono',monospace;font-size:12.5px;letter-spacing:.06em;padding:9px 0;width:max-content}
+  .ticker span{padding:0 22px;color:var(--muted);border-right:1px solid var(--line-soft)}
+  .ticker b{font-weight:600}
+  @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  nav{position:sticky;top:0;z-index:60;background:rgba(10,12,15,.74);backdrop-filter:saturate(140%) blur(11px);border-bottom:1px solid var(--line-soft)}
+  nav .row{display:flex;align-items:center;justify-content:space-between;height:74px}
+  .nav-links{display:flex;align-items:center;gap:32px}
+  .nav-links a.txt{font-size:14.5px;color:var(--muted);transition:color .2s}
+  .nav-links a.txt:hover{color:var(--cream)}
+  @media(max-width:860px){.nav-links a.txt,.brand .tag{display:none}}
+
+  .hero{padding:78px 0 70px;position:relative}
+  .hero-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:50px;align-items:center}
+  @media(max-width:960px){.hero-grid{grid-template-columns:1fr;gap:48px}.hero{padding:50px 0 46px}}
+  h1.head{font-size:clamp(44px,6.6vw,76px);font-weight:500;margin:24px 0;letter-spacing:-.02em}
+  h1.head em{font-style:italic;font-weight:500;color:var(--gold)}
+  .sub{font-size:19px;color:var(--muted);max-width:31em;margin-bottom:34px}
   .cta-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
-  .cta-note{font-size:13px;color:var(--faint);margin-top:16px;font-family:'Spline Sans Mono',monospace;letter-spacing:.02em}
+  .cta-note{font-size:12.5px;color:var(--faint);margin-top:16px;font-family:'Spline Sans Mono',monospace}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px}
+  .eyebrow .blink{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold);animation:blink 1.6s ease-in-out infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
 
-  /* sample report card */
-  .report{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:0 30px 70px -40px rgba(0,0,0,.9)}
-  .report-top{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.02)}
-  .report-top .t{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-  .report-top .stamp{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.08em;color:var(--green);border:1px solid var(--green-dim);border-radius:3px;padding:3px 8px}
-  .frow{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;border-bottom:1px solid var(--line-soft)}
-  .frow .fn{font-family:'Fraunces',serif;font-size:17px}
-  .frow .fr{display:flex;align-items:center;gap:12px}
-  .prob{font-family:'Spline Sans Mono',monospace;font-weight:600;font-size:17px}
-  .vtag{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.1em;padding:3px 8px;border-radius:3px;border:1px solid}
-  .v-go{color:var(--green);border-color:var(--green-dim)} .p-go{color:var(--green)}
-  .v-wait{color:var(--gold);border-color:#5a4a23} .p-wait{color:var(--gold)}
-  .v-skip{color:var(--red);border-color:#5a2526} .p-skip{color:var(--red)}
-  .killer{padding:15px 18px;background:rgba(255,77,79,.05)}
-  .killer .k{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
-  .killer .kv{font-family:'Fraunces',serif;font-size:19px;color:var(--cream);margin-top:3px}
-  .killer .kv b{color:var(--red)}
+  .console{position:relative;padding:26px}
+  .radar{position:relative;width:min(100%,340px);aspect-ratio:1;margin:0 auto;border-radius:50%;
+    background:
+      repeating-radial-gradient(circle at center, transparent 0 33px, rgba(217,163,50,.12) 33px 34px),
+      radial-gradient(circle at center, rgba(217,163,50,.08), transparent 70%);
+    border:1px solid var(--gold-deep);overflow:hidden}
+  .radar .cross,.radar .cross2{position:absolute;background:rgba(217,163,50,.18)}
+  .radar .cross{left:50%;top:0;bottom:0;width:1px;transform:translateX(-.5px)}
+  .radar .cross2{top:50%;left:0;right:0;height:1px;transform:translateY(-.5px)}
+  .radar .sweep{position:absolute;inset:0;border-radius:50%;
+    background:conic-gradient(from 0deg, rgba(217,163,50,.5), rgba(217,163,50,0) 70deg);
+    animation:spin 4.5s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .blip{position:absolute;transform:translate(-50%,-50%);text-align:center}
+  .blip .d{width:10px;height:10px;border-radius:50%;margin:0 auto 5px;box-shadow:0 0 12px currentColor;animation:pulse 2.4s ease-in-out infinite}
+  .blip .l{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.06em;color:var(--muted)}
+  .blip .l b{display:block;font-size:11px}
+  @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.35);opacity:.6}}
+  .verdict{margin-top:-26px;position:relative;z-index:4;width:84%;margin-left:auto;margin-right:auto;padding:16px 18px;background:var(--panel2)}
+  .verdict .vr{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+  .verdict .best{font-family:'Fraunces',serif;font-size:17px}
+  .verdict .odds{font-family:'Spline Sans Mono',monospace;font-weight:700;font-size:26px;color:var(--green)}
+  .verdict .kl{margin-top:8px;font-size:13px;color:var(--muted)}
+  .verdict .kl b{color:var(--red)}
 
-  /* trust strip */
-  .strip{border-bottom:1px solid var(--line-soft);background:rgba(255,255,255,.012)}
-  .strip .wrap{display:flex;gap:30px;align-items:center;justify-content:center;padding:18px 28px;flex-wrap:wrap}
-  .strip span{font-family:'Spline Sans Mono',monospace;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-  .strip b{color:var(--cream);font-weight:500}
-  .strip .dot{color:var(--green)}
+  section{padding:88px 0;border-top:1px solid var(--line-soft)}
+  @media(max-width:780px){section{padding:60px 0}}
+  .sec-head{display:flex;align-items:baseline;gap:18px;margin-bottom:14px}
+  .sec-no{font-family:'Spline Sans Mono',monospace;font-size:13px;color:var(--gold);letter-spacing:.12em}
+  .sec-title{font-size:clamp(30px,4.2vw,44px)}
+  .sec-sub{color:var(--muted);font-size:18px;max-width:40em;margin-bottom:44px}
 
-  section{padding:84px 0;border-bottom:1px solid var(--line-soft)}
-  @media(max-width:780px){section{padding:58px 0}}
-  .sec-head{display:flex;align-items:baseline;gap:18px;margin-bottom:42px}
-  .sec-no{font-family:'Spline Sans Mono',monospace;font-size:13px;color:var(--gold);letter-spacing:.1em}
-  .sec-title{font-size:clamp(28px,4vw,42px)}
-  .lede{font-size:20px;color:var(--muted);max-width:34em;line-height:1.55}
+  .mods{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media(max-width:780px){.mods{grid-template-columns:1fr}}
+  .mod{padding:28px 26px 30px;transition:transform .2s,border-color .2s}
+  .mod:hover{transform:translateY(-3px);border-color:#33414f}
+  .mod .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+  .mod .id{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--gold)}
+  .mod .status{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--green);border:1px solid var(--green-deep);border-radius:3px;padding:2px 7px}
+  .mod h3{font-size:23px;margin:0 0 10px;font-weight:500}
+  .mod p{font-size:15px;color:var(--muted)}
+  .mod p b{color:var(--cream);font-weight:600}
+  .viz{height:54px;margin-bottom:18px;width:100%}
 
-  /* feature cards */
-  .feat{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-  @media(max-width:780px){.feat{grid-template-columns:1fr}}
-  .fcard{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:30px 28px;transition:border-color .2s,transform .2s}
-  .fcard:hover{border-color:#33414f;transform:translateY(-2px)}
-  .fcard .ftag{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
-  .fcard h3{font-size:23px;margin:13px 0 11px;font-weight:500}
-  .fcard p{font-size:15px;color:var(--muted)}
-  .fcard p b{color:var(--cream);font-weight:600}
+  .why{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center}
+  @media(max-width:820px){.why{grid-template-columns:1fr;gap:34px}}
+  .why .big{font-family:'Fraunces',serif;font-size:clamp(25px,3.3vw,36px);font-weight:400;line-height:1.28}
+  .why .big em{font-style:italic;color:var(--gold)}
+  .pr div{padding:17px 0;border-bottom:1px solid var(--line-soft);display:flex;gap:15px}
+  .pr div:last-child{border-bottom:none}
+  .pr .n{font-family:'Spline Sans Mono',monospace;font-size:12px;color:var(--gold);flex:0 0 auto;padding-top:3px}
+  .pr b{display:block;font-size:16px}.pr span{font-size:14.5px;color:var(--muted)}
 
-  /* why honest */
-  .why{display:grid;grid-template-columns:1fr 1fr;gap:54px;align-items:center}
-  @media(max-width:820px){.why{grid-template-columns:1fr;gap:32px}}
-  .why .big{font-family:'Fraunces',serif;font-size:clamp(24px,3.2vw,34px);font-weight:400;line-height:1.3}
-  .why .big em{font-style:italic;color:var(--green)}
-  .principles{display:grid;gap:2px}
-  .principles div{padding:16px 0;border-bottom:1px solid var(--line-soft);display:flex;gap:14px}
-  .principles div:last-child{border-bottom:none}
-  .principles .n{font-family:'Spline Sans Mono',monospace;font-size:12px;color:var(--gold);flex:0 0 auto;padding-top:3px}
-  .principles b{display:block;font-size:16px}
-  .principles span{font-size:14.5px;color:var(--muted)}
+  .ladder{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line)}
+  @media(max-width:860px){.ladder{grid-template-columns:1fr 1fr}}
+  @media(max-width:520px){.ladder{grid-template-columns:1fr}}
+  .tier{padding:28px 24px;border-right:1px solid var(--line-soft);position:relative;background:var(--panel)}
+  .tier:last-child{border-right:none}
+  @media(max-width:860px){.tier{border-bottom:1px solid var(--line-soft)}}
+  .tier.hot{background:linear-gradient(180deg,rgba(25,182,106,.08),transparent)}
+  .tier .pn{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .tier .amt{font-family:'Fraunces',serif;font-size:42px;font-weight:500;margin:12px 0 3px}
+  .tier .pd{font-size:12.5px;color:var(--faint);margin-bottom:18px}
+  .tier ul{list-style:none;display:grid;gap:9px;margin-bottom:20px}
+  .tier li{font-size:14px;color:var(--muted);display:flex;gap:9px}.tier li::before{content:"\203A";color:var(--green);font-weight:700}
+  .tier .stamp{position:absolute;top:14px;right:16px;font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.08em;color:var(--green);border:1px solid var(--green-deep);border-radius:3px;padding:3px 8px;transform:rotate(3deg)}
 
-  /* pricing */
-  .price{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-  @media(max-width:900px){.price{grid-template-columns:1fr 1fr}}
-  @media(max-width:520px){.price{grid-template-columns:1fr}}
-  .plan{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:26px 22px;display:flex;flex-direction:column}
-  .plan.hot{border-color:var(--green);box-shadow:0 20px 50px -30px rgba(25,182,106,.5);position:relative}
-  .plan .pn{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-  .plan .amt{font-family:'Fraunces',serif;font-size:40px;font-weight:500;margin:10px 0 4px}
-  .plan .pd{font-size:13px;color:var(--faint);margin-bottom:16px}
-  .plan ul{list-style:none;display:grid;gap:9px;flex:1;margin-bottom:18px}
-  .plan li{font-size:14px;color:var(--muted);display:flex;gap:9px}
-  .plan li::before{content:"+";color:var(--green);font-weight:700}
-  .pill{position:absolute;top:-10px;right:18px;background:var(--green);color:#04130b;font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.06em;padding:3px 9px;border-radius:3px;text-transform:uppercase;font-weight:600}
-
-  /* coming soon */
-  .soon{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .soon{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
   @media(max-width:780px){.soon{grid-template-columns:1fr}}
-  .scard{border:1px dashed var(--line);border-radius:8px;padding:24px;background:rgba(255,255,255,.012)}
+  .scard{padding:24px}
   .scard .badge{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);border:1px solid var(--line);border-radius:3px;padding:3px 8px}
-  .scard h3{font-size:20px;margin:12px 0 7px;font-weight:500}
-  .scard p{font-size:14px;color:var(--muted)}
+  .scard h3{font-size:20px;margin:13px 0 7px;font-weight:500}.scard p{font-size:14px;color:var(--muted)}
 
-  /* close */
-  .close{text-align:center;padding:100px 0}
-  .close h2{font-size:clamp(32px,5vw,56px);margin-bottom:18px}
-  .close h2 em{font-style:italic;color:var(--green)}
+  .close{text-align:center;padding:104px 0;border-top:1px solid var(--line-soft)}
+  .close .read{color:var(--gold);margin-bottom:18px}
+  .close h2{font-size:clamp(34px,5.2vw,60px);margin-bottom:18px}
+  .close h2 em{font-style:italic;color:var(--gold)}
   .close p{font-size:19px;color:var(--muted);max-width:30em;margin:0 auto 30px}
 
-  /* footer */
-  footer{padding:50px 0;background:var(--bg2);border-top:1px solid var(--line)}
+  footer{padding:52px 0;background:var(--bg2);border-top:1px solid var(--line)}
   .foot-top{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:flex-start}
   .foot-links{display:flex;gap:24px;flex-wrap:wrap}
   .foot-links a{font-size:14px;color:var(--muted)}.foot-links a:hover{color:var(--cream)}
-  .legal{font-size:12px;color:var(--faint);max-width:70em;margin-top:24px;line-height:1.7}
+  .legal{font-size:12px;color:var(--faint);max-width:72em;margin-top:24px;line-height:1.75}
+
+  /* embossed depth on framed panels */
+  .inst{background:linear-gradient(180deg,var(--panel2),var(--panel));
+    box-shadow:inset 0 1px 0 rgba(244,239,230,.05), 0 2px 0 rgba(0,0,0,.45), 0 28px 54px -34px rgba(0,0,0,.95)}
+  .mod:hover{box-shadow:inset 0 1px 0 rgba(244,239,230,.07), 0 3px 0 rgba(0,0,0,.5), 0 36px 64px -34px rgba(0,0,0,1)}
+  .ladder{box-shadow:0 28px 60px -38px rgba(0,0,0,.95);background:var(--panel)}
+  .tier.hot{box-shadow:inset 0 1px 0 rgba(25,182,106,.18)}
+
+  /* diagnostic tables */
+  .panel-tbl{padding:0;overflow:hidden}
+  .tbl-head{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.02)}
+  .tbl-head .t{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .tbl-head .v{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.08em;color:var(--green);border:1px solid var(--green-deep);border-radius:3px;padding:3px 8px}
+  .tbl{width:100%;border-collapse:collapse;font-size:14.5px}
+  .tbl th{font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);text-align:left;font-weight:500;padding:12px 20px;border-bottom:1px solid var(--line)}
+  .tbl th.r,.tbl td.r{text-align:right}
+  .tbl td{padding:14px 20px;border-bottom:1px solid var(--line-soft);color:var(--cream);vertical-align:middle}
+  .tbl tr:last-child td{border-bottom:none}
+  .tbl tbody tr{transition:background .15s}
+  .tbl tbody tr:hover td{background:rgba(255,255,255,.022)}
+  .tbl .firm{font-family:'Fraunces',serif;font-size:16px}
+  .tbl .sub{color:var(--faint);font-size:12px}
+  .num{font-family:'Spline Sans Mono',monospace;font-weight:600}
+  .vp{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.08em;padding:3px 8px;border-radius:3px;border:1px solid;white-space:nowrap}
+  .vp.go{color:var(--green);border-color:var(--green-deep)} .vp.wait{color:var(--gold);border-color:var(--gold-deep)} .vp.skip{color:var(--red);border-color:var(--red-deep)}
+  .ck{color:var(--green);font-weight:700} .xk{color:var(--red);font-weight:700}
+  @media(max-width:680px){.tbl th,.tbl td{padding:11px 13px;font-size:13px}.tbl .firm{font-size:14px}.hide-sm{display:none}}
+
+  /* mandate statements */
+  .mandate{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:8px}
+  @media(max-width:780px){.mandate{grid-template-columns:1fr}}
+  .mstmt{padding:24px}
+  .mstmt .q{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--gold);margin-bottom:12px}
+  .mstmt p{font-family:'Fraunces',serif;font-size:18px;line-height:1.4;color:var(--cream)}
 </style>
 
 <svg width="0" height="0" style="position:absolute"><defs>
@@ -165,139 +221,216 @@
   </symbol>
 </defs></svg>
 
-<nav>
-  <div class="wrap row">
-    <div class="brand">
-      <svg class="mark"><use href="#candormark"/></svg>
-      <span class="name">Candor</span>
-      <span class="tag">RealityCheck</span>
-    </div>
-    <div class="nav-links">
-      <a class="txt" href="#finds">What it finds</a>
-      <a class="txt" href="#why">Why honest</a>
-      <a class="txt" href="#pricing">Pricing</a>
-      <a class="btn" href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Run free RealityCheck <span class="arr">→</span></a>
-    </div>
-  </div>
-</nav>
-
-<!-- HERO -->
-<header class="hero">
-  <div class="wrap hero-grid">
-    <div>
-      <div class="eyebrow rise" style="animation-delay:.05s">No guarantees · only the odds</div>
-      <h1 class="head rise" style="animation-delay:.12s">Before you pay a prop firm, know your <em>real</em> odds.</h1>
-      <p class="sub rise" style="animation-delay:.2s">Upload your trading history. Candor replays it against <b style="color:var(--cream);font-weight:600">verified</b> prop firm rules and shows your pass odds, the rule most likely to eliminate you, and your expected fee burn.</p>
-      <div class="cta-row rise" style="animation-delay:.28s">
-        <a class="btn" href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Run my free RealityCheck <span class="arr">→</span></a>
-        <a class="btn ghost" href="#sample">See sample report</a>
-      </div>
-      <p class="cta-note rise" style="animation-delay:.34s">First report preview is free · no card</p>
-    </div>
-
-    <div class="report rise" id="sample" style="animation-delay:.4s">
-      <div class="report-top"><span class="t">Sample odds report</span><span class="stamp">Verified rules</span></div>
-      <div class="frow"><span class="fn">Apex — EOD 50K</span><span class="fr"><span class="vtag v-go">GO</span><span class="prob p-go">69.9%</span></span></div>
-      <div class="frow"><span class="fn">E8 Markets — E8 One</span><span class="fr"><span class="vtag v-wait">WAIT</span><span class="prob p-wait">32.0%</span></span></div>
-      <div class="frow"><span class="fn">FTMO — 2-Step</span><span class="fr"><span class="vtag v-skip">SKIP</span><span class="prob p-skip">1.6%</span></span></div>
-      <div class="killer">
-        <div class="k">Your killer rule</div>
-        <div class="kv"><b>Trailing drawdown</b> — the rule most likely to eliminate you.</div>
-      </div>
-    </div>
-  </div>
-</header>
-
-<!-- TRUST STRIP -->
-<div class="strip"><div class="wrap">
-  <span><b>No guarantees.</b></span><span class="dot">·</span>
-  <span><b>No signals.</b></span><span class="dot">·</span>
-  <span><b>No hype.</b></span><span class="dot">·</span>
-  <span>Just the ugly math before you pay.</span>
+<div class="ticker"><div class="track" id="tick">
+  <span><b class="grn">APEX EOD 50K</b> &middot; 69.9% &middot; GO</span>
+  <span><b class="gold">E8 ONE</b> &middot; 32.0% &middot; WAIT</span>
+  <span><b class="red">FUNDEDNEXT STELLAR</b> &middot; 5.6% &middot; SKIP</span>
+  <span><b class="red">THE5ERS HIGH STAKES</b> &middot; 5.6% &middot; SKIP</span>
+  <span><b class="red">FTMO 1-STEP</b> &middot; 3.5% &middot; SKIP</span>
+  <span><b class="red">FTMO 2-STEP</b> &middot; 1.6% &middot; SKIP</span>
+  <span class="gold">RULESET VERIFIED &middot; 2026-06-05</span>
 </div></div>
 
-<!-- WHAT IT FINDS -->
-<section id="finds">
-  <div class="wrap">
-    <div class="sec-head"><span class="sec-no">01</span><h2 class="sec-title">What Candor finds</h2></div>
-    <div class="feat">
-      <div class="fcard"><span class="ftag">Killer rule</span><h3>The one rule that ends your run</h3><p>Daily loss, trailing drawdown, consistency caps, or lot size that <b>explodes after a loss</b> — we name the rule most likely to eliminate you.</p></div>
-      <div class="fcard"><span class="ftag">Expected fee burn</span><h3>The retry loop is the real cost</h3><p>A pricey challenge with low odds becomes an <b>expensive habit</b>. We show whether the fee makes statistical sense before you pay it.</p></div>
-      <div class="fcard"><span class="ftag">What-if simulator</span><h3>See what would change your odds</h3><p>Cut risk per trade, skip news days, switch to a static-drawdown firm — we show how each move <b>shifts your probability</b>.</p></div>
-      <div class="fcard"><span class="ftag">Fine-print scanner</span><h3>Rules aren't just numbers</h3><p>Daily loss, trailing drawdown, consistency, payout, news and lot limits — checked against your <b>real history</b>, not the headline target.</p></div>
+<nav><div class="wrap row">
+  <a class="brand" href="#" aria-label="Candor RealityCheck"><img class="logo-img" src="assets/candor-logo-primary-dark.png" alt="Candor RealityCheck"></a>
+  <div class="nav-links">
+    <a class="txt" href="#finds">What it finds</a>
+    <a class="txt" href="#why">Why honest</a>
+    <a class="txt" href="#pricing">Pricing</a>
+    <a class="btn" href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Run my free RealityCheck <span class="arr">&rarr;</span></a>
+  </div>
+</div></nav>
+
+<header class="hero"><div class="wrap hero-grid">
+  <div>
+    <img src="assets/candor-icon-dark.png" alt="" class="hero-stamp rise" style="animation-delay:.02s">
+    <span class="eyebrow read gold rise" style="animation-delay:.05s"><span class="blink"></span>No guarantees &middot; only the odds</span>
+    <h1 class="head rise" style="animation-delay:.12s">Before you pay a prop firm, <em>know</em> your real odds.</h1>
+    <p class="sub rise" style="animation-delay:.2s">Upload your trading history. Candor replays it against <b style="color:var(--cream);font-weight:600">verified</b> prop-firm rules and returns your pass odds, the rule most likely to eliminate you, and your expected fee burn.</p>
+    <div class="cta-row rise" style="animation-delay:.28s">
+      <a class="btn" href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Run my free RealityCheck <span class="arr">&rarr;</span></a>
+      <a class="btn ghost" href="#sample">See a sample readout</a>
+    </div>
+    <p class="cta-note rise" style="animation-delay:.34s">FREE PREVIEW &middot; NO CARD &middot; ~60S</p>
+  </div>
+
+  <div class="console rise" id="sample" style="animation-delay:.42s">
+    <div class="radar">
+      <div class="cross"></div><div class="cross2"></div><div class="sweep"></div>
+      <div class="blip" style="left:62%;top:40%;color:var(--green)"><div class="d"></div><div class="l">APEX<b class="grn">69.9%</b></div></div>
+      <div class="blip" style="left:38%;top:60%;color:var(--gold)"><div class="d"></div><div class="l">E8<b class="gold">32.0%</b></div></div>
+      <div class="blip" style="left:70%;top:70%;color:var(--red)"><div class="d"></div><div class="l">FTMO<b class="red">1.6%</b></div></div>
+    </div>
+    <div class="verdict inst">
+      <div class="vr"><span class="best">Best match &mdash; Apex EOD 50K</span><span class="odds" id="oddsnum" data-target="69.9">0.0%</span></div>
+      <div class="kl">Killer rule: <b>Trailing drawdown</b> &mdash; the rule most likely to eliminate you.</div>
     </div>
   </div>
-</section>
+</div></header>
 
-<!-- WHY HONEST -->
-<section id="why">
-  <div class="wrap">
-    <div class="sec-head"><span class="sec-no">02</span><h2 class="sec-title">Why honest?</h2></div>
-    <div class="why">
-      <p class="big">Prop firms make money when you fail and pay again. We sell the one thing nobody else will: <em>a straight answer</em> — even when it means telling you not to attempt at all.</p>
-      <div class="principles">
-        <div><span class="n">P—01</span><div><b>Probabilities, not promises</b><span>Every number ships with the assumption behind it, and a confidence level.</span></div></div>
-        <div><span class="n">P—02</span><div><b>Verified rules</b><span>Each firm's rules are checked against the official source, with a ruleset version on every report.</span></div></div>
-        <div><span class="n">P—03</span><div><b>Advice against ourselves</b><span>If the honest answer is "don't attempt," that's the answer you get — paid or not.</span></div></div>
-      </div>
+<!-- SAMPLE READOUT TABLE -->
+<section id="readout"><div class="wrap">
+  <div class="sec-head"><span class="sec-no">SCAN.01</span><h2 class="sec-title">A sample readout</h2></div>
+  <p class="sec-sub">This is what Candor returns from one upload &mdash; every firm scored against its verified rules, ranked by your real pass odds. No hype, no signals, just the matrix.</p>
+  <div class="inst panel-tbl">
+    <div class="tbl-head"><span class="t">Firm comparison matrix &middot; demo account</span><span class="v">Ruleset verified 2026-06-05</span></div>
+    <table class="tbl">
+      <thead><tr><th>Firm</th><th class="r">Pass odds</th><th>Verdict</th><th class="hide-sm">Killer rule</th><th class="r hide-sm">Fee</th></tr></thead>
+      <tbody>
+        <tr><td class="firm">Apex &mdash; EOD 50K <span class="sub">Futures</span></td><td class="r num grn">69.9%</td><td><span class="vp go">GO</span></td><td class="hide-sm">Trailing drawdown</td><td class="r num hide-sm">$167</td></tr>
+        <tr><td class="firm">E8 Markets &mdash; E8 One <span class="sub">1-step</span></td><td class="r num gold">32.0%</td><td><span class="vp wait">WAIT</span></td><td class="hide-sm">Profit target in window</td><td class="r num hide-sm">$260</td></tr>
+        <tr><td class="firm">FundedNext &mdash; Stellar <span class="sub">2-step</span></td><td class="r num red">5.6%</td><td><span class="vp skip">SKIP</span></td><td class="hide-sm">Profit target in window</td><td class="r num hide-sm">$549</td></tr>
+        <tr><td class="firm">The5ers &mdash; High Stakes <span class="sub">2-step</span></td><td class="r num red">5.6%</td><td><span class="vp skip">SKIP</span></td><td class="hide-sm">Profit target in window</td><td class="r num hide-sm">$595</td></tr>
+        <tr><td class="firm">FTMO &mdash; 1-Step</td><td class="r num red">3.5%</td><td><span class="vp skip">SKIP</span></td><td class="hide-sm">Profit target in window</td><td class="r num hide-sm">$540</td></tr>
+        <tr><td class="firm">FTMO &mdash; 2-Step</td><td class="r num red">1.6%</td><td><span class="vp skip">SKIP</span></td><td class="hide-sm">Profit target in window</td><td class="r num hide-sm">$540</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mandate">
+    <div class="mstmt inst"><div class="q">OUR MANDATE</div><p>We don't sell a pass. We sell the math you'd see if the firm were honest with you.</p></div>
+    <div class="mstmt inst"><div class="q">WHAT WE ARE</div><p>A statistical reality check &mdash; not a signal service, not a guru, not a guarantee.</p></div>
+    <div class="mstmt inst"><div class="q">THE STANDARD</div><p>Every number is traceable: a verified ruleset version and a confidence level on each report.</p></div>
+  </div>
+</div></section>
+
+<section id="finds"><div class="wrap">
+  <div class="sec-head"><span class="sec-no">SCAN.02</span><h2 class="sec-title">What every scan returns</h2></div>
+  <p class="sec-sub">Four readings from your real trade history &mdash; not a win-rate you typed in.</p>
+  <div class="mods">
+    <div class="mod inst">
+      <div class="top"><span class="id">MOD/KILLER-RULE</span><span class="status">LIVE</span></div>
+      <svg class="viz" viewBox="0 0 200 54" preserveAspectRatio="none">
+        <polyline points="0,40 30,30 60,36 90,18 120,44 150,10 200,50" fill="none" stroke="#5a626c" stroke-width="2"/>
+        <line x1="150" y1="0" x2="150" y2="54" stroke="#FF4D4F" stroke-width="2" stroke-dasharray="3 3"/>
+        <circle cx="150" cy="10" r="4" fill="#FF4D4F"/>
+      </svg>
+      <h3>The one rule that ends your run</h3>
+      <p>Daily loss, trailing drawdown, consistency caps, or lot size that <b>explodes after a loss</b> &mdash; we name the rule most likely to eliminate you, and when.</p>
+    </div>
+    <div class="mod inst">
+      <div class="top"><span class="id">MOD/FEE-BURN</span><span class="status">LIVE</span></div>
+      <svg class="viz" viewBox="0 0 200 54" preserveAspectRatio="none">
+        <rect x="6" y="34" width="22" height="20" fill="#19B66A"/>
+        <rect x="44" y="22" width="22" height="32" fill="#C7A45D"/>
+        <rect x="82" y="12" width="22" height="42" fill="#C7A45D"/>
+        <rect x="120" y="4" width="22" height="50" fill="#FF4D4F"/>
+        <rect x="158" y="0" width="22" height="54" fill="#FF4D4F"/>
+      </svg>
+      <h3>The retry loop is the real cost</h3>
+      <p>A pricey challenge with low odds becomes an <b>expensive habit</b>. We compute the expected fees across re-tries before you pay the first one.</p>
+    </div>
+    <div class="mod inst">
+      <div class="top"><span class="id">MOD/WHAT-IF</span><span class="status">LIVE</span></div>
+      <svg class="viz" viewBox="0 0 200 54" preserveAspectRatio="none">
+        <path d="M0,46 C50,46 60,14 100,14 C140,14 150,30 200,30" fill="none" stroke="#19B66A" stroke-width="2"/>
+        <circle cx="100" cy="14" r="4" fill="#19B66A"/>
+      </svg>
+      <h3>See what would change your odds</h3>
+      <p>Cut risk per trade, skip news days, switch to a static-drawdown firm &mdash; we show how each move <b>shifts your probability</b>, honestly labelled as an estimate.</p>
+    </div>
+    <div class="mod inst">
+      <div class="top"><span class="id">MOD/FINE-PRINT</span><span class="status">LIVE</span></div>
+      <svg class="viz" viewBox="0 0 200 54" preserveAspectRatio="none">
+        <line x1="6" y1="14" x2="120" y2="14" stroke="#2a323b" stroke-width="3"/>
+        <line x1="6" y1="27" x2="150" y2="27" stroke="#2a323b" stroke-width="3"/>
+        <line x1="6" y1="40" x2="100" y2="40" stroke="#2a323b" stroke-width="3"/>
+        <circle cx="150" cy="34" r="13" fill="none" stroke="#C7A45D" stroke-width="2.5"/>
+        <line x1="160" y1="44" x2="172" y2="54" stroke="#C7A45D" stroke-width="3"/>
+      </svg>
+      <h3>Rules aren't just numbers</h3>
+      <p>Daily loss, trailing drawdown, consistency, payout, news and lot limits &mdash; checked against your <b>real history</b>, not the headline profit target.</p>
     </div>
   </div>
-</section>
+</div></section>
 
-<!-- PRICING -->
-<section id="pricing">
-  <div class="wrap">
-    <div class="sec-head"><span class="sec-no">03</span><h2 class="sec-title">Pricing</h2></div>
-    <div class="price">
-      <div class="plan"><span class="pn">Free preview</span><div class="amt">$0</div><div class="pd">one simulation</div><ul><li>Best & toughest firm</li><li>Pass-odds range</li><li>Your killer rule</li></ul><a class="btn ghost" href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Start free</a></div>
-      <div class="plan hot"><span class="pill">Best value</span><span class="pn">Full report</span><div class="amt">$19</div><div class="pd">per report</div><ul><li>Every firm scored</li><li>Killer rule per firm</li><li>Expected fee burn</li><li>What-if simulator</li><li>PDF download</li></ul><a class="btn" href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Get full report</a></div>
-      <div class="plan"><span class="pn">Rerun</span><div class="amt">$9</div><div class="pd">after a strategy change</div><ul><li>Re-upload &amp; compare</li><li>Before / after odds</li></ul><a class="btn ghost" href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Rerun</a></div>
-      <div class="plan"><span class="pn">Bundle · 3</span><div class="amt">$49</div><div class="pd">three full reports</div><ul><li>Test different risk settings</li><li>Best value per run</li></ul><a class="btn ghost" href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Get bundle</a></div>
+<!-- VS TABLE -->
+<section id="vs"><div class="wrap">
+  <div class="sec-head"><span class="sec-no">SCAN.03</span><h2 class="sec-title">Not another win-rate calculator</h2></div>
+  <p class="sec-sub">Most free tools score a number you typed in. Candor reads what actually happened &mdash; and tells you what to do about it.</p>
+  <div class="inst panel-tbl">
+    <div class="tbl-head"><span class="t">Capability comparison</span><span class="v">Candor vs typical tools</span></div>
+    <table class="tbl">
+      <thead><tr><th>Capability</th><th>Typical free calculator</th><th>Candor RealityCheck</th></tr></thead>
+      <tbody>
+        <tr><td>Input</td><td><span class="xk">&times;</span> a win-rate you type in</td><td><span class="ck">&check;</span> your real trade history (CSV)</td></tr>
+        <tr><td>Output</td><td><span class="xk">&times;</span> one probability number</td><td><span class="ck">&check;</span> a verdict per firm: go / wait / skip</td></tr>
+        <tr><td>Failure point</td><td><span class="xk">&times;</span> rarely named</td><td><span class="ck">&check;</span> the exact rule that eliminates you</td></tr>
+        <tr><td>Expected fee burn</td><td><span class="xk">&times;</span> none</td><td><span class="ck">&check;</span> cost across re-tries, per firm</td></tr>
+        <tr><td>Rule accuracy</td><td><span class="xk">&times;</span> often stale</td><td><span class="ck">&check;</span> verified rulesets, versioned &amp; dated</td></tr>
+        <tr><td>Honesty</td><td><span class="xk">&times;</span> hides its blind spots</td><td><span class="ck">&check;</span> states what the model can't see</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div></section>
+
+<section id="why"><div class="wrap">
+  <div class="sec-head"><span class="sec-no">SCAN.04</span><h2 class="sec-title">Why honest?</h2></div>
+  <div class="why">
+    <p class="big">Prop firms make money when you fail and pay again. We sell the one thing nobody else will: <em>a straight answer</em> &mdash; even when it means telling you not to attempt at all.</p>
+    <div class="pr">
+      <div><span class="n">P&mdash;01</span><div><b>Probabilities, not promises</b><span>Every number ships with the assumption behind it and a confidence level.</span></div></div>
+      <div><span class="n">P&mdash;02</span><div><b>Verified rules</b><span>Each firm's rules checked against the official source, with a ruleset version stamped on every report.</span></div></div>
+      <div><span class="n">P&mdash;03</span><div><b>Advice against ourselves</b><span>If the honest answer is "don't attempt," that's the answer you get &mdash; paid or not.</span></div></div>
     </div>
   </div>
-</section>
+</div></section>
 
-<!-- COMING SOON -->
-<section>
-  <div class="wrap">
-    <div class="sec-head"><span class="sec-no">04</span><h2 class="sec-title">Coming soon</h2></div>
-    <div class="soon">
-      <div class="scard"><span class="badge">Soon</span><h3>Candor Watchtower</h3><p>Prop firms change their rules. Get alerted when a change moves your pass odds — plus reruns.</p></div>
-      <div class="scard"><span class="badge">Soon</span><h3>Risk DNA</h3><p>A monthly read on your personal trading weaknesses — the patterns that quietly cost you.</p></div>
-      <div class="scard"><span class="badge">Later</span><h3>Signal Scanner</h3><p>Scan a Telegram, X or YouTube "signal" for red flags before it scans your wallet.</p></div>
+<section id="pricing"><div class="wrap">
+  <div class="sec-head"><span class="sec-no">SCAN.05</span><h2 class="sec-title">Pricing</h2></div>
+  <p class="sec-sub">You're about to risk thousands on a challenge fee. Scan first.</p>
+  <div class="ladder">
+    <div class="tier"><span class="pn">Free preview</span><div class="amt">$0</div><div class="pd">one simulation</div><ul><li>Best &amp; toughest firm</li><li>Pass-odds range</li><li>Your killer rule</li></ul><a class="btn ghost" href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Start free</a></div>
+    <div class="tier hot"><span class="stamp">BEST VALUE</span><span class="pn">Full report</span><div class="amt">$19</div><div class="pd">per report</div><ul><li>Every firm scored</li><li>Killer rule per firm</li><li>Expected fee burn</li><li>What-if simulator</li><li>PDF download</li></ul><a class="btn" href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Get full report</a></div>
+    <div class="tier"><span class="pn">Rerun</span><div class="amt">$9</div><div class="pd">after a change</div><ul><li>Re-upload &amp; compare</li><li>Before / after odds</li></ul><a class="btn ghost" href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Rerun</a></div>
+    <div class="tier"><span class="pn">Bundle &middot; 3</span><div class="amt">$49</div><div class="pd">three reports</div><ul><li>Test risk settings</li><li>Best per-run value</li></ul><a class="btn ghost" href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Get bundle</a></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="sec-head"><span class="sec-no">SCAN.06</span><h2 class="sec-title">On the roadmap</h2></div>
+  <div class="soon">
+    <div class="scard inst"><span class="badge">STANDBY</span><h3>Candor Watchtower</h3><p>Prop firms change their rules. Get alerted when a change moves your pass odds &mdash; plus reruns.</p></div>
+    <div class="scard inst"><span class="badge">STANDBY</span><h3>Risk DNA</h3><p>A monthly read on your personal trading weaknesses &mdash; the patterns that quietly cost you.</p></div>
+    <div class="scard inst"><span class="badge">QUEUED</span><h3>Signal Scanner</h3><p>Scan a Telegram, X or YouTube "signal" for red flags before it scans your wallet.</p></div>
+  </div>
+</div></section>
+
+<section class="close"><div class="wrap">
+  <div class="read">Run the numbers before the money moves</div>
+  <h2>Get the <em>honest</em> answer first.</h2>
+  <p>Five minutes and your trade history is all it takes to find out where you stand.</p>
+  <a class="btn" href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Run my free RealityCheck <span class="arr">&rarr;</span></a>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="foot-top">
+    <img class="logo-img" src="assets/candor-logo-primary-dark.png" alt="Candor RealityCheck" style="height:30px">
+    <div class="foot-links">
+      <a href="#terms">Terms</a><a href="#privacy">Privacy</a><a href="#refund">Refund</a>
+      <a href="#finds">What it finds</a><a href="#pricing">Pricing</a>
+      <a href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Launch app</a>
     </div>
   </div>
-</section>
+  <p class="legal" id="terms">
+    <b>Not financial advice.</b> Candor RealityCheck is a statistical simulation and educational tool. It does not provide
+    financial, investment or trading advice, trading signals, or any guaranteed outcome. Pass-odds are statistical estimates
+    derived from the trade history you provide; past performance does not guarantee future results, and no outcome with any
+    prop firm is guaranteed. Prop firm names and rules are referenced for compatibility and remain the property of their
+    respective owners. <span id="privacy"><b>Privacy:</b> your trade history is used only to run your simulation and is not
+    sold.</span> <span id="refund"><b>Refunds:</b> reports are generated and delivered instantly as digital goods, so sales
+    are generally final; contact support for issues with a purchase.</span> &copy; 2026 Candor.
+  </p>
+</div></footer>
 
-<!-- CLOSE -->
-<section class="close">
-  <div class="wrap">
-    <h2>Get the <em>honest</em> answer first.</h2>
-    <p>Five minutes and your trade history is all it takes to find out where you stand.</p>
-    <a class="btn" href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Run my free RealityCheck <span class="arr">→</span></a>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="wrap">
-    <div class="foot-top">
-      <div class="brand"><svg class="mark"><use href="#candormark"/></svg><span class="name" style="font-size:20px">Candor</span><span class="tag">RealityCheck</span></div>
-      <div class="foot-links">
-        <a href="#terms">Terms</a><a href="#privacy">Privacy</a><a href="#refund">Refund</a>
-        <a href="#finds">What it finds</a><a href="#pricing">Pricing</a>
-        <a href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Launch app</a>
-      </div>
-    </div>
-    <p class="legal" id="terms">
-      <b>Not financial advice.</b> Candor RealityCheck is a statistical simulation and educational tool. It does not provide
-      financial, investment or trading advice, trading signals, or any guaranteed outcome. Pass-odds are statistical
-      estimates derived from the trade history you provide; past performance does not guarantee future results, and no
-      outcome with any prop firm is guaranteed. Prop firm names and rules are referenced for compatibility and remain the
-      property of their respective owners. <span id="privacy"><b>Privacy:</b> your trade history is used only to run your
-      simulation and is not sold.</span> <span id="refund"><b>Refunds:</b> because reports are generated and delivered
-      instantly as digital goods, sales are generally final; contact support for issues with a purchase.</span>
-      © 2026 Candor.
-    </p>
-  </div>
-</footer>
+<script>
+  (function(){var t=document.getElementById('tick'); if(t) t.innerHTML+=t.innerHTML;})();
+  (function(){
+    var el=document.getElementById('oddsnum'); if(!el) return;
+    var target=parseFloat(el.dataset.target)||0, t0=null, dur=1400;
+    function step(ts){ if(!t0)t0=ts; var p=Math.min((ts-t0)/dur,1);
+      el.textContent=(target*(1-Math.pow(1-p,3))).toFixed(1)+'%';
+      if(p<1) requestAnimationFrame(step); }
+    setTimeout(function(){requestAnimationFrame(step);}, 700);
+  })();
+</script>

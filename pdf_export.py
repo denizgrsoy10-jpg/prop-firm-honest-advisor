@@ -10,13 +10,16 @@ clear 'not financial advice' note.
 
 from __future__ import annotations
 import io
+import os
 
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.units import mm
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import (SimpleDocTemplate, Paragraph, Spacer, Table,
-                                TableStyle)
+                                TableStyle, Image)
+
+_ASSETS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")
 
 INK = colors.HexColor("#1c1b17")
 GREEN = colors.HexColor("#1d4634")
@@ -50,6 +53,18 @@ def build_pdf(full_report: dict) -> bytes:
                             title="Prop Firm RealityCheck Report")
     ss = _styles()
     el = []
+
+    # Candor logo at the top (never break the PDF if the asset is missing)
+    try:
+        _lp = os.path.join(_ASSETS, "candor-logo-primary-light.png")
+        if os.path.exists(_lp):
+            from reportlab.lib.utils import ImageReader
+            iw, ih = ImageReader(_lp).getSize()
+            w = 52 * mm
+            el.append(Image(_lp, width=w, height=w * ih / iw))
+            el.append(Spacer(1, 6 * mm))
+    except Exception:
+        pass
 
     el.append(Paragraph("Prop Firm RealityCheck Report", ss["H1c"]))
     el.append(Paragraph("Generated from your trading history · Candor", ss["Sub"]))

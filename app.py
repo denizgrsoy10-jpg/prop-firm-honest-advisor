@@ -23,7 +23,15 @@ import payments
 import analytics
 import tracking
 
-st.set_page_config(page_title="Prop Firm RealityCheck — Candor", layout="centered")
+# --- branding assets (robust: never crash if a file is missing) --------------
+ASSETS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")
+def _asset(name):
+    p = os.path.join(ASSETS_DIR, name)
+    return p if os.path.exists(p) else None
+
+st.set_page_config(page_title="Candor RealityCheck",
+                   page_icon=_asset("candor-favicon-32.png") or "🔦",
+                   layout="centered")
 
 # --- session state -----------------------------------------------------------
 ss = st.session_state
@@ -89,7 +97,15 @@ VERDICT_COPY = {
 }
 
 # --- header ------------------------------------------------------------------
-st.title("Prop Firm RealityCheck")
+_logo = _asset("candor-logo-primary-dark.png")
+if _logo:
+    st.image(_logo, width=300)
+else:
+    st.title("Candor")
+st.markdown(
+    "<div style='font-family:Georgia,serif;font-size:1.18rem;letter-spacing:.01em;"
+    "color:#D9A332;margin:-.35rem 0 .15rem'>Prop Firm RealityCheck</div>",
+    unsafe_allow_html=True)
 st.caption("Candor · We don't sell guarantees — we tell you the odds. "
            "Statistical simulation only, not financial advice.")
 
