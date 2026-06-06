@@ -17,6 +17,7 @@ from simulator import simulate_all, verdict_for
 from rules_engine import ruleset_version
 from what_if import what_if_table, WHATIF_LABEL
 from tracking import make_report_id, confidence_from
+import insights
 
 
 def _expected_fee_burn(fee, pass_prob):
@@ -68,6 +69,7 @@ def build_full_report(preview, daily_pnls, report_id=None):
             "fee": fee,
             "fee_burn_total": burn_total,
             "fee_burn_msg": burn_msg,
+            "retry_danger": insights.retry_danger(r.pass_prob),
             "note": r.note,
             "verification_status": r.firm.get("verification_status"),
             "breach_breakdown": r.breach_breakdown,
@@ -76,6 +78,10 @@ def build_full_report(preview, daily_pnls, report_id=None):
     best = results[0]
     whatif = what_if_table(daily_pnls, best.firm)
     firms = [r.firm for r in results]
+
+    # --- Wave 1 insight modules (all honest diagnostics, never advice) -------
+    autopsy = insights.killer_rule_autopsy(best)
+    dna = insights.risk_dna(daily_pnls, preview["data"])
 
     return {
         "report_id": report_id or make_report_id(),
@@ -95,6 +101,12 @@ def build_full_report(preview, daily_pnls, report_id=None):
             "label": WHATIF_LABEL,
             "rows": whatif,
         },
+        "data_audit": insights.data_quality_audit(preview["data"], daily_pnls),
+        "autopsy": autopsy,
+        "risk_dna": dna,
+        "fee_burn_headline": insights.fee_burn_headline(firm_rows),
+        "matchmaker": insights.best_fit_matchmaker(results),
+        "danger_rules": insights.personal_danger_rules(autopsy, dna, best),
         "disclaimer": ("Statistical simulation only. Not financial, investment or "
                        "trading advice. No outcome with any firm is guaranteed."),
     }

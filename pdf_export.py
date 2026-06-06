@@ -99,10 +99,35 @@ def build_pdf(full_report: dict) -> bytes:
     ]))
     el.append(t)
 
-    # expected fee burn
+    # killer rule autopsy
+    au = full_report.get("autopsy")
+    if au:
+        el.append(Paragraph(f"Killer Rule Autopsy — {au.get('rule','—')}", ss["H2c"]))
+        el.append(Paragraph(au.get("mechanism", ""), ss["Body"]))
+        if au.get("path"):
+            el.append(Paragraph("<b>How it usually happens:</b> " +
+                                " &rarr; ".join(au["path"]), ss["Body"]))
+        for x in au.get("reduce", []):
+            el.append(Paragraph(f"• {x}", ss["Body"]))
+        el.append(Paragraph(au.get("label", ""), ss["Small"]))
+
+    # best-fit matchmaker
+    mch = full_report.get("matchmaker")
+    if mch:
+        el.append(Paragraph("Best-fit challenge type", ss["H2c"]))
+        el.append(Paragraph(f"<b>Best fit — {mch['best_firm']}</b> ({_pct(mch['best_odds'])}): "
+                            + "; ".join(mch["best_why"]), ss["Body"]))
+        el.append(Paragraph(f"<b>Avoid — {mch['worst_firm']}</b> ({_pct(mch['worst_odds'])}): "
+                            + "; ".join(mch["worst_why"]), ss["Body"]))
+        el.append(Paragraph(mch.get("label", ""), ss["Small"]))
     el.append(Paragraph("Expected fee burn", ss["H2c"]))
+    _fb = full_report.get("fee_burn_headline", {})
+    if _fb.get("note"):
+        el.append(Paragraph(_fb["note"], ss["Small"]))
     for r in full_report["firm_rows"]:
-        el.append(Paragraph(f"<b>{r['firm']}</b>: {r['fee_burn_msg']}", ss["Body"]))
+        el.append(Paragraph(
+            f"<b>{r['firm']}</b>: {r['fee_burn_msg']} "
+            f"(retry danger: {r.get('retry_danger','-')})", ss["Body"]))
 
     # what-if
     wi = full_report["what_if"]
@@ -122,6 +147,39 @@ def build_pdf(full_report: dict) -> bytes:
         ("TOPPADDING", (0, 0), (-1, -1), 5), ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
     ]))
     el.append(wt)
+
+    # risk DNA
+    dna = full_report.get("risk_dna", {})
+    el.append(Paragraph("Your Risk DNA", ss["H2c"]))
+    if dna.get("available"):
+        m = dna["metrics"]
+        el.append(Paragraph(
+            f"<b>Most dangerous behavior:</b> {dna['most_dangerous_behavior']} — "
+            f"{dna['behavior_note']}", ss["Body"]))
+        el.append(Paragraph(
+            f"Longest losing streak: {m['longest_loss_streak']} days "
+            f"(sensitivity {m['loss_streak_sensitivity']}) &nbsp;·&nbsp; "
+            f"Profit concentration: {m['concentration_label']} &nbsp;·&nbsp; "
+            f"Risk drift: {m['drift_label']}", ss["Body"]))
+        el.append(Paragraph(dna.get("label", ""), ss["Small"]))
+    else:
+        el.append(Paragraph(dna.get("note", "Not enough data for a behavioral read."), ss["Small"]))
+
+    # personal danger rules
+    dr = full_report.get("danger_rules", {})
+    if dr.get("rules"):
+        el.append(Paragraph("Your personal danger rules", ss["H2c"]))
+        for x in dr["rules"]:
+            el.append(Paragraph(f"• {x}", ss["Body"]))
+        el.append(Paragraph(dr.get("label", ""), ss["Small"]))
+
+    # outcome submission (Honesty Ledger teaser — full surface comes in Wave 2)
+    el.append(Paragraph("When your challenge ends", ss["H2c"]))
+    el.append(Paragraph(
+        f"Help Candor measure its own predictions: when this challenge resolves, "
+        f"submit your real outcome (passed / failed / not attempted) quoting Report ID "
+        f"<b>{full_report.get('report_id','-')}</b>. We publish calibration once enough "
+        f"verified outcomes are in — we don't hide from our predictions.", ss["Body"]))
 
     el.append(Spacer(1, 16))
     el.append(Paragraph("Honesty &amp; disclaimer", ss["H2c"]))

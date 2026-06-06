@@ -237,6 +237,14 @@ if ss.daily_pnls is not None:
         st.write(f"Generated {full['generated']} · {full['data']['n_trades']} trades · "
                  f"{full['data']['n_days']} trading days")
 
+        _dq = full["data_audit"]
+        with st.expander(f"Data quality — confidence: {_dq['confidence']}", expanded=False):
+            st.write(f"- Trades detected: {_dq['n_trades']}")
+            st.write(f"- Trading days: {_dq['n_days']}")
+            st.write(f"- Profitable days: {_dq['profitable_days']}")
+            st.write(f"- Large outliers: {_dq['outliers']}")
+            st.caption(_dq["confidence_why"])
+
         st.markdown("**All firms**")
         st.table([{
             "Firm": r["firm"], "Pass odds": pct(r["pass_prob"]),
@@ -248,9 +256,36 @@ if ss.daily_pnls is not None:
             st.caption("⚠️ Some rulesets are seed data pending verification. "
                        "Treat numbers as estimates until each firm's rules are confirmed.")
 
+        # --- Killer Rule Autopsy (the wow screen) ---------------------------
+        _au = full["autopsy"]
+        st.markdown(f"### 🔎 Killer Rule Autopsy — {_au['rule']}")
+        st.write(_au["mechanism"])
+        if _au["path"]:
+            st.write("**How it usually happens:** " + " → ".join(_au["path"]))
+        if _au["reduce"]:
+            st.write("**What reduces this risk:**")
+            for x in _au["reduce"]:
+                st.write(f"- {x}")
+        st.caption(_au["label"])
+
         st.markdown("**Expected fee burn**")
+        _fb = full["fee_burn_headline"]
+        st.caption(_fb["note"])
         for r in full["firm_rows"]:
-            st.write(f"- {r['firm']}: {r['fee_burn_msg']}")
+            st.write(f"- {r['firm']}: {r['fee_burn_msg']}  ·  retry danger: **{r['retry_danger']}**")
+
+        # --- Best-fit firm matchmaker ---------------------------------------
+        _mm = full["matchmaker"]
+        if _mm:
+            st.markdown("**Best-fit challenge type**")
+            c1, c2 = st.columns(2)
+            c1.write(f"✅ **Best fit — {_mm['best_firm']}** ({pct(_mm['best_odds'])})")
+            for x in _mm["best_why"]:
+                c1.write(f"- {x}")
+            c2.write(f"⚠️ **Avoid — {_mm['worst_firm']}** ({pct(_mm['worst_odds'])})")
+            for x in _mm["worst_why"]:
+                c2.write(f"- {x}")
+            st.caption(_mm["label"])
 
         st.markdown(f"**What-if simulator — {full['what_if']['firm']}**")
         st.caption(full["what_if"]["label"])
@@ -266,6 +301,28 @@ if ss.daily_pnls is not None:
                         f"(starts at your ${start_bal:,.0f} balance)")
             st.line_chart({"Account equity ($)": full["equity_curve"]})
             st.caption("This is account balance over the attempt, not cumulative P/L.")
+
+        # --- Risk DNA ---------------------------------------------------------
+        _dna = full["risk_dna"]
+        st.markdown("**🧬 Your Risk DNA**")
+        if _dna.get("available"):
+            m = _dna["metrics"]
+            st.write(f"- Most dangerous behavior: **{_dna['most_dangerous_behavior']}** — {_dna['behavior_note']}")
+            st.write(f"- Longest losing streak: {m['longest_loss_streak']} days "
+                     f"(sensitivity: {m['loss_streak_sensitivity']})")
+            st.write(f"- Profit concentration: {m['concentration_label']} "
+                     f"(best day = {int(m['profit_concentration']*100)}% of gains)")
+            st.write(f"- Risk drift over time: {m['drift_label']}")
+            st.caption(_dna["label"])
+        else:
+            st.caption(_dna.get("note", "Not enough data for a behavioral read."))
+
+        # --- Personal danger rules -------------------------------------------
+        _dr = full["danger_rules"]
+        st.markdown("**🛡️ Your personal danger rules**")
+        for r in _dr["rules"]:
+            st.write(f"- {r}")
+        st.caption(_dr["label"])
 
         # --- email capture (optional, before download) ----------------------
         st.divider()
