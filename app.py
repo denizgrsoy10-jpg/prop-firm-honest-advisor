@@ -33,6 +33,21 @@ st.set_page_config(page_title="Candor RealityCheck",
                    page_icon=_asset("candor-favicon-32.png") or "🔦",
                    layout="centered")
 
+# --- routing to extra surfaces (?page=outcome|honesty-ledger|admin|signal) ----
+import views
+_qp = st.query_params
+_page = _qp.get("page")
+if _page in ("outcome", "ledger", "honesty-ledger", "admin", "signal"):
+    if _page == "outcome":
+        views.render_outcome(_qp.get("report_id", ""))
+    elif _page in ("ledger", "honesty-ledger"):
+        views.render_ledger()
+    elif _page == "admin":
+        views.render_admin()
+    elif _page == "signal":
+        views.render_signal()
+    st.stop()
+
 # --- session state -----------------------------------------------------------
 ss = st.session_state
 ss.setdefault("daily_pnls", None)
@@ -44,6 +59,7 @@ ss.setdefault("market_label", None)
 ss.setdefault("preview_market", None)
 ss.setdefault("report_id", None)
 ss.setdefault("logged", False)
+ss.setdefault("used_demo", False)
 
 
 def _reset():
@@ -133,6 +149,7 @@ if (up is not None or use_demo) and ss.daily_pnls is None:
         else:
             daily, meta = load_trades_csv(up.getvalue())
         ss.daily_pnls, ss.meta = daily, meta
+        ss.used_demo = bool(use_demo)
         ss.market_label = "All firms" if use_demo else _default_market_label(meta)
         analytics.log_event("parse_success", {"n_days": meta["n_days"]})
     except TradeParseError as e:
@@ -221,14 +238,12 @@ if ss.daily_pnls is not None:
             ss.report_id = tracking.make_report_id()
         full = build_full_report(p, ss.daily_pnls, report_id=ss.report_id)
 
-        # admin log + honesty-ledger entry, once per report
+        # persist the report once (Supabase if configured, else local fallback)
         if not ss.logged:
-            pay_status = "mock" if payments.mode() == "mock" else "paid"
-            tracking.log_report(full["report_id"], ss.market_label, full["best_firm"],
-                                full["best_pass_prob"], full["best_killer_rule"], pay_status)
-            tracking.write_ledger(tracking.ledger_entry(
-                full["report_id"], full["ruleset_version"], full["simulation_date"],
-                full["best_killer_rule"], full["best_pass_prob"], full["confidence"]))
+            is_demo = (ss.market_label == "All firms" and ss.get("used_demo", False))
+            pay_status = ("demo" if is_demo else
+                          ("mock" if payments.mode() == "mock" else "paid"))
+            tracking.log_report(full, ss.market_label, pay_status, is_demo)
             ss.logged = True
 
         st.subheader("Full report")
@@ -331,7 +346,7 @@ if ss.daily_pnls is not None:
         email = ec1.text_input("Email", label_visibility="collapsed",
                                placeholder="you@example.com", key="email_input")
         if ec2.button("Send"):
-            if tracking.capture_email(email, full["report_id"], "report"):
+            if tracking.log_lead(email, full["report_id"], "report"):
                 st.success("Saved. (We'll email this report and rule-change alerts.)")
             else:
                 st.error("That doesn't look like a valid email.")
@@ -341,6 +356,7 @@ if ss.daily_pnls is not None:
                               file_name=f"{full['report_id']}.pdf",
                               mime="application/pdf"):
             analytics.log_event("pdf_downloaded")
+            tracking.log_pdf_download(full["report_id"])
 
         st.divider()
         st.subheader("Keep going")
@@ -358,10 +374,16 @@ if ss.daily_pnls is not None:
         wl_email = wc1.text_input("Watchtower email", label_visibility="collapsed",
                                   placeholder="you@example.com", key="watch_input")
         if wc2.button("Join waitlist"):
-            if tracking.capture_email(wl_email, full["report_id"], "watchtower"):
+            if tracking.log_watchtower_signup(wl_email, full["report_id"],
+                                              full["ruleset_version"]):
                 st.success("You're on the Watchtower waitlist.")
             else:
                 st.error("That doesn't look like a valid email.")
+
+        st.divider()
+        oc1, oc2 = st.columns(2)
+        oc1.markdown(f"[Submit your outcome when it ends →](./?page=outcome&report_id={full['report_id']})")
+        oc2.markdown("[See the Honesty Ledger →](./?page=honesty-ledger)")
 
         st.caption("Your data is used only for this simulation. " + full["disclaimer"])
 
