@@ -53,6 +53,14 @@ if _page in ("outcome", "ledger", "honesty-ledger", "admin", "signal", "autopilo
 
 # --- session state -----------------------------------------------------------
 ss = st.session_state
+
+# Landing'den gelen ?mode=own_account / ?mode=prop_firm linkleri:
+# kullanıcı modu sayfa açılınca seçsin diye, radio'yu manuel oynatmasına gerek kalmasın.
+_qp_mode = _qp.get("mode")
+if _qp_mode in ("own", "own_account"):
+    ss["mode"] = "own_account"
+elif _qp_mode in ("prop", "prop_firm"):
+    ss["mode"] = "prop_firm"
 ss.setdefault("daily_pnls", None)
 ss.setdefault("meta", None)
 ss.setdefault("preview", None)
