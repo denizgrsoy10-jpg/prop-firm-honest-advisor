@@ -109,9 +109,12 @@ def _default_market_label(meta):
 
 
 VERDICT_COPY = {
-    "go": ("Go", "Worth attempting on this data."),
-    "wait": ("Wait", "Borderline — tighten up before you pay."),
-    "skip": ("Skip", "Don't pay for this one yet."),
+    "go":   ("Strong fit",
+             "Historical pattern aligns well with this firm's published rules."),
+    "wait": ("Borderline",
+             "Historical pattern sits on the edge of this firm's published rules."),
+    "skip": ("High mismatch",
+             "Historical pattern shows a low fit with this firm's published rules."),
 }
 
 # --- header ------------------------------------------------------------------
@@ -208,7 +211,7 @@ if ss.daily_pnls is not None:
     c3.metric("Pass-odds range", f"{pct(lo)}–{pct(hi)}")
 
     vlabel, vmsg = VERDICT_COPY[p["verdict"]]
-    st.markdown(f"**Verdict on your best match:** {vlabel} — {vmsg}")
+    st.markdown(f"**Risk label for your best match:** {vlabel} — {vmsg}")
     st.markdown(f"**Most dangerous rule for you:** {p['killer_rule']}")
 
     st.divider()
@@ -292,7 +295,7 @@ if ss.daily_pnls is not None:
         st.markdown("**All firms**")
         st.table([{
             "Firm": r["firm"], "Pass odds": pct(r["pass_prob"]),
-            "Verdict": r["verdict"].upper(), "Killer rule": r["killer_rule"],
+            "Risk label": VERDICT_COPY.get(r["verdict"], ("—",""))[0], "Killer rule": r["killer_rule"],
             "Fee": f"${r['fee']:,}",
         } for r in full["firm_rows"]])
         if any(r.get("verification_status") == "needs_verification"
@@ -326,7 +329,7 @@ if ss.daily_pnls is not None:
             c1.write(f"✅ **Best fit — {_mm['best_firm']}** ({pct(_mm['best_odds'])})")
             for x in _mm["best_why"]:
                 c1.write(f"- {x}")
-            c2.write(f"⚠️ **Avoid — {_mm['worst_firm']}** ({pct(_mm['worst_odds'])})")
+            c2.write(f"⚠️ **Lowest fit — {_mm['worst_firm']}** ({pct(_mm['worst_odds'])})")
             for x in _mm["worst_why"]:
                 c2.write(f"- {x}")
             st.caption(_mm["label"])

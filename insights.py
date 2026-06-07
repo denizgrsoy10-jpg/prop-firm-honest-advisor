@@ -84,7 +84,7 @@ def risk_dna(daily_pnls: list[float], meta: dict) -> dict:
     flags = []
     if best >= 4:
         flags.append(("Long losing streaks",
-                      f"Your worst run was {best} losing days in a row — drawdown rules punish this."))
+                      f"Worst observed run: {best} losing days in a row. Drawdown rules become sensitive to runs of this length."))
     if profit_concentration >= .45:
         flags.append(("Profit concentration",
                       "A large share of your gains came from one day; remove it and the edge thins."))
@@ -115,9 +115,12 @@ _AUTOPSY = {
                  "The trailing floor ratchets up with it",
                  "A normal cluster of losses follows",
                  "Equity touches the raised floor → breach"],
-        "reduce": ["Lower risk per trade early in the challenge",
-                   "Avoid chasing large early spikes",
-                   "Prefer firms with static (non-trailing) drawdown"],
+        "reduce": ["Scaling historical risk down early in a challenge reduces "
+                   "trailing-drawdown breach pressure in similar samples",
+                   "Large early equity spikes raise the trailing floor and "
+                   "tighten the breach margin",
+                   "Firms with static (non-trailing) drawdown are mechanically "
+                   "less sensitive to this pattern"],
     },
     "profit target": {
         "mechanism": ("On your historical pace, the profit target isn't reached inside the "
@@ -125,9 +128,12 @@ _AUTOPSY = {
         "path": ["Steady but slow gains",
                  "Window elapses before target is hit",
                  "Challenge fails on time, not on a loss"],
-        "reduce": ["Prefer firms with a lower profit target",
-                   "Look for challenges with no time limit",
-                   "Only raise size if your edge genuinely supports it (not as a gamble)"],
+        "reduce": ["Firms with a lower profit target are mechanically easier "
+                   "to clear within the same window",
+                   "Challenges without a time limit remove the time-pressure "
+                   "component of this failure mode",
+                   "Increasing size without a documented edge increases "
+                   "drawdown variance in this sample"],
     },
     "daily loss": {
         "mechanism": ("A single bad day breaches the daily loss limit before the account-"
@@ -135,9 +141,12 @@ _AUTOPSY = {
         "path": ["One outsized losing day",
                  "Daily loss limit hit",
                  "Challenge fails that day"],
-        "reduce": ["Set a hard personal stop well inside the daily limit",
-                   "Cap trades after 2 losses in a day",
-                   "Avoid your highest-volatility sessions"],
+        "reduce": ["A personal stop inside the daily limit mechanically removes "
+                   "the single-day breach path",
+                   "Historical pattern shows clustered losses after 2 losing "
+                   "trades in a session",
+                   "Highest-volatility sessions contribute disproportionately "
+                   "to single-day breach risk"],
     },
     "drawdown": {
         "mechanism": ("Cumulative losses reach the maximum drawdown ceiling over several "
@@ -145,9 +154,12 @@ _AUTOPSY = {
         "path": ["A run of losing sessions",
                  "Cumulative loss grows",
                  "Max drawdown ceiling reached → breach"],
-        "reduce": ["Reduce risk per trade",
-                   "Stop for the day after a defined loss",
-                   "Prefer larger or static drawdown allowances"],
+        "reduce": ["Scaling historical risk per trade down reduces cumulative "
+                   "drawdown pressure in this sample",
+                   "A defined intraday stop limits cumulative same-day "
+                   "contribution to drawdown",
+                   "Firms with larger or static drawdown allowances are "
+                   "mechanically more permissive for this pattern"],
     },
     "consistency": {
         "mechanism": ("A consistency rule caps how much of your profit can come from one "
@@ -155,9 +167,12 @@ _AUTOPSY = {
         "path": ["One day carries most of the profit",
                  "Best-day share exceeds the consistency cap",
                  "Payout/qualification blocked"],
-        "reduce": ["Spread gains across more sessions",
-                   "Avoid all-or-nothing single days",
-                   "Prefer firms with no consistency cap"],
+        "reduce": ["Spreading gains across more sessions reduces best-day "
+                   "share of total profit",
+                   "Single-day concentration of profit is the mechanical "
+                   "trigger for consistency-rule failures",
+                   "Firms without a consistency cap are mechanically "
+                   "permissive for concentrated profit days"],
     },
 }
 
@@ -249,18 +264,18 @@ def personal_danger_rules(autopsy: dict, dna: dict, best_result) -> dict:
     rules = []
     lab = (getattr(best_result, "killer_rule_label", "") or "").lower()
     if "trailing" in lab:
-        rules.append("Keep risk small early — don't let an early spike ratchet your drawdown floor up.")
-        rules.append("Prefer firms with static (non-trailing) drawdown.")
+        rules.append("Pattern note: large early equity spikes raise the trailing floor and tighten the breach margin in similar samples.")
+        rules.append("Firms with static (non-trailing) drawdown are mechanically less sensitive to this historical pattern.")
     if "daily loss" in lab:
-        rules.append("Stop trading for the day after 2 losing trades.")
+        rules.append("Pattern note: historical clusters of losses appear after 2 losing trades within a session.")
     if "profit target" in lab:
-        rules.append("Favor lower-target or no-time-limit challenges over high-target ones.")
+        rules.append("Lower-target or no-time-limit challenges are mechanically less sensitive to the time-pressure failure mode in this sample.")
     if dna.get("available"):
         m = dna["metrics"]
         if m["longest_loss_streak"] >= 4:
-            rules.append("Set a weekly loss cap — your losing streaks run long.")
+            rules.append("Pattern note: extended losing streaks detected; weekly loss caps are commonly used to manage exposure to this pattern.")
         if m["risk_drift"] >= 1.3:
-            rules.append("Re-check size discipline; your risk crept up over the sample.")
+            rules.append("Pattern note: per-trade risk drifts upward across the sample.")
     rules.append("Re-run RealityCheck after ~30 more trades to refresh these odds.")
     # de-dup, cap at 5
     seen, final = set(), []

@@ -83,9 +83,9 @@ def build_pdf(full_report: dict) -> bytes:
 
     # firm comparison
     el.append(Paragraph("Firm comparison", ss["H2c"]))
-    rows = [["Firm", "Pass odds", "Verdict", "Killer rule", "Fee"]]
+    rows = [["Firm", "Pass odds", "Risk label", "Killer rule", "Fee"]]
     for r in full_report["firm_rows"]:
-        rows.append([r["firm"], _pct(r["pass_prob"]), r["verdict"].upper(),
+        rows.append([r["firm"], _pct(r["pass_prob"]), {"go":"Strong fit","wait":"Borderline","skip":"High mismatch"}.get(r["verdict"],"—"),
                      r["killer_rule"], f"${r['fee']:,}"])
     t = Table(rows, colWidths=[55 * mm, 18 * mm, 18 * mm, 50 * mm, 18 * mm])
     t.setStyle(TableStyle([
@@ -117,7 +117,7 @@ def build_pdf(full_report: dict) -> bytes:
         el.append(Paragraph("Best-fit challenge type", ss["H2c"]))
         el.append(Paragraph(f"<b>Best fit — {mch['best_firm']}</b> ({_pct(mch['best_odds'])}): "
                             + "; ".join(mch["best_why"]), ss["Body"]))
-        el.append(Paragraph(f"<b>Avoid — {mch['worst_firm']}</b> ({_pct(mch['worst_odds'])}): "
+        el.append(Paragraph(f"<b>Lowest fit — {mch['worst_firm']}</b> ({_pct(mch['worst_odds'])}): "
                             + "; ".join(mch["worst_why"]), ss["Body"]))
         el.append(Paragraph(mch.get("label", ""), ss["Small"]))
     el.append(Paragraph("Expected fee burn", ss["H2c"]))
