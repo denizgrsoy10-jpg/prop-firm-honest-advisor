@@ -37,7 +37,7 @@ st.set_page_config(page_title="Candor RealityCheck",
 import views
 _qp = st.query_params
 _page = _qp.get("page")
-if _page in ("outcome", "ledger", "honesty-ledger", "admin", "signal"):
+if _page in ("outcome", "ledger", "honesty-ledger", "admin", "signal", "autopilot"):
     if _page == "outcome":
         views.render_outcome(_qp.get("report_id", ""))
     elif _page in ("ledger", "honesty-ledger"):
@@ -46,6 +46,8 @@ if _page in ("outcome", "ledger", "honesty-ledger", "admin", "signal"):
         views.render_admin()
     elif _page == "signal":
         views.render_signal()
+    elif _page == "autopilot":
+        views.render_autopilot()
     st.stop()
 
 # --- session state -----------------------------------------------------------
