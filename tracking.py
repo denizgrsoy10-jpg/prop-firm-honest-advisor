@@ -108,6 +108,49 @@ def log_admin_event(event_type: str, report_id=None, email=None, metadata=None) 
     })
 
 
+
+def log_legal_acceptance(*, source: str,
+                        consent_text: str,
+                        report_id: str | None = None,
+                        email: str | None = None,
+                        gate_version: str = "2026-06-07",
+                        terms_version: str = "0.1-draft",
+                        privacy_version: str = "0.1-draft",
+                        risk_disclaimer_version: str = "0.1-draft",
+                        accepted_advice_disclaimer: bool = True,
+                        accepted_terms: bool = True,
+                        acknowledged_privacy_notice: bool = True,
+                        session_id: str | None = None,
+                        user_agent_hash: str | None = None,
+                        ip_hash: str | None = None) -> None:
+    """Clickwrap record. Called whenever the user actively confirms a legal
+    checkbox in the app (upload-time, payment-time). The landing-page gate
+    is recorded separately in browser localStorage; this is the real audit
+    record. Failures are swallowed so logging never blocks the user."""
+    try:
+        db.get_store().insert("legal_acceptances", {
+            "acceptance_id": uuid.uuid4().hex,
+            "created_at": db.now_iso(),
+            "session_id": session_id,
+            "email": email,
+            "report_id": report_id,
+            "gate_version": gate_version,
+            "terms_version": terms_version,
+            "privacy_version": privacy_version,
+            "risk_disclaimer_version": risk_disclaimer_version,
+            "accepted_advice_disclaimer": bool(accepted_advice_disclaimer),
+            "accepted_terms": bool(accepted_terms),
+            "acknowledged_privacy_notice": bool(acknowledged_privacy_notice),
+            "source": source,            # 'landing' | 'upload' | 'payment'
+            "consent_text": consent_text, # exact wording the user saw
+            "user_agent_hash": user_agent_hash,
+            "ip_hash": ip_hash,
+        })
+    except Exception:
+        # never block the user on logging
+        pass
+
+
 # ----------------------------------------------------------------- reads
 def ledger_public_stats() -> dict:
     s = db.get_store()
