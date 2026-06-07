@@ -18,10 +18,11 @@ import streamlit as st
 from rules_engine import load_firms
 from load_trades import load_trades_csv, TradeParseError
 from report_builder import build_preview, build_full_report
-from pdf_export import build_pdf
+from pdf_export import build_pdf, build_own_account_pdf
 import payments
 import analytics
 import tracking
+import own_account
 
 # --- branding assets (robust: never crash if a file is missing) --------------
 ASSETS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")
@@ -62,14 +63,18 @@ ss.setdefault("preview_market", None)
 ss.setdefault("report_id", None)
 ss.setdefault("logged", False)
 ss.setdefault("used_demo", False)
+ss.setdefault("oa_preview", None)
+ss.setdefault("mode", "prop_firm")
 
 
 def _reset():
     for k in ("daily_pnls", "meta", "preview", "checkout", "market_label",
-              "preview_market", "report_id"):
+              "preview_market", "report_id", "oa_preview"):
         ss[k] = None
     ss["unlocked"] = False
     ss["logged"] = False
+    ss["legal_logged_upload"] = False
+    ss["legal_logged_payment"] = False
 
 
 def _demo_path():
@@ -80,6 +85,255 @@ def _demo_path():
         if os.path.exists(p):
             return p
     return None
+# ============================================================================
+# Own Account RealityCheck — full mode flow
+# ============================================================================
+def _render_own_account():
+    """Render the Own Account RealityCheck flow.
+
+    Mirrors the Prop Firm funnel structurally:
+      account inputs -> upload (with consent) -> free preview ->
+      locked full report -> (mock/live) payment -> full report + PDF
+
+    But scoring is band-only (no sharp probabilities), and every output is
+    framed as statistical risk diagnostics, not advice.
+    """
+    UPLOAD_CONSENT_TEXT = ("I understand this report is a statistical "
+                           "simulation and risk-diagnostics report, not "
+                           "financial, investment, or trading advice.")
+    PAY_CONSENT_TEXT = ("Digital report. Statistical simulation only. "
+                        "No guaranteed outcome. Sales are generally final "
+                        "after report generation.")
+
+    # --- 1) account inputs ---------------------------------------------------
+    st.subheader("1 · Your account")
+    c1, c2, c3 = st.columns(3)
+    start_balance = c1.number_input("Starting balance (USD)",
+                                    min_value=100.0, value=10000.0, step=500.0)
+    leverage = c2.number_input("Leverage (e.g. 30 for 1:30)",
+                               min_value=1.0, value=30.0, step=1.0)
+    stop_out_pct = c3.number_input("Broker stop-out % (optional)",
+                                   min_value=10.0, max_value=100.0,
+                                   value=50.0, step=5.0)
+    st.caption("Used only for margin-pressure context. Estimated from "
+               "uploaded history; not a forecast.")
+
+    # --- 2) upload (with consent) -------------------------------------------
+    st.subheader("2 · Upload your trade history")
+    st.write("Same CSV format as Prop Firm mode. **MT4 / MT5 history export** "
+             "or **generic CSV** with a profit column. Your file is used "
+             "only for this simulation and is not stored.")
+
+    _consent_upload = st.checkbox(UPLOAD_CONSENT_TEXT, key="oa_consent_upload")
+    if not _consent_upload:
+        st.caption("Tick the box above to enable the upload.")
+
+    up = st.file_uploader("Trade history (.csv)", type=["csv"],
+                          key="oa_uploader",
+                          disabled=not _consent_upload)
+    col_a, col_b = st.columns([1, 1])
+    use_demo = col_b.button("Use demo data", key="oa_demo",
+                            disabled=not _consent_upload)
+
+    if (up is not None or use_demo) and ss.daily_pnls is None and _consent_upload:
+        analytics.log_event("oa_upload_started", {"demo": bool(use_demo)})
+        if not ss.get("legal_logged_upload"):
+            tracking.log_legal_acceptance(
+                source="upload", consent_text=UPLOAD_CONSENT_TEXT)
+            ss["legal_logged_upload"] = True
+        try:
+            if use_demo:
+                dp = _demo_path()
+                if not dp:
+                    raise TradeParseError("Demo file not found in the repo.")
+                with open(dp, "rb") as fh:
+                    daily, meta = load_trades_csv(fh.read())
+            else:
+                daily, meta = load_trades_csv(up.getvalue())
+            ss.daily_pnls, ss.meta = daily, meta
+            ss.used_demo = bool(use_demo)
+            analytics.log_event("oa_parse_success", {"n_days": meta["n_days"]})
+        except TradeParseError as e:
+            analytics.log_event("oa_parse_failed")
+            st.error(str(e))
+
+    if ss.daily_pnls is None:
+        st.button("Start over", on_click=_reset, key="oa_reset_top")
+        return
+
+    # --- 3) free preview ----------------------------------------------------
+    if not ss.get("oa_preview"):
+        ss["oa_preview"] = own_account.build_own_account_report(
+            ss.daily_pnls, ss.meta,
+            start_balance=float(start_balance),
+            leverage=float(leverage),
+            stop_out_pct=float(stop_out_pct),
+        )
+    rep = ss["oa_preview"]
+
+    for w in (ss.meta or {}).get("warnings", []):
+        st.info(w, icon="ℹ️")
+
+    st.subheader("3 · Free preview")
+    ss_score = rep.get("survival_score") or {}
+    bands = rep.get("drawdown_bands") or {}
+    kb = rep.get("killer_behavior") or {}
+    pc1, pc2, pc3 = st.columns(3)
+    score_val = ss_score.get("score")
+    pc1.metric("Account Survival Score",
+               "—" if score_val is None else f"{score_val}/100",
+               ss_score.get("confidence", "Limited"))
+    pc2.metric("Observed drawdown band",
+               bands.get("observed_max_dd_band", "—"))
+    pc3.metric("Killer behavior",
+               kb.get("behavior", "—") if kb.get("available") else "—")
+    st.caption("Bands are coarse on purpose. Estimated from uploaded "
+               "history; not a forecast. Not trading advice.")
+    st.divider()
+
+    # --- 4) paywall / locked report -----------------------------------------
+    if not ss.unlocked:
+        st.subheader("4 · Unlock the full report — $19")
+        if payments.mode() == "mock":
+            st.warning("DEMO / TEST MODE — clicking unlock does **not** "
+                       "charge anything and is not a real purchase. Live "
+                       "payments are not connected yet.", icon="⚠️")
+        st.write("Locked: drawdown-band table, killer behavior detail, "
+                 "margin pressure, what-if lab, personal risk-control "
+                 "checklist, PDF.")
+        _consent_payment = st.checkbox(PAY_CONSENT_TEXT,
+                                       key="oa_consent_payment")
+        btn_label = ("Unlock (demo — no charge)" if payments.mode() == "mock"
+                     else "Unlock full report — $19")
+        if st.button(btn_label, type="primary",
+                     disabled=not _consent_payment, key="oa_unlock"):
+            analytics.log_event("oa_unlock_clicked")
+            if not ss.get("legal_logged_payment"):
+                tracking.log_legal_acceptance(
+                    source="payment", consent_text=PAY_CONSENT_TEXT,
+                    report_id=rep.get("report_id"))
+                ss["legal_logged_payment"] = True
+            ss.checkout = payments.create_checkout(
+                "full_report", success_url="?paid=1", cancel_url="?")
+        if ss.checkout:
+            if ss.checkout["checkout_url"] == "MOCK_CHECKOUT":
+                if payments.verify_payment(ss.checkout["session_id"]):
+                    ss.unlocked = True
+                    analytics.log_event("oa_payment_success",
+                                        {"product": "own_account_report"})
+                    st.rerun()
+            else:
+                st.link_button("Complete payment",
+                               ss.checkout["checkout_url"])
+                st.caption("After paying you'll return here with the "
+                           "report unlocked.")
+
+    # --- 5) full report -----------------------------------------------------
+    if ss.unlocked:
+        analytics.log_event("oa_full_report_viewed")
+        if not ss.report_id:
+            ss.report_id = rep["report_id"]
+
+        if not ss.logged:
+            is_demo = bool(ss.get("used_demo", False))
+            pay_status = ("demo" if is_demo else
+                          ("mock" if payments.mode() == "mock" else "paid"))
+            tracking.log_own_account_report(rep, pay_status, is_demo)
+            ss.logged = True
+
+        st.subheader("Full report")
+        st.caption(f"Report ID {rep['report_id']} · {rep['generated']} · "
+                   f"Confidence: {rep['confidence']}")
+
+        # Data quality
+        audit = rep["data_audit"]
+        with st.expander(f"Data quality — confidence: {audit['confidence']}",
+                         expanded=False):
+            st.write(f"- Trades detected: {audit['n_trades']}")
+            st.write(f"- Trading days: {audit['n_days']}")
+            st.write(f"- Profitable days: {audit['profitable_days']}")
+            st.write(f"- Large outliers: {audit['outliers']}")
+            st.caption(audit["confidence_why"])
+
+        # Drawdown bands table
+        st.markdown("**Drawdown risk bands**")
+        st.table([{
+            "Threshold": f"{r['threshold_pct']}%",
+            "Sensitivity band": r["band"],
+            "Breached in history?": "Yes" if r["breached_in_history"] else "No",
+        } for r in bands["rows"]])
+        st.caption("Bands are coarse on purpose to avoid false precision. "
+                   "Estimated from uploaded history; not a forecast.")
+
+        # Killer behavior detail
+        st.markdown("**🧬 Killer behavior**")
+        if kb.get("available"):
+            st.write(f"- Most dangerous behavior: **{kb['behavior']}** — "
+                     f"{kb['note']}")
+            m = kb["metrics"]
+            st.write(f"- Longest losing streak: {m['longest_loss_streak']} "
+                     f"days (sensitivity: {m['loss_streak_sensitivity']})")
+            st.write(f"- Profit concentration: {m['concentration_label']}")
+            st.write(f"- Risk drift over time: {m['drift_label']}")
+            st.caption(kb["label"])
+        else:
+            st.caption(kb.get("note",
+                              "Not enough data for a behavioral read."))
+
+        # Margin pressure
+        st.markdown("**⚖️ Margin pressure**")
+        mp = rep["margin_pressure"]
+        if mp.get("available"):
+            st.write(f"- Observed equity floor: **{mp['observed_floor_pct']}%** "
+                     "of starting balance")
+            st.write(f"- Margin pressure band: **{mp['margin_pressure_band']}**")
+            st.write(f"- Headroom vs {mp['stop_out_pct']}% stop-out: "
+                     f"**{mp['stopout_headroom_band']}**")
+            st.caption(mp["label"])
+        else:
+            st.caption(mp.get("note", ""))
+
+        # What-if
+        st.markdown("**🔬 What-if lab**")
+        wif = rep["what_if"]
+        st.table([{
+            "Historical risk scaled to": f"{r['risk_pct']}%",
+            "Observed drawdown band": r["observed_dd_band"],
+        } for r in wif["rows"]])
+        st.caption(wif["label"])
+
+        # Instrument & session (V0: graceful)
+        st.markdown("**📊 Instrument fit**")
+        st.caption(rep["instrument_fit"]["note"])
+        st.markdown("**🕐 Session risk**")
+        st.caption(rep["session_risk"]["note"])
+
+        # Checklist
+        st.markdown("**🛡️ Personal risk-control checklist**")
+        for it in rep["checklist"]["items"]:
+            st.write(f"- {it}")
+        st.caption(rep["checklist"]["label"])
+
+        # PDF
+        st.divider()
+        try:
+            pdf_bytes = build_own_account_pdf(rep)
+            if st.download_button("Download PDF report",
+                                  data=pdf_bytes,
+                                  file_name=f"{rep['report_id']}_own_account.pdf",
+                                  mime="application/pdf",
+                                  key="oa_pdf_dl"):
+                analytics.log_event("oa_pdf_downloaded")
+                tracking.log_pdf_download(rep["report_id"])
+        except Exception as _e:
+            st.error(f"PDF generation failed: {_e}")
+
+        st.caption("Your data is used only for this simulation. "
+                   + rep["disclaimer"])
+
+    st.divider()
+    st.button("Start over", on_click=_reset, key="oa_reset_bot")
+
 
 
 def pct(p):
@@ -123,12 +377,40 @@ if _logo:
     st.image(_logo, width=300)
 else:
     st.title("Candor")
+
+# --- mode selector -----------------------------------------------------------
+ss.setdefault("mode", "prop_firm")
+_mode_label = st.radio(
+    "Choose what to analyze",
+    ["Prop Firm RealityCheck", "Own Account RealityCheck"],
+    horizontal=True,
+    index=(0 if ss.mode == "prop_firm" else 1),
+    help=("Prop Firm: 'Can I pass this challenge?' · "
+          "Own Account: 'Can my own account survive my trading?'"),
+)
+_new_mode = "own_account" if _mode_label.startswith("Own") else "prop_firm"
+if _new_mode != ss.mode:
+    # mode degisti -> daha onceki state'i temizle
+    _reset()
+    ss.mode = _new_mode
+
+_sub_text = ("Own Account RealityCheck" if ss.mode == "own_account"
+             else "Prop Firm RealityCheck")
+_tagline = ("Candor · We don't sell guarantees — we tell you the odds. "
+            "Statistical simulation only, not financial advice."
+            if ss.mode == "prop_firm" else
+            "Candor · Statistical risk diagnostics for your own MT4/MT5 "
+            "account. No signals, no guarantees, no trading advice.")
 st.markdown(
     "<div style='font-family:Georgia,serif;font-size:1.18rem;letter-spacing:.01em;"
-    "color:#D9A332;margin:-.35rem 0 .15rem'>Prop Firm RealityCheck</div>",
+    f"color:#D9A332;margin:.4rem 0 .15rem'>{_sub_text}</div>",
     unsafe_allow_html=True)
-st.caption("Candor · We don't sell guarantees — we tell you the odds. "
-           "Statistical simulation only, not financial advice.")
+st.caption(_tagline)
+
+# --- mode branch -------------------------------------------------------------
+if ss.mode == "own_account":
+    _render_own_account()
+    st.stop()
 
 firms = load_firms()
 

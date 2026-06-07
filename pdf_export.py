@@ -191,3 +191,175 @@ def build_pdf(full_report: dict) -> bytes:
 
     doc.build(el)
     return buf.getvalue()
+
+# ============================================================================
+# Own Account RealityCheck — PDF builder
+# ============================================================================
+def _band_color(band: str):
+    """Color hint for band labels (no false precision implied)."""
+    return {
+        "Low": GREEN,
+        "Medium": colors.HexColor("#8a6d1c"),
+        "High": CLAY,
+        "Severe": colors.HexColor("#7a1d0d"),
+        "Limited": colors.grey,
+    }.get(band, INK)
+
+
+def build_own_account_pdf(rep: dict) -> bytes:
+    """Render an Own Account RealityCheck report dict into a PDF."""
+    buf = io.BytesIO()
+    doc = SimpleDocTemplate(buf, pagesize=A4,
+                            leftMargin=18 * mm, rightMargin=18 * mm,
+                            topMargin=18 * mm, bottomMargin=18 * mm,
+                            title=f"Candor — Own Account RealityCheck "
+                                  f"{rep.get('report_id','')}")
+    ss = _styles()
+    el = []
+
+    # logo
+    logo = os.path.join(_ASSETS, "candor-logo-primary-dark.png")
+    if os.path.exists(logo):
+        el.append(Image(logo, width=70 * mm, height=18 * mm))
+        el.append(Spacer(1, 6))
+
+    el.append(Paragraph("Own Account RealityCheck", ss["H1c"]))
+    el.append(Paragraph(
+        f"Report {rep.get('report_id','')} &middot; Generated "
+        f"{rep.get('generated','')} &middot; Confidence: "
+        f"{rep.get('confidence','—')}", ss["Sub"]))
+
+    # Executive summary block
+    ss_score = rep.get("survival_score") or {}
+    bands = rep.get("drawdown_bands") or {}
+    score_val = ss_score.get("score")
+    score_str = "—" if score_val is None else str(score_val)
+    obs_band = bands.get("observed_max_dd_band", "—")
+    el.append(Paragraph("Executive summary", ss["H2c"]))
+    el.append(Paragraph(
+        f"<b>Account Survival Score:</b> {score_str} / 100 &nbsp;&middot;&nbsp; "
+        f"<b>Observed drawdown band:</b> {obs_band} &nbsp;&middot;&nbsp; "
+        f"<b>Confidence:</b> {ss_score.get('confidence','Limited')}", ss["Body"]))
+    el.append(Paragraph(
+        "Statistical risk diagnostics only. Estimated from uploaded history; "
+        "not a forecast. Not trading advice.", ss["Small"]))
+    el.append(Spacer(1, 6))
+
+    # Account inputs
+    acc = rep.get("account") or {}
+    el.append(Paragraph("Account inputs", ss["H2c"]))
+    el.append(Paragraph(
+        f"Starting balance: {acc.get('currency','USD')} "
+        f"{acc.get('starting_balance', 0):,.0f} &nbsp;&middot;&nbsp; "
+        f"Leverage: {acc.get('leverage', 0):g}x &nbsp;&middot;&nbsp; "
+        f"Stop-out: {acc.get('stop_out_pct') or 50}%", ss["Body"]))
+
+    # Data quality
+    audit = rep.get("data_audit") or {}
+    el.append(Paragraph("Data quality", ss["H2c"]))
+    el.append(Paragraph(
+        f"Trades: {audit.get('n_trades','—')} &nbsp;&middot;&nbsp; "
+        f"Trading days: {audit.get('n_days','—')} &nbsp;&middot;&nbsp; "
+        f"Profitable days: {audit.get('profitable_days','—')} &nbsp;&middot;&nbsp; "
+        f"Outliers: {audit.get('outliers','—')}", ss["Body"]))
+    if audit.get("confidence_why"):
+        el.append(Paragraph(audit["confidence_why"], ss["Small"]))
+
+    # Drawdown risk bands table
+    el.append(Paragraph("Drawdown risk bands", ss["H2c"]))
+    rows = [["Threshold", "Sensitivity band", "Breached in history?"]]
+    for r in bands.get("rows", []):
+        rows.append([
+            f"{r['threshold_pct']}%",
+            r["band"],
+            "Yes" if r["breached_in_history"] else "No",
+        ])
+    t = Table(rows, hAlign="LEFT", colWidths=[35 * mm, 50 * mm, 50 * mm])
+    t.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#f5efe2")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), INK),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTSIZE", (0, 0), (-1, -1), 9),
+        ("GRID", (0, 0), (-1, -1), 0.25, LINE),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+    ]))
+    el.append(t)
+    el.append(Paragraph(
+        "Bands are coarse on purpose to avoid false precision. "
+        "Estimated from uploaded history; not a forecast.", ss["Small"]))
+
+    # Killer behavior
+    kb = rep.get("killer_behavior") or {}
+    el.append(Paragraph("Killer behavior", ss["H2c"]))
+    if kb.get("available"):
+        el.append(Paragraph(
+            f"<b>Most dangerous behavior:</b> {kb.get('behavior','—')}", ss["Body"]))
+        el.append(Paragraph(kb.get("note", ""), ss["Body"]))
+        m = kb.get("metrics", {})
+        el.append(Paragraph(
+            f"Longest losing streak: {m.get('longest_loss_streak','—')} days "
+            f"&middot; Sensitivity: {m.get('loss_streak_sensitivity','—')} "
+            f"&middot; Profit concentration: {m.get('concentration_label','—')} "
+            f"&middot; Risk drift: {m.get('drift_label','—')}", ss["Small"]))
+    else:
+        el.append(Paragraph(kb.get("note",
+                            "Not enough data for a behavioral read."),
+                            ss["Body"]))
+
+    # Margin pressure
+    mp = rep.get("margin_pressure") or {}
+    el.append(Paragraph("Margin pressure", ss["H2c"]))
+    if mp.get("available"):
+        el.append(Paragraph(
+            f"Observed equity floor (worst-case in sample): "
+            f"<b>{mp.get('observed_floor_pct')}%</b> of starting balance. "
+            f"Margin pressure band: <b>{mp.get('margin_pressure_band')}</b>. "
+            f"Headroom vs {mp.get('stop_out_pct')}% stop-out: "
+            f"<b>{mp.get('stopout_headroom_band')}</b>.",
+            ss["Body"]))
+        el.append(Paragraph(
+            "Estimated from uploaded history; not a forecast.", ss["Small"]))
+    else:
+        el.append(Paragraph(mp.get("note", ""), ss["Body"]))
+
+    # What-if
+    wif = rep.get("what_if") or {}
+    el.append(Paragraph("What-if lab", ss["H2c"]))
+    rows = [["Historical risk scaled to", "Observed drawdown band"]]
+    for r in wif.get("rows", []):
+        rows.append([f"{r['risk_pct']}%", r["observed_dd_band"]])
+    t = Table(rows, hAlign="LEFT", colWidths=[60 * mm, 60 * mm])
+    t.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#f5efe2")),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTSIZE", (0, 0), (-1, -1), 9),
+        ("GRID", (0, 0), (-1, -1), 0.25, LINE),
+    ]))
+    el.append(t)
+    el.append(Paragraph(wif.get("label", ""), ss["Small"]))
+
+    # Instrument & session (V0: graceful unavailable)
+    el.append(Paragraph("Instrument fit", ss["H2c"]))
+    el.append(Paragraph(rep.get("instrument_fit", {}).get("note", ""),
+                        ss["Body"]))
+    el.append(Paragraph("Session risk", ss["H2c"]))
+    el.append(Paragraph(rep.get("session_risk", {}).get("note", ""),
+                        ss["Body"]))
+
+    # Checklist
+    chk = rep.get("checklist") or {}
+    el.append(Paragraph("Personal risk-control checklist", ss["H2c"]))
+    for it in chk.get("items", []):
+        el.append(Paragraph(f"&bull; {it}", ss["Body"]))
+    el.append(Paragraph(chk.get("label", ""), ss["Small"]))
+
+    # Disclaimer footer
+    el.append(Spacer(1, 10))
+    el.append(Paragraph(rep.get("disclaimer", ""), ss["Small"]))
+    el.append(Paragraph(
+        "We do not tell you what to buy, sell, trade, enter, avoid, or "
+        "attempt. We show statistical estimates and risk patterns based on "
+        "the data you uploaded.", ss["Small"]))
+
+    doc.build(el)
+    return buf.getvalue()

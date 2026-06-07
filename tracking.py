@@ -35,6 +35,7 @@ def valid_email(email: str) -> bool:
 
 # ----------------------------------------------------------------- writes
 def log_report(full: dict, market_type: str, payment_status: str, is_demo: bool) -> None:
+    """Prop Firm report logger (back-compat). Writes report_type='prop_firm'."""
     rows = full.get("firm_rows", [])
     worst = rows[-1] if rows else {}
     best = rows[0] if rows else {}
@@ -44,6 +45,7 @@ def log_report(full: dict, market_type: str, payment_status: str, is_demo: bool)
         "email": None,
         "payment_status": payment_status,
         "is_demo": bool(is_demo),
+        "report_type": "prop_firm",
         "market_type": market_type,
         "selected_firm_filter": market_type,
         "best_firm": full.get("best_firm"),
@@ -55,6 +57,36 @@ def log_report(full: dict, market_type: str, payment_status: str, is_demo: bool)
         "confidence": full.get("confidence"),
         "ruleset_version": full.get("ruleset_version"),
         "simulation_date": full.get("simulation_date"),
+        "pdf_downloaded": False,
+        "source_app_version": APP_VERSION,
+    })
+
+
+def log_own_account_report(rep: dict, payment_status: str, is_demo: bool) -> None:
+    """Own Account report logger. Same table, report_type='own_account'."""
+    ss = rep.get("survival_score") or {}
+    kb = rep.get("killer_behavior") or {}
+    mp = rep.get("margin_pressure") or {}
+    acc = rep.get("account") or {}
+    bands = rep.get("drawdown_bands") or {}
+    db.get_store().insert("reports", {
+        "report_id": rep.get("report_id"),
+        "created_at": db.now_iso(),
+        "email": None,
+        "payment_status": payment_status,
+        "is_demo": bool(is_demo),
+        "report_type": "own_account",
+        "market_type": acc.get("currency"),
+        "selected_firm_filter": None,
+        "best_firm": None,
+        "best_pass_odds": None,
+        "worst_firm": None,
+        "worst_pass_odds": None,
+        "killer_rule": kb.get("behavior") if kb.get("available") else None,
+        "verdict": (bands.get("observed_max_dd_band") or "").upper(),
+        "confidence": rep.get("confidence"),
+        "ruleset_version": None,
+        "simulation_date": rep.get("generated"),
         "pdf_downloaded": False,
         "source_app_version": APP_VERSION,
     })
