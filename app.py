@@ -135,12 +135,27 @@ st.write("Export a CSV from your platform. Currently supports: **MT4 / MT5 histo
          "export** and **generic CSV** with a profit column. Your file is used only "
          "for this simulation and is not stored.")
 
-up = st.file_uploader("Trade history (.csv)", type=["csv"])
-col_a, col_b = st.columns([1, 1])
-use_demo = col_b.button("Use demo data")
+# Pre-upload consent (clickwrap, logged to Supabase on first valid upload)
+_consent_upload = st.checkbox(
+    "I understand this report is a statistical simulation and risk-diagnostics report, not financial, investment, or trading advice.",
+    key="consent_upload")
+if not _consent_upload:
+    st.caption("Tick the box above to enable the upload.")
 
-if (up is not None or use_demo) and ss.daily_pnls is None:
+up = st.file_uploader("Trade history (.csv)", type=["csv"],
+                       disabled=not _consent_upload)
+col_a, col_b = st.columns([1, 1])
+use_demo = col_b.button("Use demo data", disabled=not _consent_upload)
+
+if (up is not None or use_demo) and ss.daily_pnls is None and _consent_upload:
     analytics.log_event("upload_started", {"demo": bool(use_demo)})
+    # Real clickwrap record (once per session for upload-time consent)
+    if not ss.get("legal_logged_upload"):
+        tracking.log_legal_acceptance(
+            source="upload",
+            consent_text="I understand this report is a statistical simulation and risk-diagnostics report, not financial, investment, or trading advice.",
+        )
+        ss["legal_logged_upload"] = True
     try:
         if use_demo:
             dp = _demo_path()
@@ -216,10 +231,22 @@ if ss.daily_pnls is not None:
             unsafe_allow_html=True)
         st.write("")
 
+        _consent_payment = st.checkbox(
+            "Digital report. Statistical simulation only. No guaranteed outcome. Sales are generally final after report generation.",
+            key="consent_payment")
+
         btn_label = ("Unlock (demo — no charge)" if payments.mode() == "mock"
                      else "Unlock full report — $19")
-        if st.button(btn_label, type="primary"):
+        if st.button(btn_label, type="primary", disabled=not _consent_payment):
             analytics.log_event("unlock_clicked")
+            # Real clickwrap record (payment-time consent)
+            if not ss.get("legal_logged_payment"):
+                tracking.log_legal_acceptance(
+                    source="payment",
+                    consent_text="Digital report. Statistical simulation only. No guaranteed outcome. Sales are generally final after report generation.",
+                    report_id=ss.get("report_id"),
+                )
+                ss["legal_logged_payment"] = True
             ss.checkout = payments.create_checkout(
                 "full_report", success_url="?paid=1", cancel_url="?")
 
