@@ -39,6 +39,9 @@ def _styles():
                           leading=14))
     ss.add(ParagraphStyle("Small", parent=ss["Normal"], textColor=colors.grey,
                           fontSize=8, leading=11))
+    ss.add(ParagraphStyle("Lantern", parent=ss["Normal"],
+                          textColor=colors.HexColor("#D9A332"), fontSize=8,
+                          leading=11, spaceAfter=8))
     return ss
 
 
@@ -66,6 +69,7 @@ def build_pdf(full_report: dict) -> bytes:
     except Exception:
         pass
 
+    el.append(Paragraph("\u25C6 LANTERN SCAN COMPLETE", ss["Lantern"]))
     el.append(Paragraph("Prop Firm RealityCheck Report", ss["H1c"]))
     el.append(Paragraph("Generated from your trading history · Candor", ss["Sub"]))
 
@@ -223,6 +227,7 @@ def build_own_account_pdf(rep: dict) -> bytes:
         el.append(Image(logo, width=70 * mm, height=18 * mm))
         el.append(Spacer(1, 6))
 
+    el.append(Paragraph("\u25C6 LANTERN SCAN COMPLETE", ss["Lantern"]))
     el.append(Paragraph("Own Account RealityCheck", ss["H1c"]))
     el.append(Paragraph(
         f"Report {rep.get('report_id','')} &middot; Generated "
