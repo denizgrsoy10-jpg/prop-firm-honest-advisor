@@ -74,6 +74,7 @@ a{color:inherit;text-decoration:none}
 .brand{display:flex;align-items:center;gap:12px}
 
 /* Ticker */
+.slogan-bar{background:linear-gradient(90deg,rgba(217,163,50,.10),rgba(217,163,50,.04));border-bottom:1px solid rgba(217,163,50,.22);text-align:center;padding:11px 0;position:relative;z-index:4}.slogan-bar .slogan-text{font-family:var(--font);font-size:15px;font-weight:500;letter-spacing:.01em;color:var(--cream)}.slogan-bar em{font-style:italic;color:var(--gold)}@media(max-width:600px){.slogan-bar .slogan-text{font-size:13px}}
 .ticker{border-bottom:1px solid var(--line-soft);background:rgba(255,255,255,.012);overflow:hidden;position:relative;z-index:3}
 .ticker .track{display:flex;white-space:nowrap;animation:scroll 36s linear infinite;font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;padding:8px 0;width:max-content}
 .ticker span{padding:0 22px;color:var(--muted);border-right:1px solid var(--line-soft)}
@@ -90,7 +91,7 @@ nav .row{display:flex;align-items:center;justify-content:space-between;height:72
 
 /* Hero */
 .hero{padding:72px 0 0;position:relative}
-.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:44px;align-items:center}
+.hero-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:40px;align-items:center}
 @media(max-width:960px){.hero-grid{grid-template-columns:1fr;gap:36px}.hero{padding:44px 0 0}}
 h1.head{font-size:clamp(38px,5.5vw,62px);font-weight:700;margin:18px 0;letter-spacing:-.03em}
 h1.head em{font-style:italic;font-weight:600;color:var(--gold)}
@@ -103,18 +104,18 @@ h1.head em{font-style:italic;font-weight:600;color:var(--gold)}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
 
 /* Scanner Terminal */
-.terminal{background:rgba(0,0,0,.5);border:1px solid rgba(217,163,50,.2);border-radius:10px;padding:22px;font-family:var(--font-mono);font-size:12.5px;position:relative;overflow:hidden}
-.term-header{display:flex;align-items:center;gap:8px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.06)}
+.terminal{background:rgba(0,0,0,.5);border:1px solid rgba(217,163,50,.2);border-radius:12px;padding:30px 32px;font-family:var(--font-mono);font-size:14px;position:relative;overflow:hidden}
+.term-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.06)}
 .term-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:blink 2s ease-in-out infinite}
 .term-label{font-size:10px;letter-spacing:.12em;color:var(--faint)}
-.scan-line{color:var(--faint);margin-bottom:4px}
+.scan-line{color:var(--faint);margin-bottom:7px;line-height:1.5}
 .scan-line.done{color:var(--muted)}
 .scan-line.gold-line{color:var(--gold)}
-.term-results{border-top:1px solid rgba(255,255,255,.06);padding-top:12px;margin-top:8px}
-.term-row{margin-bottom:4px;display:flex;align-items:center;gap:8px}
-.term-firm{color:var(--muted);display:inline-block;width:100px}
-.term-pct{display:inline-block;width:56px;font-weight:600}
-.term-badge{font-size:10px;padding:1px 8px;border-radius:3px;letter-spacing:.04em}
+.term-results{border-top:1px solid rgba(255,255,255,.06);padding-top:16px;margin-top:12px}
+.term-row{margin-bottom:9px;display:flex;align-items:center;gap:12px}
+.term-firm{color:var(--muted);display:inline-block;width:210px;font-size:13px}
+.term-pct{display:inline-block;width:62px;font-weight:600}
+.term-badge{font-size:11px;padding:2px 10px;border-radius:4px;letter-spacing:.04em;white-space:nowrap}
 .term-badge.go{background:rgba(22,166,106,.15);color:var(--green)}
 .term-badge.wait{background:rgba(217,163,50,.15);color:var(--gold)}
 .term-badge.skip{background:rgba(255,77,79,.15);color:var(--red)}
@@ -495,15 +496,18 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
 </script>
 
 
+<!-- SLOGAN BAR -->
+<div class="slogan-bar"><div class="wrap"><span class="slogan-text">Ready to see the <em>truth</em> before you risk money?</span></div></div>
+
 <!-- TICKER -->
 <div class="ticker"><div class="track" id="tick">
   <span><b class="read gold">RULESET VERIFIED</b> &middot; 2026-06-05</span>
-  <span><b class="grn">APEX EOD 50K</b> &middot; 69.9% &middot; Strong fit</span>
-  <span><b class="gold">E8 ONE</b> &middot; 32.0% &middot; Borderline</span>
-  <span><b class="red">FUNDEDNEXT STELLAR</b> &middot; 5.6% &middot; High mismatch</span>
-  <span><b class="red">THE5ERS HIGH STAKES</b> &middot; 5.6% &middot; High mismatch</span>
-  <span><b class="red">FTMO 1-STEP</b> &middot; 3.5% &middot; High mismatch</span>
-  <span><b class="red">FTMO 2-STEP</b> &middot; 1.6% &middot; High mismatch</span>
+  <span><b class="grn">SAMPLE EOD-STYLE RULESET</b> &middot; 69.9% &middot; Strong fit</span>
+  <span><b class="gold">SAMPLE ONE-STEP RULESET</b> &middot; 32.0% &middot; Borderline</span>
+  <span><b class="red">SAMPLE STELLAR-STYLE RULESET</b> &middot; 5.6% &middot; High mismatch</span>
+  <span><b class="red">SAMPLE HIGH-STAKES RULESET</b> &middot; 5.6% &middot; High mismatch</span>
+  <span><b class="red">SAMPLE ONE-STEP HIGH-TARGET RULESET</b> &middot; 3.5% &middot; High mismatch</span>
+  <span><b class="red">SAMPLE TWO-STEP HIGH-TARGET RULESET</b> &middot; 1.6% &middot; High mismatch</span>
 </div></div>
 
 <!-- NAV -->
@@ -545,11 +549,11 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
       <div class="scan-line done">&nbsp;&nbsp;28 trading days</div>
       <div class="scan-line gold-line">&nbsp;&nbsp;6 verified rulesets loaded &#10003;</div>
       <div class="term-results">
-        <div class="term-row"><span class="term-firm">APEX</span><span class="term-pct grn">69.9%</span><span class="term-badge go">Strong fit</span></div>
-        <div class="term-row"><span class="term-firm">E8 ONE</span><span class="term-pct gold">32.0%</span><span class="term-badge wait">Borderline</span></div>
-        <div class="term-row"><span class="term-firm">FUNDEDNEXT</span><span class="term-pct red">5.6%</span><span class="term-badge skip">High mismatch</span></div>
-        <div class="term-row"><span class="term-firm">FTMO 1-STEP</span><span class="term-pct red">3.5%</span><span class="term-badge skip">High mismatch</span></div>
-        <div class="term-row"><span class="term-firm">FTMO 2-STEP</span><span class="term-pct red">1.6%</span><span class="term-badge skip">High mismatch</span></div>
+        <div class="term-row"><span class="term-firm">EOD-STYLE RULESET</span><span class="term-pct grn">69.9%</span><span class="term-badge go">Strong fit</span></div>
+        <div class="term-row"><span class="term-firm">ONE-STEP RULESET</span><span class="term-pct gold">32.0%</span><span class="term-badge wait">Borderline</span></div>
+        <div class="term-row"><span class="term-firm">STELLAR-STYLE RULESET</span><span class="term-pct red">5.6%</span><span class="term-badge skip">High mismatch</span></div>
+        <div class="term-row"><span class="term-firm">1-STEP HIGH-TARGET</span><span class="term-pct red">3.5%</span><span class="term-badge skip">High mismatch</span></div>
+        <div class="term-row"><span class="term-firm">2-STEP HIGH-TARGET</span><span class="term-pct red">1.6%</span><span class="term-badge skip">High mismatch</span></div>
       </div>
       <div class="term-killer">
         <div class="warn">&#9888; KILLER RULE DETECTED</div>
@@ -594,8 +598,8 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
       <h3 class="mode-title">Prop Firm RealityCheck</h3>
       <div class="mode-q">&ldquo;Can I pass this challenge?&rdquo;</div>
       <ul class="mode-list">
-        <li>6 verified rulesets &mdash; FTMO, Apex, FundedNext, The5ers, E8, more</li>
-        <li>Pass odds + killer rule per firm</li>
+        <li>6 verified public rulesets &mdash; named by firm inside your report</li>
+        <li>Pass odds + killer rule per ruleset</li>
         <li>Expected fee burn across the retry loop</li>
         <li>What-if simulator &mdash; scaled risk &rarr; pass-odds shift</li>
       </ul>
@@ -666,19 +670,19 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
     <div class="compare-card go">
       <span class="best-tag">BEST FIT</span>
       <div class="pct">69.9%</div>
-      <div class="firm-name">Apex EOD 50K</div>
+      <div class="firm-name">EOD-Style Ruleset</div>
       <div class="story">Best fit for this history</div>
       <div class="fee">Fee: $167</div>
     </div>
     <div class="compare-card wait">
       <div class="pct">32.0%</div>
-      <div class="firm-name">E8 One 1-Step</div>
+      <div class="firm-name">One-Step Ruleset</div>
       <div class="story">Possible, but fragile</div>
       <div class="fee">Fee: $260</div>
     </div>
     <div class="compare-card skip">
       <div class="pct">1.6%</div>
-      <div class="firm-name">FTMO 2-Step</div>
+      <div class="firm-name">Two-Step High-Target Ruleset</div>
       <div class="story">Retry loop risk</div>
       <div class="fee">Fee: $540</div>
     </div>
@@ -703,11 +707,11 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
       <h3 style="font-size:18px;font-weight:500;">The challenge fee is not the real cost.<br>The retry loop is.</h3>
       <div style="margin-top:16px">
         <div class="fee-row">
-          <div><div class="fee-firm">FTMO 2-STEP</div><div class="fee-detail">Pass: 1.6% &middot; ~63 attempts</div></div>
+          <div><div class="fee-firm">TWO-STEP HIGH-TARGET RULESET</div><div class="fee-detail">Pass: 1.6% &middot; ~63 attempts</div></div>
           <div class="fee-amount red">$34,415</div>
         </div>
         <div class="fee-row">
-          <div><div class="fee-firm">APEX EOD 50K</div><div class="fee-detail">Pass: 69.9% &middot; ~1.4 attempts</div></div>
+          <div><div class="fee-firm">EOD-STYLE RULESET</div><div class="fee-detail">Pass: 69.9% &middot; ~1.4 attempts</div></div>
           <div class="fee-amount grn">$167</div>
         </div>
       </div>
@@ -723,18 +727,19 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
   </div>
   <p class="sec-sub">Every firm scored against its verified rules, ranked by your real pass odds. No hype, no signals, just the matrix.</p>
   <div class="inst panel-tbl">
-    <div class="tbl-head"><span class="t">Firm comparison matrix &middot; demo account</span><span class="v">Ruleset 2026-06-05</span></div>
+    <div class="tbl-head"><span class="t">Ruleset comparison matrix &middot; demo account</span><span class="v">Ruleset 2026-06-05</span></div>
     <table class="tbl">
-      <thead><tr><th>Firm</th><th style="text-align:right">Pass odds</th><th>Risk label</th><th class="hide-sm">Killer rule</th><th class="hide-sm" style="text-align:right">Fee</th></tr></thead>
+      <thead><tr><th>Ruleset</th><th style="text-align:right">Pass odds</th><th>Risk label</th><th class="hide-sm">Killer rule</th><th class="hide-sm" style="text-align:right">Fee</th></tr></thead>
       <tbody>
-        <tr><td><span class="firm">Apex &mdash; EOD 50K</span> <span class="sub2">Futures</span></td><td style="text-align:right" class="num grn">69.9%</td><td><span class="vp go">Strong fit</span></td><td class="hide-sm">Trailing drawdown</td><td class="hide-sm num" style="text-align:right">$167</td></tr>
-        <tr><td><span class="firm">E8 &mdash; E8 One</span> <span class="sub2">1-step</span></td><td style="text-align:right" class="num gold">32.0%</td><td><span class="vp wait">Borderline</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">$260</td></tr>
-        <tr><td><span class="firm">FundedNext &mdash; Stellar</span> <span class="sub2">2-step</span></td><td style="text-align:right" class="num red">5.6%</td><td><span class="vp skip">High mismatch</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">$549</td></tr>
-        <tr><td><span class="firm">The5ers &mdash; High Stakes</span> <span class="sub2">2-step</span></td><td style="text-align:right" class="num red">5.6%</td><td><span class="vp skip">High mismatch</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">$595</td></tr>
-        <tr><td><span class="firm">FTMO &mdash; 1-Step</span></td><td style="text-align:right" class="num red">3.5%</td><td><span class="vp skip">High mismatch</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">$540</td></tr>
-        <tr><td><span class="firm">FTMO &mdash; 2-Step</span></td><td style="text-align:right" class="num red">1.6%</td><td><span class="vp skip">High mismatch</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">$540</td></tr>
+        <tr><td><span class="firm">EOD-Style Ruleset</span> <span class="sub2">Futures</span></td><td style="text-align:right" class="num grn">69.9%</td><td><span class="vp go">Strong fit</span></td><td class="hide-sm">Trailing drawdown</td><td class="hide-sm num" style="text-align:right">$167</td></tr>
+        <tr><td><span class="firm">One-Step Ruleset</span> <span class="sub2">1-step</span></td><td style="text-align:right" class="num gold">32.0%</td><td><span class="vp wait">Borderline</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">$260</td></tr>
+        <tr><td><span class="firm">Stellar-Style Ruleset</span> <span class="sub2">2-step</span></td><td style="text-align:right" class="num red">5.6%</td><td><span class="vp skip">High mismatch</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">$549</td></tr>
+        <tr><td><span class="firm">High-Stakes Ruleset</span> <span class="sub2">2-step</span></td><td style="text-align:right" class="num red">5.6%</td><td><span class="vp skip">High mismatch</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">$595</td></tr>
+        <tr><td><span class="firm">One-Step High-Target Ruleset</span></td><td style="text-align:right" class="num red">3.5%</td><td><span class="vp skip">High mismatch</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">$540</td></tr>
+        <tr><td><span class="firm">Two-Step High-Target Ruleset</span></td><td style="text-align:right" class="num red">1.6%</td><td><span class="vp skip">High mismatch</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">$540</td></tr>
       </tbody>
     </table>
+    <p style="font-size:12px;color:var(--faint);margin:14px 18px 0;line-height:1.5">Sample data shown with generic ruleset labels. Inside the app and your report, supported rule sets are named by firm purely to identify their publicly available rules. Candor is independent and is not affiliated with, endorsed by, sponsored by, or approved by any prop firm. All trademarks belong to their respective owners.</p>
   </div>
 </div></section>
 
@@ -806,12 +811,12 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
   </div>
   <p class="sec-sub">Every rule manually checked. Version-locked. Visible in your report.</p>
   <div class="vault lanternable"><span class="fx-sweep"></span>
-    <div class="vault-header"><span>FIRM</span><span>STATUS</span><span>VERSION</span><span>VERIFIED</span></div>
-    <div class="vault-row"><span>FTMO</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
-    <div class="vault-row"><span>Apex</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
-    <div class="vault-row"><span>E8 One</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
-    <div class="vault-row"><span>The5ers</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
-    <div class="vault-row"><span>FundedNext</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
+    <div class="vault-header"><span>RULESET</span><span>STATUS</span><span>VERSION</span><span>VERIFIED</span></div>
+    <div class="vault-row"><span>Two-Step High-Target</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
+    <div class="vault-row"><span>EOD-Style</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
+    <div class="vault-row"><span>One-Step</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
+    <div class="vault-row"><span>High-Stakes</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
+    <div class="vault-row"><span>Stellar-Style</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
   </div>
   <p class="vault-note">Every ruleset is versioned, dated and visible in your report. If a rule is uncertain, Candor labels it instead of hiding it.</p>
 </div></section>
@@ -923,8 +928,7 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
     <b>Not financial advice.</b> Candor RealityCheck is a statistical simulation and educational tool. It does not provide
     financial, investment or trading advice, trading signals, or any guaranteed outcome. Pass-odds are statistical estimates
     derived from the trade history you provide; past performance does not guarantee future results, and no outcome with any
-    prop firm is guaranteed. Prop firm names and rules are referenced for compatibility and remain the property of their
-    respective owners. <span id="privacy"><b>Privacy:</b> your trade history is used only to run your simulation and is not
+    prop firm is guaranteed. Candor is independent and is not affiliated with, endorsed by, sponsored by, or approved by any prop firm. Prop firm names, if referenced inside the app or a report, are used only to identify publicly available rule sets for compatibility and statistical simulation purposes. All trademarks and trade names belong to their respective owners. <span id="privacy"><b>Privacy:</b> your trade history is used only to run your simulation and is not
     sold.</span> <span id="refund"><b>Refunds:</b> reports are generated and delivered instantly as digital goods, so sales
     are generally final; contact support for issues with a purchase.</span> &copy; 2026 Candor.
   </p>
