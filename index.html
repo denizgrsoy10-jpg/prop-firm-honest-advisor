@@ -504,8 +504,8 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
   <span><b class="read gold">RULESET VERIFIED</b> &middot; 2026-06-05</span>
   <span><b class="grn">SAMPLE EOD-STYLE RULESET</b> &middot; 69.9% &middot; Strong fit</span>
   <span><b class="gold">SAMPLE ONE-STEP RULESET</b> &middot; 32.0% &middot; Borderline</span>
-  <span><b class="red">SAMPLE STELLAR-STYLE RULESET</b> &middot; 5.6% &middot; High mismatch</span>
-  <span><b class="red">SAMPLE HIGH-STAKES RULESET</b> &middot; 5.6% &middot; High mismatch</span>
+  <span><b class="red">SAMPLE TWO-STEP RULESET A</b> &middot; 5.6% &middot; High mismatch</span>
+  <span><b class="red">SAMPLE TWO-STEP RULESET B</b> &middot; 5.6% &middot; High mismatch</span>
   <span><b class="red">SAMPLE ONE-STEP HIGH-TARGET RULESET</b> &middot; 3.5% &middot; High mismatch</span>
   <span><b class="red">SAMPLE TWO-STEP HIGH-TARGET RULESET</b> &middot; 1.6% &middot; High mismatch</span>
 </div></div>
@@ -551,7 +551,7 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
       <div class="term-results">
         <div class="term-row"><span class="term-firm">EOD-STYLE RULESET</span><span class="term-pct grn">69.9%</span><span class="term-badge go">Strong fit</span></div>
         <div class="term-row"><span class="term-firm">ONE-STEP RULESET</span><span class="term-pct gold">32.0%</span><span class="term-badge wait">Borderline</span></div>
-        <div class="term-row"><span class="term-firm">STELLAR-STYLE RULESET</span><span class="term-pct red">5.6%</span><span class="term-badge skip">High mismatch</span></div>
+        <div class="term-row"><span class="term-firm">TWO-STEP RULESET A</span><span class="term-pct red">5.6%</span><span class="term-badge skip">High mismatch</span></div>
         <div class="term-row"><span class="term-firm">1-STEP HIGH-TARGET</span><span class="term-pct red">3.5%</span><span class="term-badge skip">High mismatch</span></div>
         <div class="term-row"><span class="term-firm">2-STEP HIGH-TARGET</span><span class="term-pct red">1.6%</span><span class="term-badge skip">High mismatch</span></div>
       </div>
@@ -632,7 +632,7 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
     <span class="sec-no">REVEAL.00</span>
     <h2 class="sec-title">The comfort number vs the Candor truth.</h2>
   </div>
-  <p class="sec-sub">Most tools hand you a number that feels good. Candor turns the light on what your own history is hiding.</p>
+  <p class="sec-sub">Most tools hand you a number that feels good. Candor turns the light on and shows what your own history is hiding.</p>
   <div class="ct-grid">
     <div class="ct-side ct-comfort lanternable"><span class="fx-sweep"></span>
       <div class="ct-eyebrow">In the dark &mdash; comfort number</div>
@@ -665,26 +665,26 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
     <span class="sec-no">SCAN.01 &middot; PROP FIRM MODE</span>
     <h2 class="sec-title">Same trader. Different survival odds.</h2>
   </div>
-  <p class="sec-sub">Same trading history. Different rules. Different outcomes. Candor shows you which firm fits your actual performance.</p>
+  <p class="sec-sub">Same trading history. Different rules. Different outcomes. Candor shows you which ruleset fits your actual performance.</p>
   <div class="compare-grid">
     <div class="compare-card go">
       <span class="best-tag">BEST FIT</span>
       <div class="pct">69.9%</div>
       <div class="firm-name">EOD-Style Ruleset</div>
       <div class="story">Best fit for this history</div>
-      <div class="fee">Fee: $167</div>
+      <div class="fee">Est. fee: ~$150</div>
     </div>
     <div class="compare-card wait">
       <div class="pct">32.0%</div>
       <div class="firm-name">One-Step Ruleset</div>
       <div class="story">Possible, but fragile</div>
-      <div class="fee">Fee: $260</div>
+      <div class="fee">Est. fee: ~$250</div>
     </div>
     <div class="compare-card skip">
       <div class="pct">1.6%</div>
       <div class="firm-name">Two-Step High-Target Ruleset</div>
       <div class="story">Retry loop risk</div>
-      <div class="fee">Fee: $540</div>
+      <div class="fee">Est. fee: ~$500+</div>
     </div>
   </div>
 </div></section>
@@ -712,7 +712,7 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
         </div>
         <div class="fee-row">
           <div><div class="fee-firm">EOD-STYLE RULESET</div><div class="fee-detail">Pass: 69.9% &middot; ~1.4 attempts</div></div>
-          <div class="fee-amount grn">$167</div>
+          <div class="fee-amount grn">~$150</div>
         </div>
       </div>
     </div>
@@ -725,18 +725,18 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
     <span class="sec-no">SCAN.02 &middot; PROP FIRM MODE</span>
     <h2 class="sec-title">A sample readout</h2>
   </div>
-  <p class="sec-sub">Every firm scored against its verified rules, ranked by your real pass odds. No hype, no signals, just the matrix.</p>
+  <p class="sec-sub">Every supported ruleset scored against the uploaded history, ranked by your real pass odds. No hype. No signals. Just the math before the money moves.</p>
   <div class="inst panel-tbl">
-    <div class="tbl-head"><span class="t">Ruleset comparison matrix &middot; demo account</span><span class="v">Ruleset 2026-06-05</span></div>
+    <div class="tbl-head"><span class="t">Ruleset comparison &middot; demo account</span><span class="v">Ruleset 2026-06-05</span></div>
     <table class="tbl">
       <thead><tr><th>Ruleset</th><th style="text-align:right">Pass odds</th><th>Risk label</th><th class="hide-sm">Killer rule</th><th class="hide-sm" style="text-align:right">Fee</th></tr></thead>
       <tbody>
-        <tr><td><span class="firm">EOD-Style Ruleset</span> <span class="sub2">Futures</span></td><td style="text-align:right" class="num grn">69.9%</td><td><span class="vp go">Strong fit</span></td><td class="hide-sm">Trailing drawdown</td><td class="hide-sm num" style="text-align:right">$167</td></tr>
-        <tr><td><span class="firm">One-Step Ruleset</span> <span class="sub2">1-step</span></td><td style="text-align:right" class="num gold">32.0%</td><td><span class="vp wait">Borderline</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">$260</td></tr>
-        <tr><td><span class="firm">Stellar-Style Ruleset</span> <span class="sub2">2-step</span></td><td style="text-align:right" class="num red">5.6%</td><td><span class="vp skip">High mismatch</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">$549</td></tr>
-        <tr><td><span class="firm">High-Stakes Ruleset</span> <span class="sub2">2-step</span></td><td style="text-align:right" class="num red">5.6%</td><td><span class="vp skip">High mismatch</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">$595</td></tr>
-        <tr><td><span class="firm">One-Step High-Target Ruleset</span></td><td style="text-align:right" class="num red">3.5%</td><td><span class="vp skip">High mismatch</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">$540</td></tr>
-        <tr><td><span class="firm">Two-Step High-Target Ruleset</span></td><td style="text-align:right" class="num red">1.6%</td><td><span class="vp skip">High mismatch</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">$540</td></tr>
+        <tr><td><span class="firm">EOD-Style Ruleset</span> <span class="sub2">Futures</span></td><td style="text-align:right" class="num grn">69.9%</td><td><span class="vp go">Strong fit</span></td><td class="hide-sm">Trailing drawdown</td><td class="hide-sm num" style="text-align:right">~$150</td></tr>
+        <tr><td><span class="firm">One-Step Ruleset</span> <span class="sub2">1-step</span></td><td style="text-align:right" class="num gold">32.0%</td><td><span class="vp wait">Borderline</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">~$250</td></tr>
+        <tr><td><span class="firm">Two-Step Ruleset A</span> <span class="sub2">2-step</span></td><td style="text-align:right" class="num red">5.6%</td><td><span class="vp skip">High mismatch</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">~$500+</td></tr>
+        <tr><td><span class="firm">Two-Step Ruleset B</span> <span class="sub2">2-step</span></td><td style="text-align:right" class="num red">5.6%</td><td><span class="vp skip">High mismatch</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">~$600</td></tr>
+        <tr><td><span class="firm">One-Step High-Target Ruleset</span></td><td style="text-align:right" class="num red">3.5%</td><td><span class="vp skip">High mismatch</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">~$500+</td></tr>
+        <tr><td><span class="firm">Two-Step High-Target Ruleset</span></td><td style="text-align:right" class="num red">1.6%</td><td><span class="vp skip">High mismatch</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">~$500+</td></tr>
       </tbody>
     </table>
     <p style="font-size:12px;color:var(--faint);margin:14px 18px 0;line-height:1.5">Sample data shown with generic ruleset labels. Inside the app and your report, supported rule sets are named by firm purely to identify their publicly available rules. Candor is independent and is not affiliated with, endorsed by, sponsored by, or approved by any prop firm. All trademarks belong to their respective owners.</p>
@@ -815,8 +815,8 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
     <div class="vault-row"><span>Two-Step High-Target</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
     <div class="vault-row"><span>EOD-Style</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
     <div class="vault-row"><span>One-Step</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
-    <div class="vault-row"><span>High-Stakes</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
-    <div class="vault-row"><span>Stellar-Style</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
+    <div class="vault-row"><span>Two-Step Ruleset B</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
+    <div class="vault-row"><span>Two-Step Ruleset A</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
   </div>
   <p class="vault-note">Every ruleset is versioned, dated and visible in your report. If a rule is uncertain, Candor labels it instead of hiding it.</p>
 </div></section>
@@ -834,9 +834,9 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
       <thead><tr><th>Capability</th><th>Typical free calculator</th><th>Candor RealityCheck</th></tr></thead>
       <tbody>
         <tr><td>Input</td><td><span class="xk">&times;</span> a win-rate you type in</td><td><span class="ck">&check;</span> your real trade history (CSV)</td></tr>
-        <tr><td>Output</td><td><span class="xk">&times;</span> one probability number</td><td><span class="ck">&check;</span> a risk label per firm: strong fit / borderline / high mismatch</td></tr>
+        <tr><td>Output</td><td><span class="xk">&times;</span> one probability number</td><td><span class="ck">&check;</span> a risk label per ruleset: strong fit / borderline / high mismatch</td></tr>
         <tr><td>Failure point</td><td><span class="xk">&times;</span> rarely named</td><td><span class="ck">&check;</span> the exact rule that eliminates you</td></tr>
-        <tr><td>Fee burn</td><td><span class="xk">&times;</span> none</td><td><span class="ck">&check;</span> cost across re-tries, per firm</td></tr>
+        <tr><td>Fee burn</td><td><span class="xk">&times;</span> none</td><td><span class="ck">&check;</span> cost across re-tries, per ruleset</td></tr>
         <tr><td>Rule accuracy</td><td><span class="xk">&times;</span> often stale</td><td><span class="ck">&check;</span> verified rulesets, versioned &amp; dated</td></tr>
         <tr><td>Honesty</td><td><span class="xk">&times;</span> hides blind spots</td><td><span class="ck">&check;</span> states what the model can&rsquo;t see</td></tr>
       </tbody>
@@ -851,11 +851,11 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
     <h2 class="sec-title">Why honest?</h2>
   </div>
   <div class="why">
-    <p class="big">Prop firms make money when you fail and pay again. We sell the one thing nobody else will: <em>a straight answer</em> &mdash; even when it means telling you not to attempt at all.</p>
+    <p class="big">Challenge models can generate revenue from repeat attempts. Candor exists to show the risk before you enter that loop: <em>a straight answer</em> &mdash; even when the data shows high mismatch or high retry-risk.</p>
     <div class="pr">
       <div><span class="n">P&mdash;01</span><div><b>Probabilities, not promises</b><span>Every number ships with the assumption behind it and a confidence level.</span></div></div>
       <div><span class="n">P&mdash;02</span><div><b>Verified rules</b><span>Each firm&rsquo;s rules checked against the official source, with a ruleset version stamped on every report.</span></div></div>
-      <div><span class="n">P&mdash;03</span><div><b>Advice against ourselves</b><span>If the honest answer is &ldquo;don&rsquo;t attempt,&rdquo; that&rsquo;s the answer you get &mdash; paid or not.</span></div></div>
+      <div><span class="n">P&mdash;03</span><div><b>No sales bias</b><span>If the uploaded history shows high mismatch, that label appears whether the report is free or paid.</span></div></div>
     </div>
   </div>
 </div></section>
@@ -864,7 +864,7 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
 <section class="reveal" id="pricing"><div class="wrap">
   <div class="sec-head">
     <span class="sec-no">SCAN.08</span>
-    <h2 class="sec-title">One report. Everything you need to decide.</h2>
+    <h2 class="sec-title">One report. What your data can reveal before you decide.</h2>
   </div>
   <p class="sec-sub">You&rsquo;re about to risk thousands on a challenge fee. Scan first.</p>
   <div class="ladder">
@@ -880,7 +880,7 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
       <span class="pn">Full report</span>
       <div class="amt">$19</div>
       <div class="pd">Everything you need before paying a challenge fee.</div>
-      <ul><li>Every firm scored</li><li>Killer rule per firm</li><li>Expected fee burn</li><li>What-if simulator</li><li>Risk DNA &amp; danger rules</li><li>PDF download</li></ul>
+      <ul><li>Every supported ruleset scored</li><li>Killer rule per ruleset</li><li>Expected fee burn</li><li>What-if simulator</li><li>Risk DNA &amp; danger rules</li><li>PDF download</li></ul>
       <a class="btn" href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Unlock full report <span class="arr">&rarr;</span></a>
     </div>
     <div class="tier lanternable"><span class="fx-sweep"></span>
