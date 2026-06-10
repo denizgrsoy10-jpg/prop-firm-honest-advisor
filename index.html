@@ -238,17 +238,17 @@ section{padding:80px 0;border-top:1px solid var(--line-soft)}
 .pr b{display:block;font-size:15px;font-family:var(--font-head);font-weight:600}.pr span{font-size:13.5px;color:var(--muted)}
 
 /* Pricing */
-.ladder{display:grid;grid-template-columns:1fr 1.35fr 1fr;gap:16px;align-items:start}
+.ladder{display:grid;grid-template-columns:1fr 1.35fr 1fr;gap:16px;align-items:start;padding-top:18px;overflow:visible}
 @media(max-width:780px){.ladder{grid-template-columns:1fr}}
 .tier{border-radius:10px;padding:28px 24px;text-align:center;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08)}
-.tier.hot{background:rgba(217,163,50,.06);border:2px solid rgba(217,163,50,.4);position:relative}
+.tier.hot{background:rgba(217,163,50,.06);border:2px solid rgba(217,163,50,.4);position:relative;overflow:visible}
 .tier .pn{font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .tier .amt{font-family:var(--font-head);font-size:44px;font-weight:700;margin:10px 0 4px}
 .tier.hot .amt{color:var(--gold);font-size:52px}
 .tier .pd{font-size:13px;color:var(--faint);margin-bottom:16px}
 .tier ul{list-style:none;display:grid;gap:8px;margin-bottom:20px;text-align:left}
 .tier li{font-size:13px;color:var(--muted);display:flex;gap:8px}.tier li::before{content:"\203A";color:var(--green);font-weight:700}
-.tier .stamp{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--gold);color:#0B1117;font-family:var(--font-mono);font-size:9px;font-weight:700;letter-spacing:.06em;padding:4px 14px;border-radius:10px}
+.tier .stamp{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--gold);color:#0B1117;font-family:var(--font-mono);font-size:9px;font-weight:700;letter-spacing:.06em;padding:4px 14px;border-radius:10px;z-index:5;white-space:nowrap}
 
 /* Roadmap */
 .soon{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
@@ -390,6 +390,81 @@ footer{padding:48px 0;background:var(--bg2);border-top:1px solid var(--line)}
   .ct-truth::before{opacity:.7}
   .mode-card:hover .lantern-sweep{animation:none;opacity:0}
 }
+
+/* ===== Lantern Scene (hero alti, tam genislik) ===== */
+.lantern-section{background:#05080c;padding:0;margin:0;border-top:1px solid rgba(217,163,50,.1);border-bottom:1px solid rgba(217,163,50,.1)}
+.lantern-scene{position:relative;width:100%;height:440px;max-width:1180px;margin:0 auto;
+  background:radial-gradient(ellipse at 18% 50%,#0c1219,#05080c 78%);overflow:hidden}
+.lantern-scene .grain{position:absolute;inset:0;opacity:.5;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,255,255,.012) 3px)}
+.lantern-scene .scene-eyebrow{position:absolute;top:26px;left:34px;z-index:6;font-family:var(--font-mono);
+  font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:9px}
+.lantern-scene .scene-eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);
+  box-shadow:0 0 10px var(--gold);animation:ls-pulse-dot 2s ease-in-out infinite}
+@keyframes ls-pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
+/* sweeping cone — kaynak gorunmez, kosi sol kenardan cikar */
+.lantern-scene .cone{position:absolute;left:40px;top:50%;width:760px;height:600px;z-index:2;
+  transform-origin:8px 300px;
+  background:conic-gradient(from 78deg at 1% 50%,transparent 0deg,rgba(217,163,50,.12) 12deg,rgba(217,163,50,.20) 20deg,rgba(217,163,50,.09) 30deg,transparent 44deg);
+  filter:blur(7px);animation:ls-cone-sweep 6.5s ease-in-out infinite}
+@keyframes ls-cone-sweep{0%{transform:translateY(-50%) rotate(-16deg)}50%{transform:translateY(-50%) rotate(14deg)}100%{transform:translateY(-50%) rotate(-16deg)}}
+.lantern-scene .risk{position:absolute;font-family:var(--font-mono);font-size:13px;letter-spacing:.02em;
+  color:rgba(247,243,234,.055);white-space:nowrap;pointer-events:none}
+.lantern-scene .r1{top:88px;left:330px;animation:ls-lit-1 6.5s ease-in-out infinite}
+.lantern-scene .r2{top:158px;left:500px;animation:ls-lit-2 6.5s ease-in-out infinite}
+.lantern-scene .r3{top:228px;left:360px;animation:ls-lit-3 6.5s ease-in-out infinite}
+.lantern-scene .r4{top:298px;left:520px;animation:ls-lit-4 6.5s ease-in-out infinite}
+.lantern-scene .r5{top:356px;left:350px;animation:ls-lit-5 6.5s ease-in-out infinite}
+@keyframes ls-lit-1{0%,100%{color:rgba(247,243,234,.055)}40%,54%{color:#f0c25a;text-shadow:0 0 16px rgba(217,163,50,.6)}}
+@keyframes ls-lit-2{0%,100%{color:rgba(247,243,234,.055)}46%,60%{color:#ff8b7d;text-shadow:0 0 16px rgba(255,107,91,.55)}}
+@keyframes ls-lit-3{0%,100%{color:rgba(247,243,234,.055)}30%,46%{color:#f0c25a;text-shadow:0 0 16px rgba(217,163,50,.6)}}
+@keyframes ls-lit-4{0%,100%{color:rgba(247,243,234,.055)}50%,64%{color:#ff8b7d;text-shadow:0 0 16px rgba(255,107,91,.55)}}
+@keyframes ls-lit-5{0%,100%{color:rgba(247,243,234,.055)}34%,50%{color:#f0c25a;text-shadow:0 0 16px rgba(217,163,50,.6)}}
+
+
+@media(prefers-reduced-motion:reduce){
+  .lantern-scene .cone,.lantern-scene .risk,.lantern-scene .dot{animation:none!important}
+  .lantern-scene .risk{color:#f0c25a!important;text-shadow:0 0 12px rgba(217,163,50,.4)!important}
+  .lantern-scene .r2,.lantern-scene .r4{color:#ff8b7d!important}
+}
+@media(max-width:680px){.lantern-scene{height:380px}.lantern-scene .risk{font-size:11px}
+  .lantern-scene .r1{top:80px;left:120px}.lantern-scene .r2{top:120px;left:210px}
+  .lantern-scene .r3{top:160px;left:140px}.lantern-scene .r4{top:200px;left:215px}
+  .lantern-scene .r5{top:240px;left:130px}
+  }
+
+/* ============================================================
+   CANDOR LANTERN FX — site-wide
+   ============================================================ */
+/* Scroll-reveal: bolumler karanliktan isikla belirir */
+.reveal{opacity:0;transform:translateY(22px);
+  transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+.reveal.seen{opacity:1;transform:none}
+/* baslik aydinlanma: gorununce altin isik gecer */
+.sec-title{position:relative}
+.reveal .sec-title::after{content:"";position:absolute;left:0;bottom:-6px;height:2px;width:0;
+  background:linear-gradient(90deg,var(--gold),transparent);
+  transition:width 1s ease .25s;box-shadow:0 0 12px rgba(217,163,50,.5)}
+.reveal.seen .sec-title::after{width:120px}
+
+/* Fener tarama (hover) — site geneli kartlar */
+.lanternable{position:relative;overflow:hidden}
+.lanternable .fx-sweep{position:absolute;inset:0;pointer-events:none;opacity:0;z-index:3;
+  background:linear-gradient(105deg,transparent 32%,rgba(217,163,50,.14) 50%,transparent 68%);
+  transform:translateX(-100%)}
+.lanternable:hover .fx-sweep{opacity:1;animation:fx-card-sweep 0.95s ease-out}
+@keyframes fx-card-sweep{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+
+/* derinlik: bolumlere hafif maden/tunel vinyet */
+section{position:relative}
+.fx-vignette::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(217,163,50,.04),transparent 60%)}
+
+@media(prefers-reduced-motion:reduce){
+  .reveal{opacity:1;transform:none;transition:none}
+  .reveal .sec-title::after{width:120px;transition:none}
+  .lanternable:hover .fx-sweep{animation:none;opacity:0}
+}
 </style>
 </head>
 <body>
@@ -484,6 +559,18 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
   </div>
 </div></header>
 
+<!-- LANTERN SCENE (hero alti, tam genislik) -->
+<section class="lantern-section"><div class="lantern-scene">
+  <div class="grain"></div>
+  <div class="scene-eyebrow"><span class="dot"></span>Candor risk scanner &mdash; live</div>
+  <div class="cone"></div>
+  <span class="risk r1">Trailing drawdown</span>
+  <span class="risk r2">Fee burn &rarr; $34,415</span>
+  <span class="risk r3">5-day losing streak</span>
+  <span class="risk r4">No stop loss</span>
+  <span class="risk r5">Risk drift: rising</span>
+</div></section>
+
 <!-- TRUST BADGES -->
 <div class="trust-row">
   <span class="trust-badge"><span class="chk">&#10003;</span> No card for preview</span>
@@ -495,7 +582,7 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
 
 
 <!-- TWO MODES -->
-<section id="modes"><div class="wrap">
+<section class="reveal" id="modes"><div class="wrap">
   <div class="sec-head">
     <span class="sec-no">CHOOSE.MODE</span>
     <h2 class="sec-title">Two modes. One engine.</h2>
@@ -536,14 +623,14 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
 
 
 <!-- COMFORT vs TRUTH -->
-<section id="truth"><div class="wrap">
+<section class="reveal" id="truth"><div class="wrap">
   <div class="sec-head">
     <span class="sec-no">REVEAL.00</span>
     <h2 class="sec-title">The comfort number vs the Candor truth.</h2>
   </div>
   <p class="sec-sub">Most tools hand you a number that feels good. Candor turns the light on what your own history is hiding.</p>
   <div class="ct-grid">
-    <div class="ct-side ct-comfort">
+    <div class="ct-side ct-comfort lanternable"><span class="fx-sweep"></span>
       <div class="ct-eyebrow">In the dark &mdash; comfort number</div>
       <ul class="ct-list">
         <li>A win-rate you typed in</li>
@@ -553,7 +640,7 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
         <li>A backtest that ignores your worst behavior</li>
       </ul>
     </div>
-    <div class="ct-side ct-truth">
+    <div class="ct-side ct-truth lanternable"><span class="fx-sweep"></span>
       <div class="ct-eyebrow">Light on &mdash; Candor truth</div>
       <ul class="ct-list">
         <li>Your real trade history</li>
@@ -569,7 +656,7 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
 </div></section>
 
 <!-- SAME TRADER, DIFFERENT FIRMS -->
-<section id="compare"><div class="wrap">
+<section class="reveal" id="compare"><div class="wrap">
   <div class="sec-head">
     <span class="sec-no">SCAN.01 &middot; PROP FIRM MODE</span>
     <h2 class="sec-title">Same trader. Different survival odds.</h2>
@@ -599,7 +686,7 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
 </div></section>
 
 <!-- KILLER RULE + FEE BURN -->
-<section id="finds"><div class="wrap">
+<section class="reveal" id="finds"><div class="wrap">
   <div class="duo-grid">
     <!-- Killer Rule -->
     <div class="duo-card" style="background:rgba(255,77,79,.05);border:1px solid rgba(255,77,79,.2);">
@@ -629,7 +716,7 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
 </div></section>
 
 <!-- SAMPLE READOUT TABLE -->
-<section id="readout"><div class="wrap">
+<section class="reveal" id="readout"><div class="wrap">
   <div class="sec-head">
     <span class="sec-no">SCAN.02 &middot; PROP FIRM MODE</span>
     <h2 class="sec-title">A sample readout</h2>
@@ -652,39 +739,39 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
 </div></section>
 
 <!-- 6 DIAGNOSTIC MODULES -->
-<section><div class="wrap">
+<section class="reveal"><div class="wrap">
   <div class="sec-head">
     <span class="sec-no">SCAN.03 &middot; PROP FIRM MODE</span>
     <h2 class="sec-title">6 diagnostic modules. Zero guesswork.</h2>
   </div>
   <p class="sec-sub">Every scan runs your history through six independent checks. This is what you get.</p>
   <div class="mod-grid">
-    <div class="mod-card">
+    <div class="mod-card lanternable"><span class="fx-sweep"></span>
       <div class="mod-top"><span class="mod-id">MOD/KILLER-RULE</span><span class="mod-status live">LIVE</span></div>
       <h3>Killer Rule Autopsy</h3>
       <p>The rule most likely to end your challenge.</p>
     </div>
-    <div class="mod-card">
+    <div class="mod-card lanternable"><span class="fx-sweep"></span>
       <div class="mod-top"><span class="mod-id">MOD/FEE-BURN</span><span class="mod-status live">LIVE</span></div>
       <h3>Expected Fee Burn</h3>
       <p>The real cost of repeated attempts.</p>
     </div>
-    <div class="mod-card">
+    <div class="mod-card lanternable"><span class="fx-sweep"></span>
       <div class="mod-top"><span class="mod-id">MOD/RISK-DNA</span><span class="mod-status live">LIVE</span></div>
       <h3>Risk DNA Lite</h3>
       <p>Your trading behavior under pressure.</p>
     </div>
-    <div class="mod-card">
+    <div class="mod-card lanternable"><span class="fx-sweep"></span>
       <div class="mod-top"><span class="mod-id">MOD/WHAT-IF</span><span class="mod-status live">LIVE</span></div>
       <h3>What-if Lab</h3>
       <p>How risk changes your odds.</p>
     </div>
-    <div class="mod-card">
+    <div class="mod-card lanternable"><span class="fx-sweep"></span>
       <div class="mod-top"><span class="mod-id">MOD/DANGER</span><span class="mod-status live">LIVE</span></div>
       <h3>Personal Danger Rules</h3>
       <p>Rules built from your own pattern.</p>
     </div>
-    <div class="mod-card">
+    <div class="mod-card lanternable"><span class="fx-sweep"></span>
       <div class="mod-top"><span class="mod-id">MOD/LEDGER</span><span class="mod-status collecting">COLLECTING</span></div>
       <h3>Honesty Ledger</h3>
       <p>Candor measures its own predictions.</p>
@@ -693,7 +780,7 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
 </div></section>
 
 <!-- FULL REPORT PREVIEW -->
-<section><div class="wrap">
+<section class="reveal"><div class="wrap">
   <div class="sec-head">
     <span class="sec-no">SCAN.04</span>
     <h2 class="sec-title">Inside the full report</h2>
@@ -712,13 +799,13 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
 </div></section>
 
 <!-- VERIFIED RULESET VAULT -->
-<section><div class="wrap">
+<section class="reveal"><div class="wrap">
   <div class="sec-head">
     <span class="sec-no">SCAN.05</span>
     <h2 class="sec-title">Verified Ruleset Vault</h2>
   </div>
   <p class="sec-sub">Every rule manually checked. Version-locked. Visible in your report.</p>
-  <div class="vault">
+  <div class="vault lanternable"><span class="fx-sweep"></span>
     <div class="vault-header"><span>FIRM</span><span>STATUS</span><span>VERSION</span><span>VERIFIED</span></div>
     <div class="vault-row"><span>FTMO</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
     <div class="vault-row"><span>Apex</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
@@ -730,7 +817,7 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
 </div></section>
 
 <!-- VS COMPARISON -->
-<section id="vs"><div class="wrap">
+<section class="reveal" id="vs"><div class="wrap">
   <div class="sec-head">
     <span class="sec-no">SCAN.06</span>
     <h2 class="sec-title">Not another win-rate calculator</h2>
@@ -753,7 +840,7 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
 </div></section>
 
 <!-- WHY HONEST -->
-<section id="why"><div class="wrap">
+<section class="reveal" id="why"><div class="wrap">
   <div class="sec-head">
     <span class="sec-no">SCAN.07</span>
     <h2 class="sec-title">Why honest?</h2>
@@ -769,21 +856,21 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
 </div></section>
 
 <!-- PRICING -->
-<section id="pricing"><div class="wrap">
+<section class="reveal" id="pricing"><div class="wrap">
   <div class="sec-head">
     <span class="sec-no">SCAN.08</span>
     <h2 class="sec-title">One report. Everything you need to decide.</h2>
   </div>
   <p class="sec-sub">You&rsquo;re about to risk thousands on a challenge fee. Scan first.</p>
   <div class="ladder">
-    <div class="tier">
+    <div class="tier lanternable"><span class="fx-sweep"></span>
       <span class="pn">Free preview</span>
       <div class="amt">$0</div>
       <div class="pd">one simulation</div>
       <ul><li>Best &amp; toughest firm</li><li>Pass-odds range</li><li>Your killer rule</li></ul>
       <a class="btn ghost" href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Start free</a>
     </div>
-    <div class="tier hot">
+    <div class="tier hot lanternable"><span class="fx-sweep"></span>
       <span class="stamp">MOST POPULAR</span>
       <span class="pn">Full report</span>
       <div class="amt">$19</div>
@@ -791,7 +878,7 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
       <ul><li>Every firm scored</li><li>Killer rule per firm</li><li>Expected fee burn</li><li>What-if simulator</li><li>Risk DNA &amp; danger rules</li><li>PDF download</li></ul>
       <a class="btn" href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Unlock full report <span class="arr">&rarr;</span></a>
     </div>
-    <div class="tier">
+    <div class="tier lanternable"><span class="fx-sweep"></span>
       <span class="pn">Bundle &middot; 3</span>
       <div class="amt">$49</div>
       <div class="pd">three reports</div>
@@ -802,7 +889,7 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
 </div></section>
 
 <!-- ROADMAP -->
-<section><div class="wrap">
+<section class="reveal"><div class="wrap">
   <div class="sec-head">
     <span class="sec-no">SCAN.09</span>
     <h2 class="sec-title">On the roadmap</h2>
@@ -815,7 +902,7 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
 </div></section>
 
 <!-- CLOSE CTA -->
-<section class="close"><div class="wrap">
+<section class="close reveal"><div class="wrap">
   <div class="read gold">Run the numbers before the money moves</div>
   <h2>Get the <em>honest</em> answer first.</h2>
   <p>Five minutes and your trade history is all it takes to find out where you stand.</p>
@@ -863,6 +950,25 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
     try{localStorage.setItem(C.KEY,JSON.stringify({v:C.VERSION,t:new Date().toISOString(),advice:true,terms:true,privacy:true}));}catch(e){}
     g.hidden=true; document.documentElement.style.overflow=''; document.body.style.overflow='';
   });
+})();
+</script>
+
+<script>
+/* Candor Lantern FX — scroll reveal */
+(function(){
+  var els=document.querySelectorAll('.reveal');
+  if(!els.length) return;
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(reduce||!('IntersectionObserver'in window)){
+    els.forEach(function(e){e.classList.add('seen');});
+    return;
+  }
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){en.target.classList.add('seen');io.unobserve(en.target);}
+    });
+  },{threshold:.12,rootMargin:'0px 0px -8% 0px'});
+  els.forEach(function(e){io.observe(e);});
 })();
 </script>
 </body>
