@@ -1,0 +1,10 @@
+# Clean URLs — /terms, /privacy, /refund, /risk-disclaimer
+# also work without .html extension.
+
+/terms              /terms.html              200
+/privacy            /privacy.html            200
+/refund             /refund.html             200
+/risk-disclaimer    /risk-disclaimer.html    200
+
+# 404 fallback to home (so any typo doesn't dead-end)
+/*                  /index.html              200
