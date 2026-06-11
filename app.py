@@ -36,6 +36,44 @@ st.set_page_config(page_title="Candor RealityCheck",
 
 # --- routing to extra surfaces (?page=outcome|honesty-ledger|admin|signal) ----
 import views
+
+# ---------------------------------------------------------------------------
+# In-app shareable score card (presentation only — mirrors the PDF card)
+# ---------------------------------------------------------------------------
+def _generic_ruleset_label_app(firm_name: str) -> str:
+    """Public-safe generic label for the shareable card (no real firm names)."""
+    n = (firm_name or "").lower()
+    if "eod" in n or "apex" in n:
+        return "EOD-style ruleset"
+    if ("one" in n and "step" in n) or "1-step" in n or "e8" in n:
+        return "One-step ruleset"
+    if "2-step" in n or "two" in n or "stellar" in n or "stakes" in n or "5ers" in n:
+        return "Two-step ruleset"
+    return "Best matching ruleset"
+
+
+def render_score_card(rows):
+    """Render the dark/gold shareable summary card. rows = [(label, value), ...]"""
+    import streamlit as _st
+    items = "".join(
+        f'<div style="display:flex;align-items:baseline;gap:14px;'
+        f'padding:7px 0;border-bottom:1px solid #2a261c">'
+        f'<span style="font-size:10px;letter-spacing:.14em;color:#D9A332;'
+        f'text-transform:uppercase;min-width:170px;font-family:monospace">{label}</span>'
+        f'<span style="font-size:15px;color:#F7F3EA;font-weight:600">{value}</span>'
+        f'</div>'
+        for label, value in rows)
+    _st.markdown(
+        f'<div style="background:#13110c;border:1.5px solid #D9A332;'
+        f'border-radius:10px;padding:18px 22px;margin:6px 0 18px">'
+        f'<div style="font-size:10px;letter-spacing:.2em;color:#D9A332;'
+        f'font-family:monospace;margin-bottom:10px">\u25C6 LANTERN SCAN COMPLETE</div>'
+        f'{items}'
+        f'<div style="font-size:9px;color:#8A949E;margin-top:10px">'
+        f'Statistical simulation only \u00b7 Not financial advice \u00b7 '
+        f'No guarantees</div></div>',
+        unsafe_allow_html=True)
+
 _qp = st.query_params
 _page = _qp.get("page")
 if _page in ("outcome", "ledger", "honesty-ledger", "admin", "signal", "autopilot"):
@@ -252,6 +290,25 @@ def _render_own_account():
         st.subheader("Full report")
         st.caption(f"Report ID {rep['report_id']} · {rep['generated']} · "
                    f"Confidence: {rep['confidence']}")
+
+        # --- Shareable score card (mirrors the PDF card) ---
+        _sc = rep.get("survival_score") or {}
+        _bd0 = rep.get("drawdown_bands") or {}
+        _kb0 = rep.get("killer_behavior") or {}
+        _sv = _sc.get("score")
+        render_score_card([
+            ("CANDOR REALITYCHECK", "Own Account RealityCheck"),
+            ("ACCOUNT SURVIVAL SCORE", f"{_sv if _sv is not None else '—'} / 100"),
+            ("OBSERVED DRAWDOWN BAND", str(_bd0.get("observed_max_dd_band", "—"))),
+            ("KILLER BEHAVIOR", str(_kb0.get("behavior", "—")) if _kb0.get("available") else "—"),
+            ("CONFIDENCE", str(_sc.get("confidence", rep.get("confidence", "Limited")))),
+            ("REPORT ID", str(rep.get("report_id", "—"))),
+        ])
+        st.caption("How to read the score — 0–40: high breakage pressure "
+                   "observed in this uploaded history · 40–65: borderline "
+                   "resilience · 65–100: stronger historical resilience, "
+                   "subject to data confidence. Describes the uploaded "
+                   "history only; not a forecast, not advice.")
 
         # Data quality
         audit = rep["data_audit"]
@@ -571,6 +628,25 @@ if ss.daily_pnls is not None:
         st.subheader("Full report")
         st.caption(f"Report ID {full['report_id']} · {full['ruleset_version']} · "
                    f"Confidence: {full['confidence']}")
+
+        # --- Shareable score card (mirrors the PDF card; generic labels only) ---
+        _rows_sorted = sorted(full["firm_rows"], key=lambda r: r["pass_prob"], reverse=True)
+        if _rows_sorted:
+            _best = _rows_sorted[0]
+            _vl = VERDICT_COPY.get(_best["verdict"], ("—", ""))[0]
+            render_score_card([
+                ("CANDOR REALITYCHECK", "Prop Firm RealityCheck"),
+                ("BEST MATCHING RULESET",
+                 f"{_generic_ruleset_label_app(_best['firm'])} · "
+                 f"{pct(_best['pass_prob'])} · {_vl}"),
+                ("KILLER RULE", str(_best.get("killer_rule", "—"))),
+                ("CONFIDENCE", str(full.get("confidence", "—"))),
+                ("REPORT ID", str(full.get("report_id", "—"))),
+            ])
+            st.caption("How to read the labels — Strong Fit: stronger fit in "
+                       "simulation · Borderline: mixed results · High Mismatch: "
+                       "high mismatch or retry-risk. Describes the uploaded "
+                       "history only; not a forecast, not advice.")
         st.write(f"Generated {full['generated']} · {full['data']['n_trades']} trades · "
                  f"{full['data']['n_days']} trading days")
 
