@@ -4,6 +4,7 @@
 <html lang="en" translate="no">
 <head>
 <meta name="google" content="notranslate">
+<meta name="description" content="Candor RealityCheck — pre-money risk diagnostics for traders. Upload your MT4 / MT5 history (Gold, Silver, Forex pairs, Indices, NASDAQ futures, Crypto CFDs) and see pass odds, killer rules, fee burn and account survival before you risk money. No signals, no guarantees.">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Candor RealityCheck — Know your real odds before you pay</title>
@@ -89,7 +90,8 @@ a{color:inherit;text-decoration:none}
 @keyframes slogan-sweep{0%{left:-40%}45%,100%{left:130%}}
 @media(max-width:600px){.slogan-text{font-size:21px}.slogan-bar{padding:24px 18px 22px}}
 @media(prefers-reduced-motion:reduce){.slogan-bar::before,.slogan-text .w,.slogan-eyebrow,.slogan-text em::after,.slogan-eyebrow::before,.lantern-L,.lantern-R{animation:none!important;opacity:1!important;transform:none!important}
-.chalk.glow{animation:none!important;color:rgba(230,225,210,.18)!important}}
+.chalk.glow{animation:none!important;color:rgba(230,225,210,.18)!important}
+.inst-chip::after{animation:none!important;display:none!important}}
 .ticker{border-bottom:1px solid var(--line-soft);background:rgba(255,255,255,.012);overflow:hidden;position:relative;z-index:3}
 .ticker .track{display:flex;white-space:nowrap;animation:scroll 36s linear infinite;font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;padding:8px 0;width:max-content}
 .ticker span{padding:0 22px;color:var(--muted);border-right:1px solid var(--line-soft)}
@@ -347,6 +349,20 @@ footer{padding:48px 0;background:var(--bg2);border-top:1px solid var(--line)}
 .mode-cta .arr{display:inline-block;transition:transform .2s}
 .mode-card:hover .mode-cta .arr{transform:translateX(5px)}
 .mode-foot{text-align:center;font-family:var(--font-mono);font-size:11px;color:var(--faint);letter-spacing:.06em;margin-top:26px;line-height:1.6}
+.inst-strip{margin-top:44px;text-align:center}
+.inst-head{font-family:var(--font-head);font-size:22px;font-weight:600;color:var(--cream);margin-bottom:20px}
+.inst-chips{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-bottom:16px}
+.inst-chip{position:relative;overflow:hidden;font-family:var(--font-mono);font-size:15px;letter-spacing:.05em;color:var(--gold);border:1.5px solid rgba(217,163,50,.35);border-radius:26px;padding:12px 26px;background:rgba(217,163,50,.06);font-weight:600}
+.inst-chip::after{content:"";position:absolute;top:0;left:-80%;width:60%;height:100%;background:linear-gradient(105deg,transparent,rgba(217,163,50,.35),transparent);transform:skewX(-18deg);animation:inst-sweep 4.5s ease-in-out infinite}
+.inst-chip:nth-child(1)::after{animation-delay:0s}
+.inst-chip:nth-child(2)::after{animation-delay:.4s}
+.inst-chip:nth-child(3)::after{animation-delay:.8s}
+.inst-chip:nth-child(4)::after{animation-delay:1.2s}
+.inst-chip:nth-child(5)::after{animation-delay:1.6s}
+.inst-chip:nth-child(6)::after{animation-delay:2s}
+@keyframes inst-sweep{0%{left:-80%}50%,100%{left:130%}}
+.inst-sub{font-size:13.5px;color:var(--muted)}
+@media(max-width:600px){.inst-chip{font-size:12.5px;padding:9px 18px}.inst-head{font-size:18px}}
 @media(max-width:780px){.mode-grid{grid-template-columns:1fr}.mode-card{padding:28px 22px}.mode-title{font-size:19px}}
 
 /* ===== Candor Lantern ===== */
@@ -642,6 +658,20 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
     </a>
   </div>
   <p class="mode-foot">Same engine, two questions. No prop firm? Your account still has a breaking point.<br>Your broker won't eliminate you. Your own risk can. Candor shows you which.</p>
+
+  <!-- INSTRUMENT COMPATIBILITY STRIP -->
+  <div class="inst-strip">
+    <div class="inst-head">Works with what you actually trade.</div>
+    <div class="inst-chips">
+      <span class="inst-chip">Gold</span>
+      <span class="inst-chip">Silver</span>
+      <span class="inst-chip">Forex pairs</span>
+      <span class="inst-chip">Indices</span>
+      <span class="inst-chip">NASDAQ futures</span>
+      <span class="inst-chip">Crypto CFDs</span>
+    </div>
+    <div class="inst-sub">If it&rsquo;s in your MT4 / MT5 history export, the engine reads the P/L.</div>
+  </div>
 </div></section>
 
 
