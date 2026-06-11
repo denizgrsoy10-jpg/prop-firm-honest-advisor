@@ -741,17 +741,17 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
 <!-- SAMPLE READOUT TABLE -->
 <section class="reveal" id="readout"><div class="wrap">
 <div class="chalk-layer" aria-hidden="true">
-<span class="chalk glow" style="top:2%;left:1%;font-size:20px;animation-delay:0s">P(pass) = 1 &minus; &prod;(1 &minus; p&isin;)</span>
-<span class="chalk glow" style="top:5%;right:2%;font-size:17px;animation-delay:2s">&sigma; = &radic;(&Sigma;(x&isin; &minus; &mu;)&sup2; / n)</span>
+<span class="chalk glow" style="top:2%;left:1%;font-size:20px;animation-delay:0s">P(pass) = 1 &minus; &prod;(1 &minus; p_i)</span>
+<span class="chalk glow" style="top:5%;right:2%;font-size:17px;animation-delay:2s">&sigma; = &radic;(&Sigma;(x_i &minus; &mu;)&sup2; / n)</span>
 <span class="chalk glow" style="top:20%;left:3%;font-size:22px;animation-delay:1s">DD = (Peak &minus; Trough) / Peak</span>
-<span class="chalk glow" style="top:25%;right:5%;font-size:16px;animation-delay:3s">E[X] = &Sigma; x&isin; &middot; P(x&isin;)</span>
+<span class="chalk glow" style="top:25%;right:5%;font-size:16px;animation-delay:3s">E[X] = &Sigma; x_i &middot; P(x_i)</span>
 <span class="chalk glow" style="top:45%;left:2%;font-size:19px;animation-delay:4s">VaR = &mu; &minus; 1.645 &middot; &sigma; &middot; &radic;t</span>
 <span class="chalk glow" style="top:50%;right:3%;font-size:21px;animation-delay:1.5s">f* = (b&middot;p &minus; q) / b</span>
 <span class="chalk glow" style="top:70%;left:5%;font-size:18px;animation-delay:2.5s">P(A|B) = P(B|A) &middot; P(A) / P(B)</span>
-<span class="chalk glow" style="top:72%;right:4%;font-size:20px;animation-delay:0.5s">R = &Sigma; ln(P&isin; / P&isin;&minus;1)</span>
+<span class="chalk glow" style="top:72%;right:4%;font-size:20px;animation-delay:0.5s">R = &Sigma; ln(P_i / P_i-1)</span>
 <span class="chalk glow" style="top:88%;left:8%;font-size:17px;animation-delay:3.5s">CVaR = E[X | X &le; VaR]</span>
 <span class="chalk glow" style="top:38%;left:35%;font-size:15px;animation-delay:4.2s">n &rarr; &infin;</span>
-<span class="chalk glow" style="top:60%;left:40%;font-size:19px;animation-delay:0.8s">&Sigma; w&isin; = 1</span>
+<span class="chalk glow" style="top:60%;left:40%;font-size:19px;animation-delay:0.8s">&Sigma; w_i = 1</span>
 </div>
   <div class="sec-head">
     <span class="sec-no">SCAN.02 &middot; PROP FIRM MODE</span>
@@ -778,21 +778,21 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
 <!-- 6 DIAGNOSTIC MODULES -->
 <section class="reveal"><div class="wrap">
 <div class="chalk-layer" aria-hidden="true">
-<span class="chalk glow" style="top:3%;left:2%;font-size:22px;animation-delay:0s">P(pass) = 1 &minus; &prod;(1 &minus; p&isin;)</span>
-<span class="chalk glow" style="top:8%;right:3%;font-size:18px;animation-delay:1.2s">&sigma; = &radic;(&Sigma;(x&isin; &minus; &mu;)&sup2; / n)</span>
+<span class="chalk glow" style="top:3%;left:2%;font-size:22px;animation-delay:0s">P(pass) = 1 &minus; &prod;(1 &minus; p_i)</span>
+<span class="chalk glow" style="top:8%;right:3%;font-size:18px;animation-delay:1.2s">&sigma; = &radic;(&Sigma;(x_i &minus; &mu;)&sup2; / n)</span>
 <span class="chalk glow" style="top:22%;left:5%;font-size:24px;animation-delay:2.5s">DD = (Peak &minus; Trough) / Peak</span>
 <span class="chalk glow" style="top:18%;right:5%;font-size:17px;animation-delay:0.8s">z = (x &minus; &mu;) / &sigma;</span>
-<span class="chalk glow" style="top:38%;left:3%;font-size:19px;animation-delay:3.2s">E[X] = &Sigma; x&isin; &middot; P(x&isin;)</span>
+<span class="chalk glow" style="top:38%;left:3%;font-size:19px;animation-delay:3.2s">E[X] = &Sigma; x_i &middot; P(x_i)</span>
 <span class="chalk glow" style="top:42%;right:2%;font-size:22px;animation-delay:1.8s">VaR = &mu; &minus; 1.645 &middot; &sigma; &middot; &radic;t</span>
 <span class="chalk glow" style="top:55%;left:8%;font-size:20px;animation-delay:4s">f* = (b&middot;p &minus; q) / b</span>
 <span class="chalk glow" style="top:52%;right:8%;font-size:16px;animation-delay:0.4s">S = (Rp &minus; Rf) / &sigma;p</span>
 <span class="chalk glow" style="top:68%;left:4%;font-size:21px;animation-delay:2s">P(A|B) = P(B|A) &middot; P(A) / P(B)</span>
 <span class="chalk glow" style="top:65%;right:4%;font-size:18px;animation-delay:3.5s">CVaR = E[X | X &le; VaR]</span>
-<span class="chalk glow" style="top:80%;left:6%;font-size:23px;animation-delay:1s">R = &Sigma; ln(P&isin; / P&isin;&minus;1)</span>
+<span class="chalk glow" style="top:80%;left:6%;font-size:23px;animation-delay:1s">R = &Sigma; ln(P_i / P_i-1)</span>
 <span class="chalk glow" style="top:82%;right:6%;font-size:17px;animation-delay:2.8s">&int; f(t) dt = N(&mu;,&sigma;&sup2;)</span>
 <span class="chalk glow" style="top:92%;left:15%;font-size:19px;animation-delay:4.5s">MaxDD = max(DD) &forall; t</span>
 <span class="chalk glow" style="top:33%;left:40%;font-size:16px;animation-delay:3.8s">n &rarr; &infin;</span>
-<span class="chalk glow" style="top:75%;left:35%;font-size:20px;animation-delay:0.6s">&Sigma; w&isin; = 1</span>
+<span class="chalk glow" style="top:75%;left:35%;font-size:20px;animation-delay:0.6s">&Sigma; w_i = 1</span>
 </div>
   <div class="sec-head">
     <span class="sec-no">SCAN.03 &middot; PROP FIRM MODE</span>
