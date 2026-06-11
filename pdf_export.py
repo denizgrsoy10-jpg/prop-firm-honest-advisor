@@ -49,6 +49,94 @@ def _pct(p):
     return f"{p * 100:.1f}%"
 
 
+# ---------------------------------------------------------------------------
+# Report polish helpers (presentation only — no engine logic)
+# ---------------------------------------------------------------------------
+GOLD = colors.HexColor("#D9A332")
+CARD_BG = colors.HexColor("#13110c")
+CARD_TEXT = colors.HexColor("#F7F3EA")
+
+def _generic_ruleset_label(firm_name: str) -> str:
+    """Public-safe generic label for the shareable card (no real firm names)."""
+    n = (firm_name or "").lower()
+    if "eod" in n or "apex" in n:
+        return "EOD-style ruleset"
+    if "one" in n and "step" in n or "1-step" in n or "e8" in n:
+        return "One-step ruleset"
+    if "2-step" in n or "two" in n:
+        return "Two-step ruleset"
+    if "stellar" in n:
+        return "Two-step ruleset"
+    if "stakes" in n or "5ers" in n:
+        return "Two-step ruleset"
+    return "Best matching ruleset"
+
+
+def _share_card(ss, rows):
+    """Build a screenshot-friendly summary card table. rows = list of (label, value)."""
+    data = []
+    for label, value in rows:
+        data.append([Paragraph(f'<font color="#D9A332" size="7">{label}</font>',
+                               ss["Small"]),
+                     Paragraph(f'<font color="#F7F3EA" size="11"><b>{value}</b></font>',
+                               ss["Body"])])
+    t = Table(data, colWidths=[42 * mm, 116 * mm])
+    t.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, -1), CARD_BG),
+        ("TOPPADDING", (0, 0), (-1, -1), 5),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+        ("LEFTPADDING", (0, 0), (-1, -1), 10),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 10),
+        ("LINEBELOW", (0, 0), (-1, -2), 0.3, colors.HexColor("#2a261c")),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("BOX", (0, 0), (-1, -1), 1, GOLD),
+    ]))
+    return t
+
+
+def _glossary_block(ss, el):
+    """Mini glossary — one line per term, presentation only."""
+    el.append(Paragraph("Mini glossary", ss["H2c"]))
+    terms = [
+        ("Trailing drawdown", "A drawdown limit that can move as account equity rises."),
+        ("EOD drawdown", "A drawdown calculation based on end-of-day equity rather than every intraday tick."),
+        ("Daily loss limit", "The maximum loss allowed within a trading day under a ruleset."),
+        ("Retry loop", "The repeated cost of buying or restarting challenges after failure."),
+        ("Fee burn", "The estimated cost pressure created by low pass odds and repeated attempts."),
+        ("Risk DNA", "Behavioral risk patterns detected from your uploaded history."),
+        ("Killer rule", "The rule most often associated with failure in simulation."),
+        ("Killer behavior", "The trading behavior most associated with drawdown pressure in your uploaded history."),
+        ("Confidence", "A data-quality label based on trade count, trading days, and available fields."),
+    ]
+    for term, desc in terms:
+        el.append(Paragraph(f"<b>{term}:</b> {desc}", ss["Small"]))
+
+
+def _closing_bridge(ss, el, mode="prop"):
+    """Closing bridge — what to do with this report. No advice language."""
+    el.append(Paragraph("What to do with this report", ss["H2c"]))
+    el.append(Paragraph(
+        "This report is a snapshot of the uploaded history and the ruleset "
+        "version shown above. If your risk settings, trade behavior, "
+        "instrument mix, or a public ruleset changes, rerun the RealityCheck "
+        "with updated data.", ss["Body"]))
+    el.append(Paragraph("Common reasons to rerun:", ss["Body"]))
+    for reason in ["You changed position sizing",
+                   "You added 30+ new trades",
+                   "You switched instruments",
+                   "A public challenge rule changed",
+                   "Your drawdown pattern changed"]:
+        el.append(Paragraph(f"&bull; {reason}", ss["Body"]))
+    el.append(Spacer(1, 4))
+    el.append(Paragraph(
+        "<b>Next steps:</b> Rerun after new data &nbsp;&middot;&nbsp; "
+        "Compare another mode &nbsp;&middot;&nbsp; Submit your outcome later.",
+        ss["Body"]))
+    el.append(Paragraph(
+        "Testing different risk settings? A 3-report bundle lets you compare "
+        "scenarios without starting from scratch.", ss["Small"]))
+
+
 def build_pdf(full_report: dict) -> bytes:
     buf = io.BytesIO()
     doc = SimpleDocTemplate(buf, pagesize=A4, topMargin=18 * mm, bottomMargin=16 * mm,
@@ -72,6 +160,32 @@ def build_pdf(full_report: dict) -> bytes:
     el.append(Paragraph("\u25C6 LANTERN SCAN COMPLETE", ss["Lantern"]))
     el.append(Paragraph("Prop Firm RealityCheck Report", ss["H1c"]))
     el.append(Paragraph("Generated from your trading history · Candor", ss["Sub"]))
+
+    # --- Shareable score card (public-safe: generic ruleset labels only) ---
+    _rows_sorted = sorted(full_report["firm_rows"], key=lambda r: r["pass_prob"], reverse=True)
+    _best = _rows_sorted[0] if _rows_sorted else None
+    if _best:
+        _vlabel = {"go": "Strong fit", "wait": "Borderline", "skip": "High mismatch"}.get(_best["verdict"], "—")
+        el.append(_share_card(ss, [
+            ("CANDOR REALITYCHECK", "Prop Firm RealityCheck \u00b7 Lantern Scan Complete"),
+            ("BEST MATCHING RULESET", f"{_generic_ruleset_label(_best['firm'])} \u00b7 {_pct(_best['pass_prob'])} \u00b7 {_vlabel}"),
+            ("KILLER RULE", _best.get("killer_rule", "—")),
+            ("CONFIDENCE", str(full_report.get("confidence", "—"))),
+            ("REPORT ID", str(full_report.get("report_id", "—"))),
+        ]))
+        el.append(Spacer(1, 8))
+
+    # --- Score context band ---
+    el.append(Paragraph("How to read the risk labels", ss["H2c"]))
+    el.append(Paragraph(
+        "<b>Strong Fit:</b> this uploaded history showed stronger fit with "
+        "this ruleset in simulation. &nbsp; <b>Borderline:</b> this uploaded "
+        "history produced mixed results under this ruleset. &nbsp; "
+        "<b>High Mismatch:</b> this uploaded history showed high mismatch or "
+        "high retry-risk under this ruleset.", ss["Body"]))
+    el.append(Paragraph(
+        "Labels describe simulation behavior of the uploaded history only — "
+        "not a forecast, not advice, not a guarantee.", ss["Small"]))
 
     d = full_report["data"]
     el.append(Paragraph("Your data", ss["H2c"]))
@@ -185,6 +299,12 @@ def build_pdf(full_report: dict) -> bytes:
         f"<b>{full_report.get('report_id','-')}</b>. We publish calibration once enough "
         f"verified outcomes are in — we don't hide from our predictions.", ss["Body"]))
 
+    # --- Closing bridge ---
+    _closing_bridge(ss, el, mode="prop")
+
+    # --- Mini glossary ---
+    _glossary_block(ss, el)
+
     el.append(Spacer(1, 16))
     el.append(Paragraph("Honesty &amp; disclaimer", ss["H2c"]))
     el.append(Paragraph(full_report["disclaimer"], ss["Small"]))
@@ -233,6 +353,33 @@ def build_own_account_pdf(rep: dict) -> bytes:
         f"Report {rep.get('report_id','')} &middot; Generated "
         f"{rep.get('generated','')} &middot; Confidence: "
         f"{rep.get('confidence','—')}", ss["Sub"]))
+
+    # --- Shareable score card ---
+    _sc = rep.get("survival_score") or {}
+    _bd = rep.get("drawdown_bands") or {}
+    _kb0 = rep.get("killer_behavior") or {}
+    _score_v = _sc.get("score")
+    el.append(_share_card(ss, [
+        ("CANDOR REALITYCHECK", "Own Account RealityCheck \u00b7 Lantern Scan Complete"),
+        ("ACCOUNT SURVIVAL SCORE", f"{_score_v if _score_v is not None else '—'} / 100"),
+        ("OBSERVED DRAWDOWN BAND", str(_bd.get("observed_max_dd_band", "—"))),
+        ("KILLER BEHAVIOR", str(_kb0.get("behavior", "—")) if _kb0.get("available") else "—"),
+        ("CONFIDENCE", str(_sc.get("confidence", rep.get("confidence", "Limited")))),
+        ("REPORT ID", str(rep.get("report_id", "—"))),
+    ]))
+    el.append(Spacer(1, 8))
+
+    # --- Score context band ---
+    el.append(Paragraph("How to read the score", ss["H2c"]))
+    el.append(Paragraph(
+        "<b>0\u201340:</b> high breakage pressure observed in this uploaded "
+        "history. &nbsp; <b>40\u201365:</b> borderline resilience \u2014 risk "
+        "patterns are present but not extreme. &nbsp; <b>65\u2013100:</b> "
+        "stronger historical resilience, subject to data confidence.",
+        ss["Body"]))
+    el.append(Paragraph(
+        "The score describes the uploaded history only \u2014 not a forecast, "
+        "not advice, not a guarantee.", ss["Small"]))
 
     # Executive summary block
     ss_score = rep.get("survival_score") or {}
@@ -357,6 +504,12 @@ def build_own_account_pdf(rep: dict) -> bytes:
     for it in chk.get("items", []):
         el.append(Paragraph(f"&bull; {it}", ss["Body"]))
     el.append(Paragraph(chk.get("label", ""), ss["Small"]))
+
+    # --- Closing bridge ---
+    _closing_bridge(ss, el, mode="own")
+
+    # --- Mini glossary ---
+    _glossary_block(ss, el)
 
     # Disclaimer footer
     el.append(Spacer(1, 10))
