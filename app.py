@@ -534,12 +534,12 @@ if ss.daily_pnls is not None:
                        "connected yet.", icon="⚠️")
         st.write("Locked: every firm scored · killer rule per firm · expected fee burn "
                  "· **what-if simulator** · daily breakdown · equity curve · PDF.")
-        # blurred teaser
+        # blurred teaser (ranges, no single-point numbers, no real firm names)
         st.markdown(
             "<div style='filter:blur(5px);opacity:.55;pointer-events:none;"
             "border:1px solid #ddd4c3;border-radius:6px;padding:14px'>"
-            "FTMO 58% · The5ers 34% · Apex 14% &nbsp;|&nbsp; what-if: 100%→58%, "
-            "80%→63%, 65%→66% · fee burn per firm · equity curve</div>",
+            "Ruleset A 55–70% · Ruleset B 20–35% · Ruleset C 2–9% &nbsp;|&nbsp; "
+            "what-if: 100%→55–70%, 80%→48–63%, 65%→38–54% · fee burn per ruleset · equity curve</div>",
             unsafe_allow_html=True)
         st.write("")
 
