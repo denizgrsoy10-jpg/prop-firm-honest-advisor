@@ -36,44 +36,6 @@ st.set_page_config(page_title="Candor RealityCheck",
 
 # --- routing to extra surfaces (?page=outcome|honesty-ledger|admin|signal) ----
 import views
-
-# ---------------------------------------------------------------------------
-# In-app shareable score card (presentation only — mirrors the PDF card)
-# ---------------------------------------------------------------------------
-def _generic_ruleset_label_app(firm_name: str) -> str:
-    """Public-safe generic label for the shareable card (no real firm names)."""
-    n = (firm_name or "").lower()
-    if "eod" in n or "apex" in n:
-        return "EOD-style ruleset"
-    if ("one" in n and "step" in n) or "1-step" in n or "e8" in n:
-        return "One-step ruleset"
-    if "2-step" in n or "two" in n or "stellar" in n or "stakes" in n or "5ers" in n:
-        return "Two-step ruleset"
-    return "Best matching ruleset"
-
-
-def render_score_card(rows):
-    """Render the dark/gold shareable summary card. rows = [(label, value), ...]"""
-    import streamlit as _st
-    items = "".join(
-        f'<div style="display:flex;align-items:baseline;gap:14px;'
-        f'padding:7px 0;border-bottom:1px solid #2a261c">'
-        f'<span style="font-size:10px;letter-spacing:.14em;color:#D9A332;'
-        f'text-transform:uppercase;min-width:170px;font-family:monospace">{label}</span>'
-        f'<span style="font-size:15px;color:#F7F3EA;font-weight:600">{value}</span>'
-        f'</div>'
-        for label, value in rows)
-    _st.markdown(
-        f'<div style="background:#13110c;border:1.5px solid #D9A332;'
-        f'border-radius:10px;padding:18px 22px;margin:6px 0 18px">'
-        f'<div style="font-size:10px;letter-spacing:.2em;color:#D9A332;'
-        f'font-family:monospace;margin-bottom:10px">\u25C6 LANTERN SCAN COMPLETE</div>'
-        f'{items}'
-        f'<div style="font-size:9px;color:#8A949E;margin-top:10px">'
-        f'Statistical simulation only \u00b7 Not financial advice \u00b7 '
-        f'No guarantees</div></div>',
-        unsafe_allow_html=True)
-
 _qp = st.query_params
 _page = _qp.get("page")
 if _page in ("outcome", "ledger", "honesty-ledger", "admin", "signal", "autopilot"):
@@ -291,25 +253,6 @@ def _render_own_account():
         st.caption(f"Report ID {rep['report_id']} · {rep['generated']} · "
                    f"Confidence: {rep['confidence']}")
 
-        # --- Shareable score card (mirrors the PDF card) ---
-        _sc = rep.get("survival_score") or {}
-        _bd0 = rep.get("drawdown_bands") or {}
-        _kb0 = rep.get("killer_behavior") or {}
-        _sv = _sc.get("score")
-        render_score_card([
-            ("CANDOR REALITYCHECK", "Own Account RealityCheck"),
-            ("ACCOUNT SURVIVAL SCORE", f"{_sv if _sv is not None else '—'} / 100"),
-            ("OBSERVED DRAWDOWN BAND", str(_bd0.get("observed_max_dd_band", "—"))),
-            ("KILLER BEHAVIOR", str(_kb0.get("behavior", "—")) if _kb0.get("available") else "—"),
-            ("CONFIDENCE", str(_sc.get("confidence", rep.get("confidence", "Limited")))),
-            ("REPORT ID", str(rep.get("report_id", "—"))),
-        ])
-        st.caption("How to read the score — 0–40: high breakage pressure "
-                   "observed in this uploaded history · 40–65: borderline "
-                   "resilience · 65–100: stronger historical resilience, "
-                   "subject to data confidence. Describes the uploaded "
-                   "history only; not a forecast, not advice.")
-
         # Data quality
         audit = rep["data_audit"]
         with st.expander(f"Data quality — confidence: {audit['confidence']}",
@@ -403,6 +346,22 @@ def _render_own_account():
 
 def pct(p):
     return f"{p * 100:.1f}%"
+
+
+def pct_range(p, n_trades=None):
+    """Display a pass-odds confidence band instead of false single-point precision.
+    Presentation only — does NOT change the engine's computed probability.
+    Band width reflects sample size: smaller samples → wider bands.
+    """
+    import math
+    pp = max(0.0, min(1.0, float(p)))
+    n = n_trades if (n_trades and n_trades > 0) else 60
+    # ~80% confidence half-width via normal approx, floored so tiny samples stay honest
+    half = 1.2816 * math.sqrt(pp * (1 - pp) / n)
+    half = max(half, 0.04)  # never pretend to be tighter than ±4 points
+    lo = max(0.0, pp - half)
+    hi = min(1.0, pp + half)
+    return f"{lo * 100:.0f}\u2013{hi * 100:.0f}%"
 
 
 MARKET_OPTIONS = {
@@ -551,15 +510,18 @@ if ss.daily_pnls is not None:
         st.info(w, icon="ℹ️")
 
     st.subheader("2 · Your free preview")
-    lo, hi = p["odds_range"]
+    _n = p["data"].get("n_trades")
+    _killer_found = bool(p.get("killer_rule"))
     c1, c2, c3 = st.columns(3)
-    c1.metric("Best matching firm", p["best_firm"].split(" — ")[0], pct(p["best_prob"]))
-    c2.metric("Toughest firm", p["worst_firm"].split(" — ")[0], pct(p["worst_prob"]))
-    c3.metric("Pass-odds range", f"{pct(lo)}–{pct(hi)}")
+    c1.metric("Killer rule", "Detected" if _killer_found else "None flagged")
+    c2.metric("Best-match fit", VERDICT_COPY[p["verdict"]][0])
+    c3.metric("Pass-odds ranges", "🔒 Locked")
 
     vlabel, vmsg = VERDICT_COPY[p["verdict"]]
-    st.markdown(f"**Risk label for your best match:** {vlabel} — {vmsg}")
-    st.markdown(f"**Most dangerous rule for you:** {p['killer_rule']}")
+    st.markdown(f"**Your best-match fit:** {vlabel} — {vmsg}")
+    st.info("🔒 The free preview shows **whether** a killer rule was found and your "
+            "overall fit. **Which rule, which ruleset, and your pass-odds ranges** "
+            "are in the full report.", icon="🔒")
 
     st.divider()
 
@@ -628,25 +590,6 @@ if ss.daily_pnls is not None:
         st.subheader("Full report")
         st.caption(f"Report ID {full['report_id']} · {full['ruleset_version']} · "
                    f"Confidence: {full['confidence']}")
-
-        # --- Shareable score card (mirrors the PDF card; generic labels only) ---
-        _rows_sorted = sorted(full["firm_rows"], key=lambda r: r["pass_prob"], reverse=True)
-        if _rows_sorted:
-            _best = _rows_sorted[0]
-            _vl = VERDICT_COPY.get(_best["verdict"], ("—", ""))[0]
-            render_score_card([
-                ("CANDOR REALITYCHECK", "Prop Firm RealityCheck"),
-                ("BEST MATCHING RULESET",
-                 f"{_generic_ruleset_label_app(_best['firm'])} · "
-                 f"{pct(_best['pass_prob'])} · {_vl}"),
-                ("KILLER RULE", str(_best.get("killer_rule", "—"))),
-                ("CONFIDENCE", str(full.get("confidence", "—"))),
-                ("REPORT ID", str(full.get("report_id", "—"))),
-            ])
-            st.caption("How to read the labels — Strong Fit: stronger fit in "
-                       "simulation · Borderline: mixed results · High Mismatch: "
-                       "high mismatch or retry-risk. Describes the uploaded "
-                       "history only; not a forecast, not advice.")
         st.write(f"Generated {full['generated']} · {full['data']['n_trades']} trades · "
                  f"{full['data']['n_days']} trading days")
 
@@ -658,12 +601,14 @@ if ss.daily_pnls is not None:
             st.write(f"- Large outliers: {_dq['outliers']}")
             st.caption(_dq["confidence_why"])
 
-        st.markdown("**All firms**")
+        _nt = full["data"]["n_trades"]
+        st.markdown("**All firms** — pass odds shown as 80% confidence ranges")
         st.table([{
-            "Firm": r["firm"], "Pass odds": pct(r["pass_prob"]),
+            "Firm": r["firm"], "Pass odds": pct_range(r["pass_prob"], _nt),
             "Risk label": VERDICT_COPY.get(r["verdict"], ("—",""))[0], "Killer rule": r["killer_rule"],
             "Fee": f"${r['fee']:,}",
         } for r in full["firm_rows"]])
+        st.caption(f"Ranges are 80% confidence bands from {_nt} trades; more trades narrow them. Not single-point certainty.")
         if any(r.get("verification_status") == "needs_verification"
                for r in full["firm_rows"]):
             st.caption("⚠️ Some rulesets are seed data pending verification. "
@@ -692,10 +637,10 @@ if ss.daily_pnls is not None:
         if _mm:
             st.markdown("**Best-fit challenge type**")
             c1, c2 = st.columns(2)
-            c1.write(f"✅ **Best fit — {_mm['best_firm']}** ({pct(_mm['best_odds'])})")
+            c1.write(f"✅ **Best fit — {_mm['best_firm']}** ({pct_range(_mm['best_odds'], _nt)})")
             for x in _mm["best_why"]:
                 c1.write(f"- {x}")
-            c2.write(f"⚠️ **Lowest fit — {_mm['worst_firm']}** ({pct(_mm['worst_odds'])})")
+            c2.write(f"⚠️ **Lowest fit — {_mm['worst_firm']}** ({pct_range(_mm['worst_odds'], _nt)})")
             for x in _mm["worst_why"]:
                 c2.write(f"- {x}")
             st.caption(_mm["label"])
@@ -704,7 +649,7 @@ if ss.daily_pnls is not None:
         st.caption(full["what_if"]["label"])
         st.table([{
             "Risk level": f"{row['risk_pct']}%",
-            "Estimated pass odds": pct(row["pass_prob"]),
+            "Estimated pass odds": pct_range(row["pass_prob"], _nt),
             "Killer rule": row["killer_rule_label"],
         } for row in full["what_if"]["rows"]])
 

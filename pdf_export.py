@@ -49,6 +49,17 @@ def _pct(p):
     return f"{p * 100:.1f}%"
 
 
+def _pct_range(p, n_trades=None):
+    """Confidence band for pass-odds (presentation only; engine value unchanged)."""
+    import math
+    pp = max(0.0, min(1.0, float(p)))
+    n = n_trades if (n_trades and n_trades > 0) else 60
+    half = max(1.2816 * math.sqrt(pp * (1 - pp) / n), 0.04)
+    lo = max(0.0, pp - half)
+    hi = min(1.0, pp + half)
+    return f"{lo * 100:.0f}\u2013{hi * 100:.0f}%"
+
+
 # ---------------------------------------------------------------------------
 # Report polish helpers (presentation only — no engine logic)
 # ---------------------------------------------------------------------------
@@ -144,6 +155,7 @@ def build_pdf(full_report: dict) -> bytes:
                             title="Prop Firm RealityCheck Report")
     ss = _styles()
     el = []
+    _nt = (full_report.get("data") or {}).get("n_trades")  # for pass-odds confidence bands
 
     # Candor logo at the top (never break the PDF if the asset is missing)
     try:
@@ -168,7 +180,7 @@ def build_pdf(full_report: dict) -> bytes:
         _vlabel = {"go": "Strong fit", "wait": "Borderline", "skip": "High mismatch"}.get(_best["verdict"], "—")
         el.append(_share_card(ss, [
             ("CANDOR REALITYCHECK", "Prop Firm RealityCheck \u00b7 Lantern Scan Complete"),
-            ("BEST MATCHING RULESET", f"{_generic_ruleset_label(_best['firm'])} \u00b7 {_pct(_best['pass_prob'])} \u00b7 {_vlabel}"),
+            ("BEST MATCHING RULESET", f"{_generic_ruleset_label(_best['firm'])} \u00b7 {_pct_range(_best['pass_prob'], _nt)} \u00b7 {_vlabel}"),
             ("KILLER RULE", _best.get("killer_rule", "—")),
             ("CONFIDENCE", str(full_report.get("confidence", "—"))),
             ("REPORT ID", str(full_report.get("report_id", "—"))),
@@ -201,9 +213,13 @@ def build_pdf(full_report: dict) -> bytes:
 
     # firm comparison
     el.append(Paragraph("Firm comparison", ss["H2c"]))
+    el.append(Paragraph(
+        "Pass odds are shown as 80% confidence ranges, not single-point "
+        f"precision. Ranges come from {_nt if _nt else 'the uploaded'} "
+        "trades and narrow as you add more data.", ss["Small"]))
     rows = [["Firm", "Pass odds", "Risk label", "Killer rule", "Fee"]]
     for r in full_report["firm_rows"]:
-        rows.append([r["firm"], _pct(r["pass_prob"]), {"go":"Strong fit","wait":"Borderline","skip":"High mismatch"}.get(r["verdict"],"—"),
+        rows.append([r["firm"], _pct_range(r["pass_prob"], _nt), {"go":"Strong fit","wait":"Borderline","skip":"High mismatch"}.get(r["verdict"],"—"),
                      r["killer_rule"], f"${r['fee']:,}"])
     t = Table(rows, colWidths=[55 * mm, 18 * mm, 18 * mm, 50 * mm, 18 * mm])
     t.setStyle(TableStyle([
@@ -233,9 +249,9 @@ def build_pdf(full_report: dict) -> bytes:
     mch = full_report.get("matchmaker")
     if mch:
         el.append(Paragraph("Best-fit challenge type", ss["H2c"]))
-        el.append(Paragraph(f"<b>Best fit — {mch['best_firm']}</b> ({_pct(mch['best_odds'])}): "
+        el.append(Paragraph(f"<b>Best fit — {mch['best_firm']}</b> ({_pct_range(mch['best_odds'], _nt)}): "
                             + "; ".join(mch["best_why"]), ss["Body"]))
-        el.append(Paragraph(f"<b>Lowest fit — {mch['worst_firm']}</b> ({_pct(mch['worst_odds'])}): "
+        el.append(Paragraph(f"<b>Lowest fit — {mch['worst_firm']}</b> ({_pct_range(mch['worst_odds'], _nt)}): "
                             + "; ".join(mch["worst_why"]), ss["Body"]))
         el.append(Paragraph(mch.get("label", ""), ss["Small"]))
     el.append(Paragraph("Expected fee burn", ss["H2c"]))
@@ -254,7 +270,7 @@ def build_pdf(full_report: dict) -> bytes:
     el.append(Spacer(1, 4))
     wrows = [["Risk level", "Estimated pass odds", "Killer rule"]]
     for row in wi["rows"]:
-        wrows.append([f"{row['risk_pct']}%", _pct(row["pass_prob"]), row["killer_rule_label"]])
+        wrows.append([f"{row['risk_pct']}%", _pct_range(row["pass_prob"], _nt), row["killer_rule_label"]])
     wt = Table(wrows, colWidths=[30 * mm, 45 * mm, 60 * mm])
     wt.setStyle(TableStyle([
         ("FONTSIZE", (0, 0), (-1, -1), 9),
