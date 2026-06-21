@@ -201,18 +201,21 @@ def _render_own_account():
 
     # --- 4) paywall / locked report -----------------------------------------
     if not ss.unlocked:
-        st.subheader("4 · Unlock the full report — $19")
+        st.subheader("4 · Early access — $9")
+        st.info("**Candor is in early access.** The engine works, reports are real. "
+                "$9 gets you a full report now + locked-in pricing when monitoring "
+                "launches. Early access pricing won\u2019t last forever, but "
+                "there\u2019s no fake countdown.", icon="🔦")
         if payments.mode() == "mock":
-            st.warning("DEMO / TEST MODE — clicking unlock does **not** "
-                       "charge anything and is not a real purchase. Live "
-                       "payments are not connected yet.", icon="⚠️")
+            st.warning("DEMO / TEST MODE — clicking below does **not** "
+                       "charge anything. Live payments are not connected yet.", icon="⚠️")
         st.write("Locked: drawdown-band table, killer behavior detail, "
                  "margin pressure, what-if lab, personal risk-control "
                  "checklist, PDF.")
         _consent_payment = st.checkbox(PAY_CONSENT_TEXT,
                                        key="oa_consent_payment")
         btn_label = ("Unlock (demo — no charge)" if payments.mode() == "mock"
-                     else "Unlock full report — $19")
+                     else "Get early access — $9")
         if st.button(btn_label, type="primary",
                      disabled=not _consent_payment, key="oa_unlock"):
             analytics.log_event("oa_unlock_clicked")
@@ -527,11 +530,14 @@ if ss.daily_pnls is not None:
 
     # --- 3) paywall / locked full report ------------------------------------
     if not ss.unlocked:
-        st.subheader("3 · Unlock the full report — $19")
+        st.subheader("3 · Early access — $9")
+        st.info("**Candor is in early access.** The engine works, reports are real. "
+                "$9 gets you a full report now + locked-in pricing when monitoring "
+                "launches. Early access pricing won\u2019t last forever, but "
+                "there\u2019s no fake countdown.", icon="🔦")
         if payments.mode() == "mock":
-            st.warning("DEMO / TEST MODE — clicking unlock does **not** charge "
-                       "anything and is not a real purchase. Live payments are not "
-                       "connected yet.", icon="⚠️")
+            st.warning("DEMO / TEST MODE — clicking below does **not** charge "
+                       "anything. Live payments are not connected yet.", icon="⚠️")
         st.write("Locked: every firm scored · killer rule per firm · expected fee burn "
                  "· **what-if simulator** · daily breakdown · equity curve · PDF.")
         # blurred teaser (ranges, no single-point numbers, no real firm names)
@@ -548,7 +554,7 @@ if ss.daily_pnls is not None:
             key="consent_payment")
 
         btn_label = ("Unlock (demo — no charge)" if payments.mode() == "mock"
-                     else "Unlock full report — $19")
+                     else "Get early access — $9")
         if st.button(btn_label, type="primary", disabled=not _consent_payment):
             analytics.log_event("unlock_clicked")
             # Real clickwrap record (payment-time consent)
@@ -704,7 +710,7 @@ if ss.daily_pnls is not None:
         st.divider()
         st.subheader("Keep going")
         cc1, cc2 = st.columns(2)
-        if cc1.button("Rerun after tweaking strategy — $9"):
+        if cc1.button("Rerun with new data — $9"):
             analytics.log_event("rerun_clicked")
             st.info("Upload a new CSV to compare before / after.")
         cc2.button("Bundle · 3 reports — $49")
