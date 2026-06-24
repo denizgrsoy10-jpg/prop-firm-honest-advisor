@@ -5,7 +5,12 @@
   "instrument_class": "cfd_forex",
   "account_size": 100000,
   "currency": "USD",
-  "phases": [{"name": "Challenge", "target_pct": 10.0}],
+  "phases": [
+    {
+      "name": "Challenge",
+      "target_pct": 10.0
+    }
+  ],
   "daily_loss_limit_pct": 3.0,
   "max_drawdown_pct": 10.0,
   "drawdown_type": "trailing_eod",
@@ -17,5 +22,36 @@
   "fee_currency": "EUR",
   "last_verified_date": "2026-06-05",
   "source_note": "Verified against FTMO official comparison table (ftmo.oanda.com), launched Feb 2026. Target 10%, daily loss 3% (vs higher of equity/balance EOD), max loss 10% END-OF-DAY TRAILING, no minimum trading days, Best Day Rule = a single day max 50% of total profit (consistency 50%), unlimited time, not refundable. Engine approximates EOD trailing from end-of-day balances. Fee approximate (~EUR; 1-step may be slightly cheaper than 2-step) - verify exact 100K price at checkout.",
-  "verification_status": "verified"
+  "verification_status": "verified",
+  "size_tiers": [
+    {
+      "size": 5000,
+      "fee": 65
+    },
+    {
+      "size": 10000,
+      "fee": 119
+    },
+    {
+      "size": 25000,
+      "fee": 227
+    },
+    {
+      "size": 50000,
+      "fee": 313
+    },
+    {
+      "size": 100000,
+      "fee": 540
+    },
+    {
+      "size": 200000,
+      "fee": 918
+    }
+  ],
+  "size_tiers_verified": false,
+  "size_tiers_note": "Only the 100K fee ($540) is verified. Other sizes ESTIMATED from typical CFD prop-firm price ratios (needs per-size verification at the firm's checkout).",
+  "needs_verification": [
+    "size_tiers: only 100K fee confirmed; other sizes estimated"
+  ]
 }

@@ -5,7 +5,12 @@
   "instrument_class": "cfd_forex",
   "account_size": 100000,
   "currency": "USD",
-  "phases": [{"name": "Evaluation", "target_pct": 6.0}],
+  "phases": [
+    {
+      "name": "Evaluation",
+      "target_pct": 6.0
+    }
+  ],
   "daily_loss_limit_pct": 3.0,
   "max_drawdown_pct": 4.0,
   "drawdown_type": "trailing_intraday",
@@ -17,5 +22,36 @@
   "fee_currency": "USD",
   "last_verified_date": "2026-06-05",
   "source_note": "Verified vs E8 Markets help center (help.e8markets.com) + 2026 reviews. E8 One DEFAULT (minimum-drawdown) config: profit target 6%, daily drawdown 3% (from start-of-day balance), max drawdown 4% DYNAMIC intraday-trailing. Customizable at purchase up to 14% drawdown / 21% target. EVALUATION has NO consistency rule and NO news restriction and unlimited trading days; the 40% Best-Day rule applies to FUNDED accounts only. Dynamic drawdown locks to static once profit equals the drawdown buffer - engine uses the non-locking (conservative) trailing model. Fee ~$260 for 100K.",
-  "verification_status": "verified"
+  "verification_status": "verified",
+  "size_tiers": [
+    {
+      "size": 5000,
+      "fee": 31
+    },
+    {
+      "size": 10000,
+      "fee": 57
+    },
+    {
+      "size": 25000,
+      "fee": 109
+    },
+    {
+      "size": 50000,
+      "fee": 151
+    },
+    {
+      "size": 100000,
+      "fee": 260
+    },
+    {
+      "size": 200000,
+      "fee": 442
+    }
+  ],
+  "size_tiers_verified": false,
+  "size_tiers_note": "Only the 100K fee ($260) is verified. Other sizes ESTIMATED from typical CFD prop-firm price ratios (needs per-size verification at the firm's checkout).",
+  "needs_verification": [
+    "size_tiers: only 100K fee confirmed; other sizes estimated"
+  ]
 }

@@ -22,5 +22,21 @@
   "fee_currency": "USD",
   "last_verified_date": "2026-06-05",
   "source_note": "DEEP-VERIFIED vs help.topstep.com (Trading Combine Parameters + Maximum Loss Limit + Daily Loss Limit articles) + proptradingvibes account-tested guide (Apr 2026, ~$8k paid). 50K Combine: profit target $3,000 (6%; acct must reach $53k). MAX LOSS LIMIT $2,000 (4%) is TRAILING INTRADAY — tracks highest LIVE equity in real time, floor lifts immediately on new highs, NEVER moves down, and on the COMBINE it does NOT lock at starting balance (keeps climbing). This is HARDER than EOD-trailing (Apex) or static: making $3k in the morning then giving it back breaks the Combine even if you end flat, because the floor trailed up $3k intraday. Breaching the MLL ENDS the account (hard). DAILY LOSS LIMIT $1,000 (2%) is a SOFT breach — auto-liquidates the day and locks trading until 5 PM CT reset, but is NOT a rule violation; account stays open next session. Engine models it as 'pause' not breach. CONSISTENCY 50%: single best winning day must stay <=50% of total cycle profit (applies Combine AND XFA). Min 2 trading days. NO time limit. MONTHLY SUBSCRIPTION model: $49/mo for 50K + $149 one-time activation when funded — NOT a one-time challenge fee, so 'fee' here ($49) is the monthly sub and is not directly comparable to one-time-fee firms. Each renewal adds 1 Reset Credit. Pass rate 16.8%/attempt, 51.8% eventually reach funded (Topstep-published). CME FUTURES ONLY (ES/NQ/CL/GC etc). VPN PROHIBITED (Error 403). Platforms: TopstepX/Quantower. After pass -> Express Funded Account (XFA), which switches to EOD-trailing DD that DOES lock at start balance (easier than Combine). Profit split 90/10 from $1 for post-Jan-12-2026 sign-ups. $100K ($99/mo, $6k target, $3k MLL) and $150K ($149/mo, $9k target, $4.5k MLL) are structurally identical.",
-  "verification_status": "verified"
+  "verification_status": "verified",
+  "size_tiers": [
+    {
+      "size": 50000,
+      "fee": 49
+    },
+    {
+      "size": 100000,
+      "fee": 99
+    },
+    {
+      "size": 150000,
+      "fee": 149
+    }
+  ],
+  "size_tiers_verified": true,
+  "size_tiers_note": "Topstep monthly subscription (not one-time). 50K $49/mo, 100K $99/mo, 150K $149/mo + $149 activation when funded. Verified vs help.topstep.com."
 }

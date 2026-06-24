@@ -15,7 +15,7 @@ from __future__ import annotations
 import os
 import streamlit as st
 
-from rules_engine import load_firms
+from rules_engine import load_firms, available_account_sizes, apply_account_size
 from load_trades import load_trades_csv, TradeParseError
 from report_builder import build_preview, build_full_report
 from pdf_export import build_pdf, build_own_account_pdf
@@ -67,6 +67,7 @@ ss.setdefault("preview", None)
 ss.setdefault("unlocked", False)
 ss.setdefault("checkout", None)
 ss.setdefault("market_label", None)
+ss.setdefault("account_size", None)
 ss.setdefault("preview_market", None)
 ss.setdefault("report_id", None)
 ss.setdefault("logged", False)
@@ -77,7 +78,7 @@ ss.setdefault("mode", "prop_firm")
 
 def _reset():
     for k in ("daily_pnls", "meta", "preview", "checkout", "market_label",
-              "preview_market", "report_id", "oa_preview"):
+              "preview_market", "report_id", "oa_preview", "account_size"):
         ss[k] = None
     ss["unlocked"] = False
     ss["logged"] = False
@@ -498,6 +499,35 @@ if ss.daily_pnls is not None:
 
     market_class = MARKET_OPTIONS[ss.market_label]
     filtered = [f for f in firms if _market_match(f, market_class)]
+
+    # --- account-size selector (presentation only; odds are % based) --------
+    _sizes = available_account_sizes(filtered)
+    if _sizes:
+        _size_labels = [f"${s_//1000}K" for s_ in _sizes]
+        # default to 50K if available, else the middle option
+        if ss.account_size in _sizes:
+            _sidx = _sizes.index(ss.account_size)
+        elif 50000 in _sizes:
+            _sidx = _sizes.index(50000)
+        else:
+            _sidx = len(_sizes) // 2
+        _chosen_label = st.radio("Account size to simulate", _size_labels,
+                                 index=_sidx, horizontal=True,
+                                 help="Your trade history is fixed in dollars, but targets and "
+                                      "limits are percentages — so a smaller account usually means "
+                                      "your same dollar P/L clears the target more easily. Size "
+                                      "changes both your pass-odds and the challenge fee.")
+        _chosen_size = _sizes[_size_labels.index(_chosen_label)]
+        if _chosen_size != ss.account_size:
+            ss.account_size = _chosen_size
+            ss.preview = None  # size changed -> recompute
+        # rebase every firm to the chosen size
+        filtered = [apply_account_size(f, ss.account_size) for f in filtered]
+        # honesty: warn if any shown firm's fee at this size is estimated
+        if any(f.get("_fee_estimated") and f.get("_selected_size") == ss.account_size
+               for f in filtered):
+            st.caption("ⓘ Some fees at this size are estimated from typical pricing and "
+                       "marked pending verification. Pass-odds are unaffected.")
 
     if not filtered:
         st.warning("No firms in this category yet.")

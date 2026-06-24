@@ -5,7 +5,12 @@
   "instrument_class": "futures",
   "account_size": 50000,
   "currency": "USD",
-  "phases": [{"name": "Evaluation", "target_pct": 6.0}],
+  "phases": [
+    {
+      "name": "Evaluation",
+      "target_pct": 6.0
+    }
+  ],
   "daily_loss_limit_pct": 2.0,
   "max_drawdown_pct": 5.0,
   "drawdown_type": "trailing_eod",
@@ -17,5 +22,25 @@
   "fee_currency": "USD",
   "last_verified_date": "2026-06-05",
   "source_note": "Verified vs Apex help center + multiple 2026 reviews (post-'4.0', Mar 2026). 50K EOD: profit target $3,000 (6%), EOD trailing drawdown $2,500 (5%), Daily Loss Limit $1,000 (2%), NO minimum trading days, 30-day access. EOD trailing LOCKS at the profit-target balance ($53k) on Rithmic/WealthCharts but trails indefinitely on Tradovate - engine uses the non-locking (conservative) version, so real Rithmic odds may be slightly better. The 30% consistency rule applies to FUNDED payouts, not to passing the eval. Fee approximate: 4.0 uses one-time eval (~$20 promo) + $99 PA activation; list varies - verify at checkout.",
-  "verification_status": "verified"
+  "verification_status": "verified",
+  "size_tiers": [
+    {
+      "size": 25000,
+      "fee": 89
+    },
+    {
+      "size": 50000,
+      "fee": 99
+    },
+    {
+      "size": 100000,
+      "fee": 119
+    },
+    {
+      "size": 150000,
+      "fee": 149
+    }
+  ],
+  "size_tiers_verified": true,
+  "size_tiers_note": "Apex 4.0 (Mar 2026) EOD eval fees, retail. 250K/300K sizes retired. Activation fee ($99 EOD) charged separately on funding. Promo codes 70-90% off common."
 }

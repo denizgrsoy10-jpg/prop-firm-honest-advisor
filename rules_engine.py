@@ -63,6 +63,39 @@ def load_firms(firms_dir: str | None = None) -> list[dict]:
     return list(firms.values())
 
 
+def available_account_sizes(firms: list[dict]) -> list[int]:
+    """Union of all account sizes offered across the given firms, sorted."""
+    sizes = set()
+    for f in firms:
+        for t in (f.get("size_tiers") or []):
+            sizes.add(int(t["size"]))
+        sizes.add(int(f.get("account_size", 0)))
+    sizes.discard(0)
+    return sorted(sizes)
+
+
+def apply_account_size(firm: dict, size: int) -> dict:
+    """Return a shallow copy of `firm` rebased to `size`.
+
+    PRESENTATION/PARAMETER ONLY — the engine math is percentage-based, so pass
+    odds are identical across sizes. We only swap account_size and fee so the
+    dollar targets, equity curve, and fee-burn reflect the size the user picked.
+    If the firm doesn't offer that exact size, we return it unchanged.
+    """
+    tiers = firm.get("size_tiers") or []
+    match = next((t for t in tiers if int(t["size"]) == int(size)), None)
+    if not match:
+        return firm  # size not offered by this firm -> leave as-is
+    out = dict(firm)
+    out["_size_base"] = int(firm.get("account_size"))  # original, for P/L scaling
+    out["account_size"] = int(match["size"])
+    if match.get("fee") is not None:
+        out["fee"] = match["fee"]
+    out["_selected_size"] = int(match["size"])
+    out["_fee_estimated"] = not firm.get("size_tiers_verified", False)
+    return out
+
+
 @dataclass
 class PhaseResult:
     passed: bool

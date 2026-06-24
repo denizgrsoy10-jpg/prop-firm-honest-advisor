@@ -22,9 +22,32 @@
   "min_profitable_days": 0,
   "consistency_rule_pct": null,
   "news_rule": "allowed",
-  "fee": 176,
+  "fee": 289,
   "fee_currency": "USD",
   "last_verified_date": "2026-06-05",
   "source_note": "DEEP-VERIFIED vs fundingpips.com/trading-objectives + help.fundingpips.com + proptradingvibes hands-on rules guide (Mar 2026, account-tested). 2-Step STANDARD (CFD): Phase 1 target 8%, Phase 2 target 5%, min 3 trading days PER PHASE, unlimited time. Daily loss 5% and max drawdown 10% are BOTH STATIC (fixed floor from start; $50k acct floor stays $45k regardless of profit). Static is the trader-friendly part vs trailing-DD firms. NO consistency rule during EVALUATION (can make 100% of profit in one day and still pass). EAs, swing/weekend holding ALLOWED on 2-Step. Leverage up to 1:100. Max ~20 lots/click on 50k. FUNDED (Master) stage differs sharply — NOT modeled as eval gates: (a) news profits stripped if trade opened/closed within 5 min of high-impact news (exception: opened >=5h before); (b) on-demand payout needs 35% consistency (no day >35% of cycle profit); (c) 3% single-trade profit cap ($1,500 on 50k); (d) IP-region consistency monitoring; (e) toxicity-flow detection. Hedging across own accounts PROHIBITED. Inactivity ~30 days closes acct. Eval fee REFUNDED after 4th successful payout (1-Step/2-Step only, not Pro/Zero). Dubai-based (Ankh Prop FZCO). MT5/cTrader(+$20)/Match-Trader/TradeLocker — NO MT4. SEPARATE products NOT modeled here: 2-Step Pro (3%/6% static, 6%/6% targets, 1 day/phase, ~45% consistency), 1-Step (10% target, 6% static DD), Zero/Instant (no eval, 5% EQUITY-TRAILING DD, 15% consistency, no weekend). Fee ~USD176 for 50k (no public pricing page; verify at checkout; promo codes ~20% common).",
-  "verification_status": "verified"
+  "verification_status": "verified",
+  "size_tiers": [
+    {
+      "size": 5000,
+      "fee": 36
+    },
+    {
+      "size": 10000,
+      "fee": 66
+    },
+    {
+      "size": 25000,
+      "fee": 156
+    },
+    {
+      "size": 50000,
+      "fee": 289
+    },
+    {
+      "size": 100000,
+      "fee": 499
+    }
+  ],
+  "size_tiers_verified": true
 }

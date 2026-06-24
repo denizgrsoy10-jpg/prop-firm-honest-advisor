@@ -5,7 +5,16 @@
   "instrument_class": "cfd_forex",
   "account_size": 100000,
   "currency": "USD",
-  "phases": [{"name": "Phase 1", "target_pct": 8.0}, {"name": "Phase 2", "target_pct": 5.0}],
+  "phases": [
+    {
+      "name": "Phase 1",
+      "target_pct": 8.0
+    },
+    {
+      "name": "Phase 2",
+      "target_pct": 5.0
+    }
+  ],
   "daily_loss_limit_pct": 5.0,
   "max_drawdown_pct": 10.0,
   "drawdown_type": "static",
@@ -17,5 +26,36 @@
   "fee_currency": "USD",
   "last_verified_date": "2026-06-05",
   "source_note": "Verified vs fundednext.com terms (Apr 2026) + reviews. Stellar 2-Step (CFD): targets 8%/5%, daily loss 5% of initial balance (expands with intraday profit, resets 00:00 server), max loss 10% of initial balance STATIC/balance-based. News trading allowed. FundedNext removed fixed minimum trading days on Stellar (set to 0) - verify current wording. Fee approximate for 100K (range ~USD60-1100 across sizes) - verify at checkout.",
-  "verification_status": "verified"
+  "verification_status": "verified",
+  "size_tiers": [
+    {
+      "size": 5000,
+      "fee": 66
+    },
+    {
+      "size": 10000,
+      "fee": 121
+    },
+    {
+      "size": 25000,
+      "fee": 231
+    },
+    {
+      "size": 50000,
+      "fee": 318
+    },
+    {
+      "size": 100000,
+      "fee": 549
+    },
+    {
+      "size": 200000,
+      "fee": 933
+    }
+  ],
+  "size_tiers_verified": false,
+  "size_tiers_note": "Only the 100K fee ($549) is verified. Other sizes ESTIMATED from typical CFD prop-firm price ratios (needs per-size verification at the firm's checkout).",
+  "needs_verification": [
+    "size_tiers: only 100K fee confirmed; other sizes estimated"
+  ]
 }

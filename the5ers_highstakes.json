@@ -5,7 +5,16 @@
   "instrument_class": "cfd_forex",
   "account_size": 100000,
   "currency": "USD",
-  "phases": [{"name": "Phase 1", "target_pct": 8.0}, {"name": "Phase 2", "target_pct": 5.0}],
+  "phases": [
+    {
+      "name": "Phase 1",
+      "target_pct": 8.0
+    },
+    {
+      "name": "Phase 2",
+      "target_pct": 5.0
+    }
+  ],
   "daily_loss_limit_pct": 5.0,
   "max_drawdown_pct": 10.0,
   "drawdown_type": "static",
@@ -17,5 +26,36 @@
   "fee_currency": "USD",
   "last_verified_date": "2026-06-05",
   "source_note": "Verified vs The5ers help center (help.the5ers.com) + 2026 reviews. High Stakes 2-step: targets 8%/5%, max loss 10% ABSOLUTE/static from initial balance, daily loss 5% from previous day's higher of closing equity/balance at 00:00 server, min 3 PROFITABLE trading days, no time limit (30-day inactivity expiry). News trading, HFT, hedging, arbitrage, copy trading PROHIBITED. USA traders restricted. Fee ~USD for 100K tier - verify exact at checkout.",
-  "verification_status": "verified"
+  "verification_status": "verified",
+  "size_tiers": [
+    {
+      "size": 5000,
+      "fee": 71
+    },
+    {
+      "size": 10000,
+      "fee": 131
+    },
+    {
+      "size": 25000,
+      "fee": 250
+    },
+    {
+      "size": 50000,
+      "fee": 345
+    },
+    {
+      "size": 100000,
+      "fee": 595
+    },
+    {
+      "size": 200000,
+      "fee": 1012
+    }
+  ],
+  "size_tiers_verified": false,
+  "size_tiers_note": "Only the 100K fee ($595) is verified. Other sizes ESTIMATED from typical CFD prop-firm price ratios (needs per-size verification at the firm's checkout).",
+  "needs_verification": [
+    "size_tiers: only 100K fee confirmed; other sizes estimated"
+  ]
 }

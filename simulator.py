@@ -98,9 +98,30 @@ def simulate_firm(daily_pnls: list[float], firm: dict,
     )
 
 
+def _scaled_pnls_for(daily_pnls: list[float], firm: dict) -> list[float]:
+    """Scale a trader's dollar P/L to the firm's selected account size.
+
+    The engine is dollar-based, but challenge targets/limits are percentages.
+    A trader running the same risk % on a different size would see their dollar
+    P/L scale with the size. So when the user picks a size, we scale P/L by
+    (selected_size / firm's base account_size). This keeps pass-odds size-
+    independent (the honest result) while fee/dollar figures reflect the size.
+
+    `_size_base` records the firm's original size before apply_account_size()
+    overwrote account_size; if absent, no scaling happens.
+    """
+    base = firm.get("_size_base")
+    sel = firm.get("_selected_size")
+    if not base or not sel or base == sel:
+        return daily_pnls
+    factor = float(sel) / float(base)
+    return [p * factor for p in daily_pnls]
+
+
 def simulate_all(daily_pnls: list[float], firms: list[dict],
                  iters: int = DEFAULT_ITERS, seed: int | None = 42) -> list[FirmResult]:
-    results = [simulate_firm(daily_pnls, f, iters=iters, seed=seed) for f in firms]
+    results = [simulate_firm(_scaled_pnls_for(daily_pnls, f), f, iters=iters, seed=seed)
+               for f in firms]
     results.sort(key=lambda r: r.pass_prob, reverse=True)
     return results
 

@@ -26,5 +26,36 @@
   "fee_currency": "USD",
   "last_verified_date": "2026-06-05",
   "source_note": "DEEP-VERIFIED vs challenges.eightcap.com (official Rules & Conditions PDF V2.3, May 2026) + bestpropfirmguide firm sheet (Jun 2026) + dailyforex review. TWO PHASE (CFD): Assessment target 10%, Qualification target 8%, min 3 trading days EACH stage, no time limit. DAILY DRAWDOWN 5% is BALANCE-BASED off the PREVIOUS DAY's balance snapshot (Prev Day Balance x 5%); intraday equity loss beyond it = breach. Resets 1h after new trading day (01:00 UTC+3/+2). MAX DRAWDOWN 10% is STATIC/fixed off INITIAL balance ($50k acct floor = $45k, based on lowest equity point). Breaching EITHER daily or max DD = account permanently closed. Broker-backed: Eightcap International Ltd (Seychelles); parent broker Eightcap founded Melbourne 2015 — this institutional backing is the firm's main differentiator (stable feeds, tier-1 liquidity). NO traditional consistency rule on the eval pass itself, BUT payout-stage profit distribution caps single calendar day to 30% (Two Phase) of payout — NOT modeled as an eval gate here. Trades must be open >=60s to count toward stage-day requirements. NEWS RESTRICTED: cannot place trades within 10 min before/after high-impact (FXStreet) events; inside-window trading is a SOFT breach (warning + profit removal), not account death. Weekend holding ALLOWED. EAs allowed. Prohibited: martingale, grid, tick, hedging-between-accounts, latency/reverse arbitrage, gap trading, copy trading with others (own-account copy OK if same email). Max 10 open trades; FX <=40 lots/trade. 30-day inactivity closes acct. Same-IP required (VPN/VPS allowed if disclosed). US RESIDENTS RESTRICTED from MT4/MT5 challenges. MT4/MT5/TradeLocker. Profit split 80% (90% add-on). Trustpilot 4.1 (3,741 reviews). 14-day payout cycle. SEPARATE products NOT modeled: One Phase (10% target, 4% daily, 8% static max, min 5 days) and Day Trader (1-8h time-boxed, $10k sim, stake x multiplier). Fee ~USD299 for 50k (range USD119-1299, non-refundable; verify at checkout; ~15% promo codes common).",
-  "verification_status": "verified"
+  "verification_status": "verified",
+  "size_tiers": [
+    {
+      "size": 5000,
+      "fee": 62
+    },
+    {
+      "size": 10000,
+      "fee": 113
+    },
+    {
+      "size": 25000,
+      "fee": 217
+    },
+    {
+      "size": 50000,
+      "fee": 299
+    },
+    {
+      "size": 100000,
+      "fee": 516
+    },
+    {
+      "size": 200000,
+      "fee": 876
+    }
+  ],
+  "size_tiers_verified": false,
+  "size_tiers_note": "Only the 50K fee ($299) is verified. Other sizes ESTIMATED from typical CFD prop-firm price ratios (needs per-size verification at the firm's checkout).",
+  "needs_verification": [
+    "size_tiers: only 50K fee confirmed; other sizes estimated"
+  ]
 }
