@@ -76,7 +76,10 @@ def build_full_report(preview, daily_pnls, report_id=None):
         })
 
     best = results[0]
-    whatif = what_if_table(daily_pnls, best.firm)
+    # Scale P/L to the selected account size before what-if (same logic as simulate_all)
+    from simulator import _scaled_pnls_for
+    _wif_pnls = _scaled_pnls_for(daily_pnls, best.firm)
+    whatif = what_if_table(_wif_pnls, best.firm)
     firms = [r.firm for r in results]
 
     # --- Wave 1 insight modules (all honest diagnostics, never advice) -------
