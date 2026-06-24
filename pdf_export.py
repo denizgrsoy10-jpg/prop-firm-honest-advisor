@@ -299,6 +299,27 @@ def build_pdf(full_report: dict) -> bytes:
     else:
         el.append(Paragraph(dna.get("note", "Not enough data for a behavioral read."), ss["Small"]))
 
+    # sequence risk (path-dependency)
+    seq = full_report.get("sequence_risk", {})
+    stk = (seq or {}).get("streak", {})
+    if seq and seq.get("label"):
+        el.append(Paragraph("Sequence Risk — the order, not just the average", ss["H2c"]))
+        el.append(Paragraph(
+            f"Average pass across orderings: <b>{seq['pass_rate_shuffled']*100:.0f}%</b> "
+            f"&nbsp;·&nbsp; unluckiest 25% of orderings: <b>{seq['worst_quartile_pass']*100:.0f}%</b> "
+            f"&nbsp;·&nbsp; order sensitivity: <b>{seq['order_sensitivity']*100:.0f}%</b>",
+            ss["Body"]))
+        if stk.get("lag1_autocorr") is not None:
+            el.append(Paragraph(
+                f"Streakiness (lag-1 autocorrelation): <b>{stk['lag1_autocorr']:+.2f}</b> &nbsp;·&nbsp; "
+                f"longest observed runs: {stk['longest_win_streak']} up / "
+                f"{stk['longest_loss_streak']} down.", ss["Body"]))
+        el.append(Paragraph(seq["label"], ss["Body"]))
+        el.append(Paragraph(
+            "Same days, same totals — only the order changes. This isolates "
+            "run-of-the-cards risk a single win-rate can't show. Diagnostic only.",
+            ss["Small"]))
+
     # personal danger rules
     dr = full_report.get("danger_rules", {})
     if dr.get("rules"):

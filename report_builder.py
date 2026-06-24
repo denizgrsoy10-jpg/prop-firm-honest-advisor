@@ -18,6 +18,7 @@ from rules_engine import ruleset_version
 from what_if import what_if_table, WHATIF_LABEL
 from tracking import make_report_id, confidence_from
 import insights
+import sequence_risk
 
 
 def _expected_fee_burn(fee, pass_prob):
@@ -86,6 +87,11 @@ def build_full_report(preview, daily_pnls, report_id=None):
     autopsy = insights.killer_rule_autopsy(best)
     dna = insights.risk_dna(daily_pnls, preview["data"])
 
+    # --- Path-dependency layer (sequence risk on the best-fit ruleset) -------
+    # Uses the size-scaled P/L so it matches the odds shown for that firm.
+    _seq = sequence_risk.sequence_risk(_wif_pnls, best.firm, phase_index=0)
+    _streak = sequence_risk.streak_profile(daily_pnls)
+
     return {
         "report_id": report_id or make_report_id(),
         "ruleset_version": ruleset_version(firms),
@@ -110,6 +116,14 @@ def build_full_report(preview, daily_pnls, report_id=None):
         "fee_burn_headline": insights.fee_burn_headline(firm_rows),
         "matchmaker": insights.best_fit_matchmaker(results),
         "danger_rules": insights.personal_danger_rules(autopsy, dna, best),
+        "sequence_risk": ({
+            "pass_rate_shuffled": _seq.pass_rate_shuffled,
+            "worst_quartile_pass": _seq.worst_quartile_pass,
+            "order_sensitivity": _seq.order_sensitivity,
+            "dominant_breach_label": _seq.dominant_breach_label,
+            "label": _seq.label,
+            "streak": _streak,
+        } if _seq else {"streak": _streak, "label": None}),
         "disclaimer": ("Statistical simulation only. Not financial, investment or "
                        "trading advice. No outcome with any firm is guaranteed."),
     }

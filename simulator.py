@@ -15,6 +15,8 @@ import random
 from dataclasses import dataclass, field
 
 from rules_engine import evaluate_phase, BREACH_LABELS
+from sequence_risk import (lag1_autocorrelation, _optimal_block_len,
+                           block_bootstrap_path)
 
 DEFAULT_ITERS = 2000
 MAX_HORIZON = 30  # trading days simulated per phase
@@ -34,15 +36,25 @@ class FirmResult:
 
 
 def _simulate_phase_prob(daily_pnls, firm, phase_index, iters, horizon, rng):
-    """Return (pass_prob, breach_counter, sample_curve, median_final)."""
+    """Return (pass_prob, breach_counter, sample_curve, median_final).
+
+    Uses BLOCK BOOTSTRAP (not single-day resampling) so that a trader's real
+    streakiness — losing/winning runs — survives into the simulated attempts.
+    Independent day-sampling would smooth those runs away and understate the
+    tail risk that trailing-drawdown and daily-limit rules punish. When the
+    series shows little autocorrelation, the block length collapses toward 2,
+    so this gracefully approaches ordinary bootstrap for non-streaky traders.
+    """
     if not daily_pnls:
         return 0.0, {}, [], firm["account_size"]
+    autocorr = lag1_autocorrelation(daily_pnls)
+    block_len = _optimal_block_len(len(daily_pnls), autocorr)
     passes = 0
     breaches: dict[str, int] = {}
     finals = []
     sample_curve = []
     for k in range(iters):
-        path = [rng.choice(daily_pnls) for _ in range(horizon)]
+        path = block_bootstrap_path(daily_pnls, horizon, block_len, rng)
         res = evaluate_phase(path, firm, phase_index)
         finals.append(res.final_balance)
         if res.passed:

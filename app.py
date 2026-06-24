@@ -711,6 +711,36 @@ if ss.daily_pnls is not None:
         else:
             st.caption(_dna.get("note", "Not enough data for a behavioral read."))
 
+        # --- Sequence risk (path-dependency) --------------------------------
+        _seq = full.get("sequence_risk") or {}
+        _stk = _seq.get("streak") or {}
+        st.markdown("**🔀 Sequence risk — the order, not just the average**")
+        if _seq.get("label"):
+            _osens = _seq["order_sensitivity"]
+            sc1, sc2, sc3 = st.columns(3)
+            sc1.metric("Avg pass (any order)",
+                       f"{_seq['pass_rate_shuffled']*100:.0f}%")
+            sc2.metric("Unluckiest 25% of orders",
+                       f"{_seq['worst_quartile_pass']*100:.0f}%")
+            sc3.metric("Order sensitivity",
+                       f"{_osens*100:.0f}%",
+                       help="Gap between a lucky and an unlucky ordering of the "
+                            "very same trading days. High = your risk is the run, "
+                            "not the average.")
+            st.write(f"- {_seq['label']}")
+            if _stk.get("lag1_autocorr") is not None:
+                st.write(f"- Your results' streakiness (lag-1 autocorrelation): "
+                         f"**{_stk['lag1_autocorr']:+.2f}** — "
+                         f"longest observed runs: {_stk['longest_win_streak']} up, "
+                         f"{_stk['longest_loss_streak']} down.")
+            st.write(f"- When a bad ordering breaks this ruleset, the rule that "
+                     f"usually does it: **{_seq['dominant_breach_label']}**.")
+            st.caption("Same days, same totals — only the order changes. This "
+                       "isolates run-of-the-cards risk that a single win-rate "
+                       "can't show. Diagnostic only, not advice.")
+        else:
+            st.caption(_stk.get("label", "Not enough data for a sequence read."))
+
         # --- Personal danger rules -------------------------------------------
         _dr = full["danger_rules"]
         st.markdown("**🛡️ Your personal danger rules**")
