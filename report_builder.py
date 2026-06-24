@@ -19,6 +19,7 @@ from what_if import what_if_table, WHATIF_LABEL
 from tracking import make_report_id, confidence_from
 import insights
 import sequence_risk
+import rule_interaction
 
 
 def _expected_fee_burn(fee, pass_prob):
@@ -87,6 +88,10 @@ def build_full_report(preview, daily_pnls, report_id=None):
     autopsy = insights.killer_rule_autopsy(best)
     dna = insights.risk_dna(daily_pnls, preview["data"])
 
+    # --- Rule interaction layer (how rules compound for best-fit firm) --------
+    _ri = rule_interaction.rule_interaction_analysis(
+        _wif_pnls, best.firm, phase_index=0)
+
     # --- Path-dependency layer (sequence risk on the best-fit ruleset) -------
     # Uses the size-scaled P/L so it matches the odds shown for that firm.
     _seq = sequence_risk.sequence_risk(_wif_pnls, best.firm, phase_index=0)
@@ -116,6 +121,16 @@ def build_full_report(preview, daily_pnls, report_id=None):
         "fee_burn_headline": insights.fee_burn_headline(firm_rows),
         "matchmaker": insights.best_fit_matchmaker(results),
         "danger_rules": insights.personal_danger_rules(autopsy, dna, best),
+        "rule_interaction": ({
+            "compound_breach_pct": _ri.compound_breach_pct,
+            "solo_breach_pct": _ri.solo_breach_pct,
+            "spike_then_floor_pct": _ri.spike_then_floor_pct,
+            "consistency_ceiling_pct": _ri.consistency_ceiling_pct,
+            "double_window_pct": _ri.double_window_pct,
+            "active_rules": _ri.active_rules,
+            "trap_labels": _ri.trap_labels,
+            "compound_label": _ri.compound_label,
+        } if _ri else {"compound_label": None, "trap_labels": []}),
         "sequence_risk": ({
             "pass_rate_shuffled": _seq.pass_rate_shuffled,
             "worst_quartile_pass": _seq.worst_quartile_pass,

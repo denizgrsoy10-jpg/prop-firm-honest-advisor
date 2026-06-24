@@ -299,6 +299,28 @@ def build_pdf(full_report: dict) -> bytes:
     else:
         el.append(Paragraph(dna.get("note", "Not enough data for a behavioral read."), ss["Small"]))
 
+    # rule interaction
+    ri = full_report.get("rule_interaction", {})
+    if ri and ri.get("compound_label"):
+        el.append(Paragraph("Rule Interaction — how rules compound", ss["H2c"]))
+        cpct = ri.get("compound_breach_pct", 0)
+        spct = ri.get("solo_breach_pct", 0)
+        el.append(Paragraph(
+            f"<b>Compound failures</b> (2+ rules near-simultaneously): "
+            f"<b>{cpct*100:.0f}%</b> &nbsp;·&nbsp; "
+            f"Single-rule failures: <b>{spct*100:.0f}%</b>",
+            ss["Body"]))
+        el.append(Paragraph(ri["compound_label"], ss["Body"]))
+        for trap in (ri.get("trap_labels") or []):
+            el.append(Paragraph(f"&#9888; {trap}", ss["Body"]))
+        if ri.get("active_rules"):
+            el.append(Paragraph(
+                "Active rules: " + " · ".join(ri["active_rules"]),
+                ss["Small"]))
+        el.append(Paragraph(
+            "Rule-interaction analysis derived from uploaded history. "
+            "Diagnostic only — not financial advice.", ss["Small"]))
+
     # sequence risk (path-dependency)
     seq = full_report.get("sequence_risk", {})
     stk = (seq or {}).get("streak", {})

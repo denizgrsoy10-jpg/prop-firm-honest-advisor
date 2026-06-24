@@ -711,6 +711,29 @@ if ss.daily_pnls is not None:
         else:
             st.caption(_dna.get("note", "Not enough data for a behavioral read."))
 
+        # --- Rule interaction -----------------------------------------------
+        _ri = full.get("rule_interaction") or {}
+        if _ri.get("compound_label"):
+            st.markdown("**⚙️ Rule interaction — how rules compound**")
+            _cpct = _ri.get("compound_breach_pct", 0)
+            _spct = _ri.get("solo_breach_pct", 0)
+            ri1, ri2 = st.columns(2)
+            ri1.metric("Compound failures",
+                       f"{_cpct*100:.0f}%",
+                       help="Failures where 2+ rules fired near-simultaneously. "
+                            "High = the ruleset has a compounding structure.")
+            ri2.metric("Single-rule failures",
+                       f"{_spct*100:.0f}%",
+                       help="Failures caused by one rule alone.")
+            st.write(f"- {_ri['compound_label']}")
+            for trap in (_ri.get("trap_labels") or []):
+                st.write(f"- ⚠️ {trap}")
+            if _ri.get("active_rules"):
+                st.caption("Active rules in this ruleset: " +
+                           " · ".join(_ri["active_rules"]))
+            st.caption("Rule-interaction analysis on your uploaded history. "
+                       "Diagnostic only, not advice.")
+
         # --- Sequence risk (path-dependency) --------------------------------
         _seq = full.get("sequence_risk") or {}
         _stk = _seq.get("streak") or {}
