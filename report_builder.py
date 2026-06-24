@@ -20,6 +20,7 @@ from tracking import make_report_id, confidence_from
 import insights
 import sequence_risk
 import rule_interaction
+import regime_analysis
 
 
 def _expected_fee_burn(fee, pass_prob):
@@ -88,6 +89,9 @@ def build_full_report(preview, daily_pnls, report_id=None):
     autopsy = insights.killer_rule_autopsy(best)
     dna = insights.risk_dna(daily_pnls, preview["data"])
 
+    # --- Regime layer (trader-level; uses raw history, firm-independent) -------
+    _regime = regime_analysis.regime_report(daily_pnls)
+
     # --- Rule interaction layer (how rules compound for best-fit firm) --------
     _ri = rule_interaction.rule_interaction_analysis(
         _wif_pnls, best.firm, phase_index=0)
@@ -121,6 +125,7 @@ def build_full_report(preview, daily_pnls, report_id=None):
         "fee_burn_headline": insights.fee_burn_headline(firm_rows),
         "matchmaker": insights.best_fit_matchmaker(results),
         "danger_rules": insights.personal_danger_rules(autopsy, dna, best),
+        "regime": _regime,
         "rule_interaction": ({
             "compound_breach_pct": _ri.compound_breach_pct,
             "solo_breach_pct": _ri.solo_breach_pct,

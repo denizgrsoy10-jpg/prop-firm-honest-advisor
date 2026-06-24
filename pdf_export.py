@@ -299,6 +299,32 @@ def build_pdf(full_report: dict) -> bytes:
     else:
         el.append(Paragraph(dna.get("note", "Not enough data for a behavioral read."), ss["Small"]))
 
+    # regime analysis
+    reg = full_report.get("regime", {})
+    if reg:
+        el.append(Paragraph("Regime & Volatility — is your history stable?", ss["H2c"]))
+        rs = reg.get("regime_shift") or {}
+        if rs:
+            el.append(Paragraph(
+                f"Early third: <b>${rs['early']['mean_pnl']:+,.0f}/day</b> "
+                f"({rs['early']['win_rate']*100:.0f}% win) &nbsp;·&nbsp; "
+                f"Middle: <b>${rs['middle']['mean_pnl']:+,.0f}/day</b> "
+                f"({rs['middle']['win_rate']*100:.0f}% win) &nbsp;·&nbsp; "
+                f"Recent: <b>${rs['recent']['mean_pnl']:+,.0f}/day</b> "
+                f"({rs['recent']['win_rate']*100:.0f}% win)", ss["Body"]))
+            el.append(Paragraph(rs.get("edge_label", ""), ss["Body"]))
+        if reg.get("vol_clustering_label"):
+            el.append(Paragraph(reg["vol_clustering_label"], ss["Body"]))
+        rd = reg.get("risk_drift") or {}
+        if rd.get("label"):
+            el.append(Paragraph(rd["label"], ss["Body"]))
+        el.append(Paragraph(
+            f"<b>Regime trust: {reg.get('regime_trust','-')}</b> — "
+            f"{reg.get('regime_trust_label','')}", ss["Body"]))
+        el.append(Paragraph(
+            "Regime analysis derived from uploaded history. Diagnostic only.",
+            ss["Small"]))
+
     # rule interaction
     ri = full_report.get("rule_interaction", {})
     if ri and ri.get("compound_label"):

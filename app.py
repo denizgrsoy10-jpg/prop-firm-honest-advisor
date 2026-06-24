@@ -711,6 +711,33 @@ if ss.daily_pnls is not None:
         else:
             st.caption(_dna.get("note", "Not enough data for a behavioral read."))
 
+        # --- Regime analysis ------------------------------------------------
+        _reg = full.get("regime") or {}
+        if _reg:
+            st.markdown("**📈 Regime & volatility — is your history stable?**")
+            _rs = _reg.get("regime_shift") or {}
+            rg1, rg2, rg3 = st.columns(3)
+            if _rs:
+                rg1.metric("Early third",
+                           f"${_rs['early']['mean_pnl']:+,.0f}/day",
+                           f"{_rs['early']['win_rate']*100:.0f}% win")
+                rg2.metric("Middle third",
+                           f"${_rs['middle']['mean_pnl']:+,.0f}/day",
+                           f"{_rs['middle']['win_rate']*100:.0f}% win")
+                rg3.metric("Recent third",
+                           f"${_rs['recent']['mean_pnl']:+,.0f}/day",
+                           f"{_rs['recent']['win_rate']*100:.0f}% win")
+                st.write(f"- {_rs['edge_label']}")
+            if _reg.get("vol_clustering_label"):
+                st.write(f"- {_reg['vol_clustering_label']}")
+            _rd = _reg.get("risk_drift") or {}
+            if _rd.get("label"):
+                st.write(f"- {_rd['label']}")
+            st.write(f"- **Regime trust: {_reg.get('regime_trust','—')}** — "
+                     f"{_reg.get('regime_trust_label','')}")
+            st.caption("Regime analysis on your uploaded history. Diagnostic "
+                       "only, not advice.")
+
         # --- Rule interaction -----------------------------------------------
         _ri = full.get("rule_interaction") or {}
         if _ri.get("compound_label"):
