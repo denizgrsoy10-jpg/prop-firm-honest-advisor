@@ -22,6 +22,7 @@ import sequence_risk
 import rule_interaction
 import regime_analysis
 import bayesian
+import kelly
 
 
 def _expected_fee_burn(fee, pass_prob):
@@ -90,6 +91,9 @@ def build_full_report(preview, daily_pnls, report_id=None):
     autopsy = insights.killer_rule_autopsy(best)
     dna = insights.risk_dna(daily_pnls, preview["data"])
 
+    # --- Kelly sizing layer (trader-level edge & growth-optimal fraction) -----
+    _kelly = kelly.kelly_analysis(daily_pnls)
+
     # --- Bayesian posterior sharpness on the best-fit firm's pass odds --------
     _n_trades = preview["data"].get("n_trades")
     _bayes = {
@@ -135,6 +139,16 @@ def build_full_report(preview, daily_pnls, report_id=None):
         "fee_burn_headline": insights.fee_burn_headline(firm_rows),
         "matchmaker": insights.best_fit_matchmaker(results),
         "danger_rules": insights.personal_danger_rules(autopsy, dna, best),
+        "kelly": ({
+            "edge_grade": _kelly.edge_grade,
+            "win_rate": _kelly.win_rate,
+            "payoff_ratio": _kelly.payoff_ratio,
+            "kelly_fraction": _kelly.kelly_fraction,
+            "recommended_fraction_label": _kelly.recommended_fraction_label,
+            "headline": _kelly.headline,
+            "detail": _kelly.detail,
+            "sizing_note": _kelly.sizing_note,
+        } if _kelly else None),
         "bayesian": _bayes,
         "regime": _regime,
         "rule_interaction": ({

@@ -712,6 +712,26 @@ if ss.daily_pnls is not None:
         else:
             st.caption(_dna.get("note", "Not enough data for a behavioral read."))
 
+        # --- Kelly sizing ---------------------------------------------------
+        _kel = full.get("kelly") or {}
+        if _kel and _kel.get("headline"):
+            st.markdown("**🎯 Optimal sizing — Kelly criterion**")
+            kc1, kc2, kc3 = st.columns(3)
+            kc1.metric("Win rate", f"{_kel['win_rate']*100:.0f}%")
+            _pr = _kel.get("payoff_ratio", 0)
+            kc2.metric("Payoff ratio",
+                       "∞" if _pr == float("inf") else f"{_pr:.2f}",
+                       help="Average win ÷ average loss.")
+            _kf = _kel.get("kelly_fraction", 0)
+            kc3.metric("Full Kelly",
+                       f"{_kf*100:.0f}%",
+                       help="Growth-optimal fraction of bankroll per bet, from "
+                            "your own edge. Most pros risk a fraction of this.")
+            st.write(f"- {_kel['headline']}")
+            st.write(f"- **Prudent range:** {_kel['recommended_fraction_label']}")
+            st.write(f"- {_kel['detail']}")
+            st.caption(_kel.get("sizing_note", "") + " Diagnostic only, not advice.")
+
         # --- Regime analysis ------------------------------------------------
         _reg = full.get("regime") or {}
         if _reg:
