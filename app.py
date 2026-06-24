@@ -353,19 +353,13 @@ def pct(p):
 
 
 def pct_range(p, n_trades=None):
-    """Display a pass-odds confidence band instead of false single-point precision.
+    """Display a pass-odds credible interval (Bayesian Beta-Binomial posterior).
     Presentation only — does NOT change the engine's computed probability.
-    Band width reflects sample size: smaller samples → wider bands.
+    Uses a Jeffreys prior; smaller samples widen the band automatically, and the
+    band is asymmetric and bounded in [0,1] near the extremes (never 0% or 100%).
     """
-    import math
-    pp = max(0.0, min(1.0, float(p)))
-    n = n_trades if (n_trades and n_trades > 0) else 60
-    # ~80% confidence half-width via normal approx, floored so tiny samples stay honest
-    half = 1.2816 * math.sqrt(pp * (1 - pp) / n)
-    half = max(half, 0.04)  # never pretend to be tighter than ±4 points
-    lo = max(0.0, pp - half)
-    hi = min(1.0, pp + half)
-    return f"{lo * 100:.0f}\u2013{hi * 100:.0f}%"
+    import bayesian
+    return bayesian.credible_interval_pct(p, n_trades, cred=0.80)
 
 
 MARKET_OPTIONS = {
@@ -644,7 +638,14 @@ if ss.daily_pnls is not None:
             "Risk label": VERDICT_COPY.get(r["verdict"], ("—",""))[0], "Killer rule": r["killer_rule"],
             "Fee": f"${r['fee']:,}",
         } for r in full["firm_rows"]])
-        st.caption(f"Ranges are 80% confidence bands from {_nt} trades; more trades narrow them. Not single-point certainty.")
+        _bayes = full.get("bayesian") or {}
+        _tth = _bayes.get("trades_to_halve")
+        _cap = (f"Ranges are 80% Bayesian credible intervals (Beta-Binomial, "
+                f"Jeffreys prior) from {_nt} trades — asymmetric and bounded, "
+                f"never 0% or 100%.")
+        if _tth:
+            _cap += f" About +{_tth} more trades would roughly halve the band width."
+        st.caption(_cap)
         if any(r.get("verification_status") == "needs_verification"
                for r in full["firm_rows"]):
             st.caption("⚠️ Some rulesets are seed data pending verification. "

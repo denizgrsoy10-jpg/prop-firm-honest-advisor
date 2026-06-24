@@ -21,6 +21,7 @@ import insights
 import sequence_risk
 import rule_interaction
 import regime_analysis
+import bayesian
 
 
 def _expected_fee_burn(fee, pass_prob):
@@ -89,6 +90,15 @@ def build_full_report(preview, daily_pnls, report_id=None):
     autopsy = insights.killer_rule_autopsy(best)
     dna = insights.risk_dna(daily_pnls, preview["data"])
 
+    # --- Bayesian posterior sharpness on the best-fit firm's pass odds --------
+    _n_trades = preview["data"].get("n_trades")
+    _bayes = {
+        "best_interval": bayesian.credible_interval_pct(best.pass_prob, _n_trades),
+        "band_width_pct": round(bayesian.posterior_width(best.pass_prob, _n_trades) * 100, 1),
+        "trades_to_halve": bayesian.trades_to_halve_band(best.pass_prob, _n_trades),
+        "n_trades": _n_trades,
+    }
+
     # --- Regime layer (trader-level; uses raw history, firm-independent) -------
     _regime = regime_analysis.regime_report(daily_pnls)
 
@@ -125,6 +135,7 @@ def build_full_report(preview, daily_pnls, report_id=None):
         "fee_burn_headline": insights.fee_burn_headline(firm_rows),
         "matchmaker": insights.best_fit_matchmaker(results),
         "danger_rules": insights.personal_danger_rules(autopsy, dna, best),
+        "bayesian": _bayes,
         "regime": _regime,
         "rule_interaction": ({
             "compound_breach_pct": _ri.compound_breach_pct,

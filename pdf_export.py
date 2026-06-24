@@ -50,14 +50,10 @@ def _pct(p):
 
 
 def _pct_range(p, n_trades=None):
-    """Confidence band for pass-odds (presentation only; engine value unchanged)."""
-    import math
-    pp = max(0.0, min(1.0, float(p)))
-    n = n_trades if (n_trades and n_trades > 0) else 60
-    half = max(1.2816 * math.sqrt(pp * (1 - pp) / n), 0.04)
-    lo = max(0.0, pp - half)
-    hi = min(1.0, pp + half)
-    return f"{lo * 100:.0f}\u2013{hi * 100:.0f}%"
+    """Bayesian credible interval for pass-odds (Beta-Binomial, Jeffreys prior).
+    Presentation only; engine value unchanged. Asymmetric and bounded in [0,1]."""
+    import bayesian
+    return bayesian.credible_interval_pct(p, n_trades, cred=0.80)
 
 
 # ---------------------------------------------------------------------------
