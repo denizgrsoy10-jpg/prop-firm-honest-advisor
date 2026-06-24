@@ -295,6 +295,26 @@ def build_pdf(full_report: dict) -> bytes:
     else:
         el.append(Paragraph(dna.get("note", "Not enough data for a behavioral read."), ss["Small"]))
 
+    # kelly sizing
+    kel = full_report.get("kelly", {})
+    if kel and kel.get("headline"):
+        el.append(Paragraph("Optimal Sizing - Kelly Criterion", ss["H2c"]))
+        pr = kel.get("payoff_ratio", 0)
+        pr_str = "infinite" if pr == float("inf") else f"{pr:.2f}"
+        el.append(Paragraph(
+            f"Win rate: <b>{kel['win_rate']*100:.0f}%</b> &nbsp;·&nbsp; "
+            f"Payoff ratio: <b>{pr_str}</b> &nbsp;·&nbsp; "
+            f"Full Kelly: <b>{kel.get('kelly_fraction',0)*100:.0f}%</b> of bankroll per bet",
+            ss["Body"]))
+        el.append(Paragraph(kel["headline"], ss["Body"]))
+        el.append(Paragraph(f"<b>Prudent range:</b> {kel['recommended_fraction_label']}", ss["Body"]))
+        el.append(Paragraph(kel["detail"], ss["Body"]))
+        if kel.get("sizing_note"):
+            el.append(Paragraph(kel["sizing_note"], ss["Small"]))
+        el.append(Paragraph(
+            "Kelly analysis derived from uploaded history. Diagnostic only - not advice.",
+            ss["Small"]))
+
     # regime analysis
     reg = full_report.get("regime", {})
     if reg:
