@@ -654,7 +654,7 @@ if ss.daily_pnls is not None:
         # --- Cross-firm leverage map ----------------------------------------
         _lev = full.get("leverage_map") or {}
         if _lev and _lev.get("headline"):
-            st.markdown("**🗺️ Leverage map — the one thing that opens the most doors**")
+            st.markdown("**🗺️ Leverage map — broadest blocker across rulesets**")
             if _lev.get("firms_blocked_by_dominant", 0) >= 2:
                 lv1, lv2 = st.columns(2)
                 lv1.metric("Dominant blocker",
