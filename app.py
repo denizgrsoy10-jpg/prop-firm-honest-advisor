@@ -691,7 +691,7 @@ if ss.daily_pnls is not None:
         # --- Best-fit firm matchmaker ---------------------------------------
         _mm = full["matchmaker"]
         if _mm:
-            st.markdown("**Best-fit challenge type**")
+            st.markdown("**Historical ruleset alignment**")
             c1, c2 = st.columns(2)
             c1.write(f"✅ **Highest historical fit — {_mm['best_firm']}** ({pct_range(_mm['best_odds'], _nt)})")
             for x in _mm["best_why"]:

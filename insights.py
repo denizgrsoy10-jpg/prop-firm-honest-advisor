@@ -255,7 +255,7 @@ def best_fit_matchmaker(results) -> dict:
         "worst_firm": f"{worst.firm['firm_name']} — {worst.firm['product']}",
         "worst_why": _firm_profile(worst.firm),
         "worst_odds": worst.pass_prob,
-        "label": "Trader–firm fit, based on your pattern and verified rules.",
+        "label": "Based on this uploaded history and verified rules — not a recommendation.",
     }
 
 

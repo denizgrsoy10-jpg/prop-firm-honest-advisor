@@ -265,7 +265,7 @@ def build_pdf(full_report: dict) -> bytes:
     # best-fit matchmaker
     mch = full_report.get("matchmaker")
     if mch:
-        el.append(Paragraph("Historical ruleset fit", ss["H2c"]))
+        el.append(Paragraph("Historical ruleset alignment", ss["H2c"]))
         el.append(Paragraph(f"<b>Highest historical fit — {mch['best_firm']}</b> ({_pct_range(mch['best_odds'], _nt)}): "
                             + "; ".join(mch["best_why"]), ss["Body"]))
         el.append(Paragraph(f"<b>Severe mismatch — {mch['worst_firm']}</b> ({_pct_range(mch['worst_odds'], _nt)}): "
