@@ -651,6 +651,25 @@ if ss.daily_pnls is not None:
             st.caption("⚠️ Some rulesets are seed data pending verification. "
                        "Treat numbers as estimates until each firm's rules are confirmed.")
 
+        # --- Cross-firm leverage map ----------------------------------------
+        _lev = full.get("leverage_map") or {}
+        if _lev and _lev.get("headline"):
+            st.markdown("**🗺️ Leverage map — the one thing that opens the most doors**")
+            if _lev.get("firms_blocked_by_dominant", 0) >= 2:
+                lv1, lv2 = st.columns(2)
+                lv1.metric("Dominant blocker",
+                           _lev["dominant_blocker_label"])
+                lv2.metric("Firms it blocks",
+                           f"{_lev['firms_blocked_by_dominant']} of {_lev['total_firms']}")
+            st.write(f"- {_lev['headline']}")
+            if _lev.get("contradiction"):
+                st.warning("⚠️ You face **opposite** problems at different firms — "
+                           "see below. One adjustment can't fix both groups.",
+                           icon="⚠️")
+            st.write(f"- {_lev['detail']}")
+            st.caption("Cross-firm leverage analysis on your uploaded history. "
+                       "Diagnostic only, not advice.")
+
         # --- Killer Rule Autopsy (the wow screen) ---------------------------
         _au = full["autopsy"]
         st.markdown(f"### 🔎 Killer Rule Autopsy — {_au['rule']}")

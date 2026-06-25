@@ -23,6 +23,7 @@ import rule_interaction
 import regime_analysis
 import bayesian
 import kelly
+import leverage_map as leverage_map_mod
 
 
 def _expected_fee_burn(fee, pass_prob):
@@ -91,6 +92,10 @@ def build_full_report(preview, daily_pnls, report_id=None):
     autopsy = insights.killer_rule_autopsy(best)
     dna = insights.risk_dna(daily_pnls, preview["data"])
 
+    # --- Cross-firm leverage map (needs the full firm list from results) ------
+    _lev_firms = [r.firm for r in results]
+    _leverage = leverage_map_mod.leverage_map(daily_pnls, _lev_firms)
+
     # --- Kelly sizing layer (trader-level edge & growth-optimal fraction) -----
     _kelly = kelly.kelly_analysis(daily_pnls)
 
@@ -139,6 +144,17 @@ def build_full_report(preview, daily_pnls, report_id=None):
         "fee_burn_headline": insights.fee_burn_headline(firm_rows),
         "matchmaker": insights.best_fit_matchmaker(results),
         "danger_rules": insights.personal_danger_rules(autopsy, dna, best),
+        "leverage_map": ({
+            "dominant_blocker_label": _leverage.dominant_blocker_label,
+            "firms_blocked_by_dominant": _leverage.firms_blocked_by_dominant,
+            "total_firms": _leverage.total_firms,
+            "dominant_firm_names": _leverage.dominant_firm_names,
+            "contradiction": _leverage.contradiction,
+            "aggression_firms": _leverage.aggression_firms,
+            "caution_firms": _leverage.caution_firms,
+            "headline": _leverage.headline,
+            "detail": _leverage.detail,
+        } if _leverage else None),
         "kelly": ({
             "edge_grade": _kelly.edge_grade,
             "win_rate": _kelly.win_rate,

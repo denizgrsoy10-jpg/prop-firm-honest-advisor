@@ -229,6 +229,25 @@ def build_pdf(full_report: dict) -> bytes:
     ]))
     el.append(t)
 
+    # cross-firm leverage map
+    lev = full_report.get("leverage_map", {})
+    if lev and lev.get("headline"):
+        el.append(Paragraph("Leverage Map - the one thing that opens the most doors", ss["H2c"]))
+        if lev.get("firms_blocked_by_dominant", 0) >= 2:
+            el.append(Paragraph(
+                f"Dominant blocker: <b>{lev['dominant_blocker_label']}</b> "
+                f"- blocks <b>{lev['firms_blocked_by_dominant']} of "
+                f"{lev['total_firms']}</b> firms that challenge you.", ss["Body"]))
+        el.append(Paragraph(lev["headline"], ss["Body"]))
+        if lev.get("contradiction"):
+            el.append(Paragraph(
+                "&#9888; You face OPPOSITE problems at different firms - one "
+                "adjustment can't fix both groups.", ss["Body"]))
+        el.append(Paragraph(lev["detail"], ss["Body"]))
+        el.append(Paragraph(
+            "Cross-firm leverage analysis from uploaded history. Diagnostic only.",
+            ss["Small"]))
+
     # killer rule autopsy
     au = full_report.get("autopsy")
     if au:
