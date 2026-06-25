@@ -541,11 +541,11 @@ if ss.daily_pnls is not None:
     _killer_found = bool(p.get("killer_rule"))
     c1, c2, c3 = st.columns(3)
     c1.metric("Killer rule", "Detected" if _killer_found else "None flagged")
-    c2.metric("Best-match fit", VERDICT_COPY[p["verdict"]][0])
+    c2.metric("Highest historical fit", VERDICT_COPY[p["verdict"]][0])
     c3.metric("Pass-odds ranges", "🔒 Locked")
 
     vlabel, vmsg = VERDICT_COPY[p["verdict"]]
-    st.markdown(f"**Your best-match fit:** {vlabel} — {vmsg}")
+    st.markdown(f"**Your highest historical fit:** {vlabel} — {vmsg}")
     st.info("🔒 The free preview shows **whether** a killer rule was found and your "
             "overall fit. **Which rule, which ruleset, and your pass-odds ranges** "
             "are in the full report.", icon="🔒")
@@ -693,10 +693,10 @@ if ss.daily_pnls is not None:
         if _mm:
             st.markdown("**Best-fit challenge type**")
             c1, c2 = st.columns(2)
-            c1.write(f"✅ **Best fit — {_mm['best_firm']}** ({pct_range(_mm['best_odds'], _nt)})")
+            c1.write(f"✅ **Highest historical fit — {_mm['best_firm']}** ({pct_range(_mm['best_odds'], _nt)})")
             for x in _mm["best_why"]:
                 c1.write(f"- {x}")
-            c2.write(f"⚠️ **Lowest fit — {_mm['worst_firm']}** ({pct_range(_mm['worst_odds'], _nt)})")
+            c2.write(f"⚠️ **Severe mismatch — {_mm['worst_firm']}** ({pct_range(_mm['worst_odds'], _nt)})")
             for x in _mm["worst_why"]:
                 c2.write(f"- {x}")
             st.caption(_mm["label"])
