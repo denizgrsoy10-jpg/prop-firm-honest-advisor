@@ -394,7 +394,7 @@ def build_pdf(full_report: dict) -> bytes:
             ss["Body"]))
         if stk.get("lag1_autocorr") is not None:
             el.append(Paragraph(
-                f"Streakiness (lag-1 autocorrelation): <b>{stk['lag1_autocorr']:+.2f}</b> &nbsp;·&nbsp; "
+                f"Streakiness score: <b>{stk['lag1_autocorr']:+.2f}</b> &nbsp;·&nbsp; "
                 f"longest observed runs: {stk['longest_win_streak']} up / "
                 f"{stk['longest_loss_streak']} down.", ss["Body"]))
         el.append(Paragraph(seq["label"], ss["Body"]))

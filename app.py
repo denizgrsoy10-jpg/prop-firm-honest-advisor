@@ -640,9 +640,9 @@ if ss.daily_pnls is not None:
         } for r in full["firm_rows"]])
         _bayes = full.get("bayesian") or {}
         _tth = _bayes.get("trades_to_halve")
-        _cap = (f"Ranges are 80% Bayesian credible intervals (Beta-Binomial, "
-                f"Jeffreys prior) from {_nt} trades — asymmetric and bounded, "
-                f"never 0% or 100%.")
+        _cap = (f"Ranges are 80% adaptive confidence intervals from {_nt} trades "
+                f"— asymmetric and bounded, never 0% or 100%, and they sharpen as "
+                f"you add data.")
         if _tth:
             _cap += f" About +{_tth} more trades would roughly halve the band width."
         st.caption(_cap)
@@ -819,10 +819,11 @@ if ss.daily_pnls is not None:
                             "not the average.")
             st.write(f"- {_seq['label']}")
             if _stk.get("lag1_autocorr") is not None:
-                st.write(f"- Your results' streakiness (lag-1 autocorrelation): "
+                st.write(f"- Your streakiness score: "
                          f"**{_stk['lag1_autocorr']:+.2f}** — "
                          f"longest observed runs: {_stk['longest_win_streak']} up, "
-                         f"{_stk['longest_loss_streak']} down.")
+                         f"{_stk['longest_loss_streak']} down. "
+                         f"(0 = independent days; higher = results cluster.)")
             st.write(f"- When a bad ordering breaks this ruleset, the rule that "
                      f"usually does it: **{_seq['dominant_breach_label']}**.")
             st.caption("Same days, same totals — only the order changes. This "

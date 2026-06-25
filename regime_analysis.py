@@ -181,14 +181,14 @@ def regime_report(daily_pnls: list[float]) -> dict | None:
     if vc is None:
         vc_label = "Not enough data to measure volatility clustering."
     elif vc > 0.20:
-        vc_label = (f"Volatility clusters (vol autocorrelation {vc:+.2f}): your big "
+        vc_label = (f"Volatility clusters (clustering score {vc:+.2f}): your big "
                     f"days arrive in bursts, so drawdowns are lumpy rather than "
                     f"evenly spread. A calm backtest can hide a wild cluster.")
     elif vc > 0.08:
-        vc_label = (f"Mild volatility clustering (vol autocorrelation {vc:+.2f}): "
+        vc_label = (f"Mild volatility clustering (clustering score {vc:+.2f}): "
                     f"some tendency for active and quiet stretches to group.")
     else:
-        vc_label = (f"Little volatility clustering (vol autocorrelation {vc:+.2f}): "
+        vc_label = (f"Little volatility clustering (clustering score {vc:+.2f}): "
                     f"your day-to-day volatility is fairly even.")
 
     # Overall "regime stability" trust note — should the trader trust a single
