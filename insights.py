@@ -115,11 +115,11 @@ _AUTOPSY = {
                  "The trailing floor ratchets up with it",
                  "A normal cluster of losses follows",
                  "Equity touches the raised floor → breach"],
-        "reduce": ["Scaling historical risk down early in a challenge reduces "
-                   "trailing-drawdown breach pressure in similar samples",
-                   "Large early equity spikes raise the trailing floor and "
-                   "tighten the breach margin",
-                   "Firms with static (non-trailing) drawdown are mechanically "
+        "reduce": ["Lower early-stage risk reduced trailing-drawdown breach "
+                   "pressure in similar simulations",
+                   "Large early equity spikes raised the trailing floor and "
+                   "reduced the breach margin in this sample",
+                   "Static (non-trailing) drawdown rules were mechanically "
                    "less sensitive to this pattern"],
     },
     "profit target": {
@@ -128,11 +128,11 @@ _AUTOPSY = {
         "path": ["Steady but slow gains",
                  "Window elapses before target is hit",
                  "Challenge fails on time, not on a loss"],
-        "reduce": ["Firms with a lower profit target are mechanically easier "
-                   "to clear within the same window",
-                   "Challenges without a time limit remove the time-pressure "
+        "reduce": ["Rulesets with a lower profit target were mechanically "
+                   "easier to clear within the same window in simulation",
+                   "Rulesets without a time limit removed the time-pressure "
                    "component of this failure mode",
-                   "Increasing size without a documented edge increases "
+                   "Larger position size without a documented edge raised "
                    "drawdown variance in this sample"],
     },
     "daily loss": {

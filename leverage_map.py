@@ -126,7 +126,7 @@ def leverage_map(daily_pnls, firms, phase_index: int = 0,
     if dom_count >= 2 and dom_count >= len(dominant_by_firm) * 0.5:
         headline = (f"Single leverage point: '{dom_label}' is the dominant blocker "
                     f"at {dom_count} of {len(dominant_by_firm)} firms that challenge "
-                    f"you. Address that one thing and the most doors open at once.")
+                    f"you. In this simulation it has the broadest cross-ruleset impact.")
     else:
         headline = (f"No single dominant blocker - different firms stop you for "
                     f"different reasons, so there's no one quick fix across all of "
@@ -134,24 +134,24 @@ def leverage_map(daily_pnls, firms, phase_index: int = 0,
 
     if contradiction:
         detail = (
-            f"You face OPPOSITE problems at different firms. At "
-            f"{len(caution_firms)} firm(s) you breach a risk limit "
-            f"({', '.join(_short(n) for n in caution_firms[:3])}"
-            f"{'...' if len(caution_firms) > 3 else ''}) - there you'd need to be "
-            f"MORE cautious. At {len(aggression_firms)} firm(s) you simply don't "
-            f"reach the target in time "
+            f"The simulation shows opposite pressure across rulesets. At "
+            f"{len(caution_firms)} firm(s), failures come from breaching a risk "
+            f"limit ({', '.join(_short(n) for n in caution_firms[:3])}"
+            f"{'...' if len(caution_firms) > 3 else ''}). At "
+            f"{len(aggression_firms)} firm(s), failures come from not reaching the "
+            f"target within the window "
             f"({', '.join(_short(n) for n in aggression_firms[:3])}"
-            f"{'...' if len(aggression_firms) > 3 else ''}) - there you'd need to be "
-            f"MORE aggressive. The same change can't fix both groups; this is why a "
-            f"single 'be more careful' or 'push harder' instinct misfires across "
-            f"firms. Pick the group you're actually targeting first.")
+            f"{'...' if len(aggression_firms) > 3 else ''}). These are opposite "
+            f"failure modes: a single behavioral change would not improve both "
+            f"groups equally. Which group matters depends on the rulesets you are "
+            f"actually targeting.")
     else:
-        only_dir = "reach the profit target faster" if aggression_firms else \
-                   "respect the risk limits more tightly"
-        detail = (f"The firms that block you mostly point the same way: you'd need "
-                  f"to {only_dir}. There's no cross-firm contradiction, so one "
-                  f"coherent adjustment direction applies. The leverage point above "
-                  f"is where to start.")
+        only_dir = ("not reaching the target within the window" if aggression_firms
+                    else "breaching a risk limit")
+        detail = (f"The firms that block you mostly point the same way: failures "
+                  f"cluster around {only_dir}. There's no cross-ruleset "
+                  f"contradiction in this simulation, so the failure mode is "
+                  f"consistent rather than conflicting.")
 
     return LeverageMap(
         dominant_blocker_key=dom_key,

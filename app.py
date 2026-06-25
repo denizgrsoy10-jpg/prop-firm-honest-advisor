@@ -663,9 +663,9 @@ if ss.daily_pnls is not None:
                            f"{_lev['firms_blocked_by_dominant']} of {_lev['total_firms']}")
             st.write(f"- {_lev['headline']}")
             if _lev.get("contradiction"):
-                st.warning("⚠️ You face **opposite** problems at different firms — "
-                           "see below. One adjustment can't fix both groups.",
-                           icon="⚠️")
+                st.warning("⚠️ The simulation shows **opposite failure modes** "
+                           "across rulesets — see below. They don't share a single "
+                           "fix.", icon="⚠️")
             st.write(f"- {_lev['detail']}")
             st.caption("Cross-firm leverage analysis on your uploaded history. "
                        "Diagnostic only, not advice.")
@@ -677,7 +677,7 @@ if ss.daily_pnls is not None:
         if _au["path"]:
             st.write("**How it usually happens:** " + " → ".join(_au["path"]))
         if _au["reduce"]:
-            st.write("**What reduces this risk:**")
+            st.write("**What the simulation is sensitive to:**")
             for x in _au["reduce"]:
                 st.write(f"- {x}")
         st.caption(_au["label"])
@@ -734,7 +734,8 @@ if ss.daily_pnls is not None:
         # --- Kelly sizing ---------------------------------------------------
         _kel = full.get("kelly") or {}
         if _kel and _kel.get("headline"):
-            st.markdown("**🎯 Optimal sizing — Kelly criterion**")
+            st.markdown("**🎯 Sizing pressure — Kelly lens**")
+            st.caption("Growth-optimal fraction estimate, not a live size recommendation.")
             kc1, kc2, kc3 = st.columns(3)
             kc1.metric("Win rate", f"{_kel['win_rate']*100:.0f}%")
             _pr = _kel.get("payoff_ratio", 0)

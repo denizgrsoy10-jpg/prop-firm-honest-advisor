@@ -241,8 +241,8 @@ def build_pdf(full_report: dict) -> bytes:
         el.append(Paragraph(lev["headline"], ss["Body"]))
         if lev.get("contradiction"):
             el.append(Paragraph(
-                "&#9888; You face OPPOSITE problems at different firms - one "
-                "adjustment can't fix both groups.", ss["Body"]))
+                "&#9888; The simulation shows opposite failure modes across "
+                "rulesets - they don't share a single fix.", ss["Body"]))
         el.append(Paragraph(lev["detail"], ss["Body"]))
         el.append(Paragraph(
             "Cross-firm leverage analysis from uploaded history. Diagnostic only.",
@@ -256,6 +256,8 @@ def build_pdf(full_report: dict) -> bytes:
         if au.get("path"):
             el.append(Paragraph("<b>How it usually happens:</b> " +
                                 " &rarr; ".join(au["path"]), ss["Body"]))
+        if au.get("reduce"):
+            el.append(Paragraph("<b>What the simulation is sensitive to:</b>", ss["Body"]))
         for x in au.get("reduce", []):
             el.append(Paragraph(f"• {x}", ss["Body"]))
         el.append(Paragraph(au.get("label", ""), ss["Small"]))
@@ -317,7 +319,8 @@ def build_pdf(full_report: dict) -> bytes:
     # kelly sizing
     kel = full_report.get("kelly", {})
     if kel and kel.get("headline"):
-        el.append(Paragraph("Optimal Sizing - Kelly Criterion", ss["H2c"]))
+        el.append(Paragraph("Sizing Pressure - Kelly Lens", ss["H2c"]))
+        el.append(Paragraph("Growth-optimal fraction estimate, not a live size recommendation.", ss["Small"]))
         pr = kel.get("payoff_ratio", 0)
         pr_str = "infinite" if pr == float("inf") else f"{pr:.2f}"
         el.append(Paragraph(

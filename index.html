@@ -606,7 +606,7 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
     <span class="eyebrow read gold rise" style="animation-delay:.05s"><span class="blink"></span>Multi-layer risk engine &middot; 12 modules</span>
     <h1 class="head rise" style="animation-delay:.12s">Ready to see the <em>truth</em> before you risk money?</h1>
     <p class="sub rise" style="animation-delay:.2s">Turn the light on before the money moves.</p>
-    <p class="sub-italic rise" style="animation-delay:.24s">Candor reads your real trade history and shows what could break your prop challenge, your own account, or the signal you are about to trust.</p><p class="sub rise" style="animation-delay:.26s;font-size:13px;color:var(--faint);margin-top:10px">No signals. No guarantees. No trading advice. Just statistical risk diagnostics before the money moves.</p>
+    <p class="sub-italic rise" style="animation-delay:.24s">Candor reads your real trade history and shows what could break your prop challenge, your own account, or the signal you are about to trust.</p><p class="sub rise" style="animation-delay:.25s;font-size:14px;color:var(--cream);margin-top:12px;font-weight:500">Candor doesn&rsquo;t tell you what to trade. It shows where your current pattern breaks.</p><p class="sub rise" style="animation-delay:.26s;font-size:13px;color:var(--faint);margin-top:10px">No signals. No guarantees. No trading advice. Just statistical risk diagnostics before the money moves.</p>
     <div class="cta-row rise" style="animation-delay:.28s">
       <a class="btn" href="https://prop-firm-honest-advisor-u4r6drscbs7qrdfk5jqmea.streamlit.app">Run my free RealityCheck <span class="arr">&rarr;</span></a>
       <a class="btn ghost" href="#modes">See the two modes</a>
@@ -682,7 +682,7 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
       <h3 class="mode-title">Prop Firm RealityCheck</h3>
       <div class="mode-q">&ldquo;Can I pass this challenge?&rdquo;</div>
       <ul class="mode-list">
-        <li>6 verified public rulesets &mdash; named by firm inside your report</li>
+        <li>9 verified public rulesets &mdash; named by firm inside your report</li>
         <li>Pass odds + killer rule per ruleset</li>
         <li>Expected fee burn across the retry loop</li>
         <li>What-if simulator &mdash; scaled risk &rarr; pass-odds shift</li>
@@ -908,8 +908,8 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
     </div>
     <div class="mod-card lanternable"><span class="fx-sweep"></span>
       <div class="mod-top"><span class="mod-id">MOD/SIZING</span><span class="mod-status live">LIVE</span></div>
-      <h3>Growth-Optimal Sizing Lens</h3>
-      <p>The position size your own edge implies &mdash; and where overbetting quietly raises your ruin risk.</p>
+      <h3>Sizing Pressure Lens</h3>
+      <p>Where your sizing sits relative to your own edge &mdash; and where overbetting quietly raises ruin risk.</p>
     </div>
     <div class="mod-card lanternable"><span class="fx-sweep"></span>
       <div class="mod-top"><span class="mod-id">MOD/CONFIDENCE</span><span class="mod-status live">LIVE</span></div>
@@ -958,7 +958,7 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
     <div class="rp-item"><div class="rp-dot" style="background:var(--red)"></div><span class="rp-name">Killer Rule Autopsy</span><span class="rp-tag">DIAGNOSTIC</span></div>
     <div class="rp-item"><div class="rp-dot" style="background:var(--gold)"></div><span class="rp-name">Expected Fee Burn &mdash; whole retry loop</span><span class="rp-tag">FINANCIAL</span></div>
     <div class="rp-item"><div class="rp-dot" style="background:var(--green)"></div><span class="rp-name">What-if Lab</span><span class="rp-tag">SIMULATION</span></div>
-    <div class="rp-item"><div class="rp-dot" style="background:var(--gold)"></div><span class="rp-name">Growth-Optimal Sizing Lens</span><span class="rp-tag">SIZING</span></div>
+    <div class="rp-item"><div class="rp-dot" style="background:var(--gold)"></div><span class="rp-name">Sizing Pressure Lens</span><span class="rp-tag">SIZING</span></div>
     <div class="rp-item"><div class="rp-dot" style="background:var(--gold)"></div><span class="rp-name">Regime Shift Radar</span><span class="rp-tag">PROFILE</span></div>
     <div class="rp-item"><div class="rp-dot" style="background:var(--red)"></div><span class="rp-name">Compound Trap Detector</span><span class="rp-tag">DIAGNOSTIC</span></div>
     <div class="rp-item"><div class="rp-dot" style="background:var(--gold)"></div><span class="rp-name">Run-of-the-Cards Stress Test</span><span class="rp-tag">PATH RISK</span></div>
@@ -977,11 +977,15 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
   <p class="sec-sub">Every rule manually checked. Version-locked. Visible in your report.</p>
   <div class="vault lanternable"><span class="fx-sweep"></span>
     <div class="vault-header"><span>RULESET</span><span>STATUS</span><span>VERSION</span><span>VERIFIED</span></div>
-    <div class="vault-row"><span>Two-Step High-Target</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
-    <div class="vault-row"><span>EOD-Style</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
+    <div class="vault-row"><span>EOD-Style (Futures)</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
+    <div class="vault-row"><span>Trailing Combine (Futures)</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
+    <div class="vault-row"><span>Two-Step Standard</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
     <div class="vault-row"><span>One-Step</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
-    <div class="vault-row"><span>Two-Step Ruleset B</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
-    <div class="vault-row"><span>Two-Step Ruleset A</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
+    <div class="vault-row"><span>Two-Phase (CFD)</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
+    <div class="vault-row"><span>Stellar Two-Step</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
+    <div class="vault-row"><span>High-Stakes Two-Step</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
+    <div class="vault-row"><span>One-Step High-Target</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
+    <div class="vault-row"><span>Two-Step High-Target</span><span class="v">&#10003; VERIFIED</span><span class="d">v2026-06</span><span class="d">Jun 05</span></div>
   </div>
   <p class="vault-note">Every ruleset is versioned, dated and visible in your report. If a rule is uncertain, Candor labels it instead of hiding it.</p>
 </div></section>
