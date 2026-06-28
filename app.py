@@ -833,6 +833,32 @@ if ss.daily_pnls is not None:
         else:
             st.caption(_stk.get("label", "Not enough data for a sequence read."))
 
+        # --- Funded survival (what happens AFTER the pass) -------------------
+        _fnd = full.get("funded_survival")
+        if _fnd:
+            st.markdown("**🏦 Funded survival — passing is the easy part**")
+            _hz = _fnd["horizons"]
+            _sr = _fnd["survival_rates"]
+            fc = st.columns(len(_hz))
+            for _i, (_h, _r) in enumerate(zip(_hz, _sr)):
+                fc[_i].metric(f"Hold at {_h} days", f"{_r*100:.0f}%")
+            st.write(f"- {_fnd['headline']}")
+            st.write(
+                f"- First-payout path: **{_fnd['reach_payout_rate']*100:.0f}%** "
+                f"reach a first payout "
+                f"(~${_fnd['avg_first_payout']:,.0f} to you at "
+                f"{_fnd['profit_split']*100:.0f}% split), while "
+                f"**{_fnd['blow_before_payout_rate']*100:.0f}%** bust the floor "
+                f"before getting there."
+            )
+            _ddtype = "trailing" if _fnd["dd_is_trailing"] else "static"
+            st.write(
+                f"- The funded account keeps a {_ddtype} "
+                f"{_fnd['dd_pct']:.0f}% drawdown floor with no profit target to "
+                f"chase — survival, not target-hitting, becomes the whole game."
+            )
+            st.caption(_fnd["label"])
+
         # --- Personal danger rules -------------------------------------------
         _dr = full["danger_rules"]
         st.markdown("**🛡️ Your personal danger rules**")

@@ -606,7 +606,7 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
 <!-- HERO -->
 <header class="hero"><div class="wrap hero-grid">
   <div>
-    <span class="eyebrow read gold rise" style="animation-delay:.05s"><span class="blink"></span>Multi-layer risk engine &middot; 12 modules</span>
+    <span class="eyebrow read gold rise" style="animation-delay:.05s"><span class="blink"></span>Multi-layer risk engine &middot; 13 modules</span>
     <h1 class="head rise" style="animation-delay:.12s">Ready to see the <em>truth</em> before you risk money?</h1>
     <p class="sub rise" style="animation-delay:.2s">Turn the light on before the money moves.</p>
     <p class="sub-italic rise" style="animation-delay:.24s">Candor reads your real trade history and shows what could break your prop challenge, your own account, or the signal you are about to trust.</p><p class="sub rise" style="animation-delay:.25s;font-size:14px;color:var(--cream);margin-top:12px;font-weight:500">Candor doesn&rsquo;t tell you what to trade. It shows where your current pattern breaks.</p><p class="sub rise" style="animation-delay:.26s;font-size:13px;color:var(--faint);margin-top:10px">No signals. No guarantees. No trading advice. Just statistical risk diagnostics before the money moves.</p>
@@ -628,7 +628,7 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
       <div class="scan-line">$ scanning trade history...<span class="cursor"></span></div>
       <div class="scan-line done">&nbsp;&nbsp;63 trades detected</div>
       <div class="scan-line done">&nbsp;&nbsp;28 trading days</div>
-      <div class="scan-line gold-line">&nbsp;&nbsp;9 verified rulesets &middot; 12 engines &#10003;</div>
+      <div class="scan-line gold-line">&nbsp;&nbsp;9 verified rulesets &middot; 13 engines &#10003;</div>
       <div class="term-results">
         <div class="term-row"><span class="term-firm">EOD-STYLE RULESET</span><span class="term-pct grn">58–73%</span><span class="term-badge go">Strong fit</span></div>
         <div class="term-row"><span class="term-firm">TWO-STEP STANDARD</span><span class="term-pct gold">42–58%</span><span class="term-badge wait">Borderline</span></div>
@@ -644,7 +644,7 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
       <div class="term-insights">
         <div class="ti-row"><span class="ti-icon">&#9889;</span><span class="ti-text">Leverage map: <b>broadest blocker hits 6 of 9</b></span></div>
         <div class="ti-row"><span class="ti-icon">&#128256;</span><span class="ti-text">Sequence risk: <b>order sensitivity 33%</b></span></div>
-        <div class="ti-row"><span class="ti-icon">&#127919;</span><span class="ti-text">Sizing lens: <b>overbet pressure flagged</b></span></div>
+        <div class="ti-row"><span class="ti-icon">&#127974;</span><span class="ti-text">Funded survival: <b>73% &rarr; 30% over 90 days</b></span></div>
       </div>
     </div>
   </div>
@@ -883,9 +883,9 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
 </div>
   <div class="sec-head">
     <span class="sec-no">SCAN.03 &middot; PROP FIRM MODE</span>
-    <h2 class="sec-title">12 diagnostic modules. No false certainty.</h2>
+    <h2 class="sec-title">13 diagnostic modules. No false certainty.</h2>
   </div>
-  <p class="sec-sub">Most tools stop at a pass-rate. Candor runs your real history through twelve independent engines &mdash; the kind of analysis that would take a quant weeks to build by hand. This is what&rsquo;s inside.</p>
+  <p class="sec-sub">Most tools stop at a pass-rate. Candor runs your real history through thirteen independent engines &mdash; the kind of analysis that would take a quant weeks to build by hand. This is what&rsquo;s inside.</p>
   <div class="mod-grid">
     <div class="mod-card lanternable"><span class="fx-sweep"></span>
       <div class="mod-top"><span class="mod-id">MOD/KILLER-RULE</span><span class="mod-status live">LIVE</span></div>
@@ -896,6 +896,11 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
       <div class="mod-top"><span class="mod-id">MOD/LEVERAGE-MAP</span><span class="mod-status live">LIVE</span></div>
       <h3>Cross-Firm Leverage Map</h3>
       <p>The blocker with the widest impact across firms &mdash; and whether rulesets create opposite failure modes.</p>
+    </div>
+    <div class="mod-card lanternable"><span class="fx-sweep"></span>
+      <div class="mod-top"><span class="mod-id">MOD/FUNDED-SURVIVAL</span><span class="mod-status live">LIVE</span></div>
+      <h3>Funded Survival</h3>
+      <p>Passing is the easy part. How long your pattern holds the funded account &mdash; and whether you reach a first payout before busting.</p>
     </div>
     <div class="mod-card lanternable"><span class="fx-sweep"></span>
       <div class="mod-top"><span class="mod-id">MOD/SEQUENCE</span><span class="mod-status live">LIVE</span></div>
@@ -961,6 +966,7 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
     <div class="rp-header">CANDOR REALITYCHECK &mdash; FULL REPORT CONTENTS</div>
     <div class="rp-item"><div class="rp-dot" style="background:var(--green)"></div><span class="rp-name">All firms scored &mdash; pass-odds as honest ranges</span><span class="rp-tag">OVERVIEW</span></div>
     <div class="rp-item"><div class="rp-dot" style="background:var(--gold)"></div><span class="rp-name">Cross-Firm Leverage Map</span><span class="rp-tag">STRATEGY</span></div>
+    <div class="rp-item"><div class="rp-dot" style="background:var(--red)"></div><span class="rp-name">Funded Survival &mdash; the stage after the pass</span><span class="rp-tag">FUNDED</span></div>
     <div class="rp-item"><div class="rp-dot" style="background:var(--red)"></div><span class="rp-name">Killer Rule Autopsy</span><span class="rp-tag">DIAGNOSTIC</span></div>
     <div class="rp-item"><div class="rp-dot" style="background:var(--gold)"></div><span class="rp-name">Expected Fee Burn &mdash; whole retry loop</span><span class="rp-tag">FINANCIAL</span></div>
     <div class="rp-item"><div class="rp-dot" style="background:var(--green)"></div><span class="rp-name">What-if Lab</span><span class="rp-tag">SIMULATION</span></div>

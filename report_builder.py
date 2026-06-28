@@ -24,6 +24,7 @@ import regime_analysis
 import bayesian
 import kelly
 import leverage_map as leverage_map_mod
+import funded_survival as funded_survival_mod
 
 
 def _expected_fee_burn(fee, pass_prob):
@@ -120,6 +121,13 @@ def build_full_report(preview, daily_pnls, report_id=None):
     _seq = sequence_risk.sequence_risk(_wif_pnls, best.firm, phase_index=0)
     _streak = sequence_risk.streak_profile(daily_pnls)
 
+    # --- Funded survival layer (what happens AFTER the pass) ------------------
+    # Models the funded stage on the best-fit firm: survival curve over time +
+    # first-payout race. The funded account is a separate game with its own
+    # rules, so passing odds alone overstate the real expectation.
+    _funded = funded_survival_mod.best_funded_target(
+        results, {f["firm_name"]: f for f in firms}, daily_pnls)
+
     return {
         "report_id": report_id or make_report_id(),
         "ruleset_version": ruleset_version(firms),
@@ -185,6 +193,24 @@ def build_full_report(preview, daily_pnls, report_id=None):
             "label": _seq.label,
             "streak": _streak,
         } if _seq else {"streak": _streak, "label": None}),
+        "funded_survival": ({
+            "firm": _funded.firm,
+            "account_size": _funded.account_size,
+            "dd_pct": _funded.dd_pct,
+            "dd_is_trailing": _funded.dd_is_trailing,
+            "horizons": _funded.horizons,
+            "survival_rates": _funded.survival_rates,
+            "median_days_survived": _funded.median_days_survived,
+            "payout_threshold": _funded.payout_threshold,
+            "profit_split": _funded.profit_split,
+            "min_days": _funded.min_days,
+            "reach_payout_rate": _funded.reach_payout_rate,
+            "blow_before_payout_rate": _funded.blow_before_payout_rate,
+            "avg_first_payout": _funded.avg_first_payout,
+            "headline": _funded.headline,
+            "detail": _funded.detail,
+            "label": _funded.label,
+        } if _funded and _funded.available else None),
         "disclaimer": ("Statistical simulation only. Not financial, investment or "
                        "trading advice. No outcome with any firm is guaranteed."),
     }

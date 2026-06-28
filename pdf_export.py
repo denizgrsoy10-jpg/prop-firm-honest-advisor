@@ -406,6 +406,24 @@ def build_pdf(full_report: dict) -> bytes:
             "run-of-the-cards risk a single win-rate can't show. Diagnostic only.",
             ss["Small"]))
 
+    # funded survival (what happens AFTER the pass)
+    fnd = full_report.get("funded_survival")
+    if fnd:
+        el.append(Paragraph("Funded Survival — passing is the easy part", ss["H2c"]))
+        _surv = " &nbsp;·&nbsp; ".join(
+            f"{_h}d: <b>{_r*100:.0f}%</b>"
+            for _h, _r in zip(fnd["horizons"], fnd["survival_rates"]))
+        el.append(Paragraph(f"Probability of still holding the account — {_surv}.",
+                            ss["Body"]))
+        el.append(Paragraph(fnd["headline"], ss["Body"]))
+        el.append(Paragraph(
+            f"First-payout path: <b>{fnd['reach_payout_rate']*100:.0f}%</b> reach a "
+            f"first payout (~${fnd['avg_first_payout']:,.0f} to you at "
+            f"{fnd['profit_split']*100:.0f}% split), while "
+            f"<b>{fnd['blow_before_payout_rate']*100:.0f}%</b> bust the floor "
+            f"before getting there.", ss["Body"]))
+        el.append(Paragraph(fnd["label"], ss["Small"]))
+
     # personal danger rules
     dr = full_report.get("danger_rules", {})
     if dr.get("rules"):
