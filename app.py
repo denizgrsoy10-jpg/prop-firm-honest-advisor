@@ -30,6 +30,15 @@ def _asset(name):
     p = os.path.join(ASSETS_DIR, name)
     return p if os.path.exists(p) else None
 
+
+def _md(text):
+    """Escape $ so Streamlit's markdown never interprets $...$ as LaTeX math.
+
+    Dollar amounts in our diagnostic copy (fees, payouts) would otherwise be
+    swallowed or garbled when two dollar signs appear on one line.
+    """
+    return text.replace("$", "\\$") if isinstance(text, str) else text
+
 st.set_page_config(page_title="Candor RealityCheck",
                    page_icon=_asset("candor-favicon-32.png") or "🔦",
                    layout="centered")
@@ -661,12 +670,12 @@ if ss.daily_pnls is not None:
                            _lev["dominant_blocker_label"])
                 lv2.metric("Firms it blocks",
                            f"{_lev['firms_blocked_by_dominant']} of {_lev['total_firms']}")
-            st.write(f"- {_lev['headline']}")
+            st.write(_md(f"- {_lev['headline']}"))
             if _lev.get("contradiction"):
                 st.warning("⚠️ The simulation shows **opposite failure modes** "
                            "across rulesets — see below. They don't share a single "
                            "fix.", icon="⚠️")
-            st.write(f"- {_lev['detail']}")
+            st.write(_md(f"- {_lev['detail']}"))
             st.caption("Cross-firm leverage analysis on your uploaded history. "
                        "Diagnostic only, not advice.")
 
@@ -686,7 +695,9 @@ if ss.daily_pnls is not None:
         _fb = full["fee_burn_headline"]
         st.caption(_fb["note"])
         for r in full["firm_rows"]:
-            st.write(f"- {r['firm']}: {r['fee_burn_msg']}  ·  retry danger: **{r['retry_danger']}**")
+            # Escape $ so Streamlit's markdown doesn't read $...$ as LaTeX math.
+            _msg = r["fee_burn_msg"].replace("$", "\\$")
+            st.write(f"- {r['firm']}: {_msg}  ·  retry danger: **{r['retry_danger']}**")
 
         # --- Best-fit firm matchmaker ---------------------------------------
         _mm = full["matchmaker"]
@@ -754,10 +765,10 @@ if ss.daily_pnls is not None:
                             "your own edge — shown as a range because your win "
                             "rate is itself uncertain on this sample size. Most "
                             "pros risk a fraction of this.")
-            st.write(f"- {_kel['headline']}")
-            st.write(f"- **Prudent range:** {_kel['recommended_fraction_label']}")
-            st.write(f"- {_kel['detail']}")
-            st.caption(_kel.get("sizing_note", "") + " Diagnostic only, not advice.")
+            st.write(_md(f"- {_kel['headline']}"))
+            st.write(_md(f"- **Prudent range:** {_kel['recommended_fraction_label']}"))
+            st.write(_md(f"- {_kel['detail']}"))
+            st.caption(_md(_kel.get("sizing_note", "") + " Diagnostic only, not advice."))
 
         # --- Regime analysis ------------------------------------------------
         _reg = full.get("regime") or {}
@@ -849,11 +860,11 @@ if ss.daily_pnls is not None:
             fc = st.columns(len(_hz))
             for _i, (_h, _r) in enumerate(zip(_hz, _sr)):
                 fc[_i].metric(f"Hold at {_h} days", f"{_r*100:.0f}%")
-            st.write(f"- {_fnd['headline']}")
+            st.write(f"- {_fnd['headline'].replace('$', chr(92)+'$')}")
             st.write(
                 f"- First-payout path: **{_fnd['reach_payout_rate']*100:.0f}%** "
                 f"reach a first payout "
-                f"(~${_fnd['avg_first_payout']:,.0f} to you at "
+                f"(~\\${_fnd['avg_first_payout']:,.0f} to you at "
                 f"{_fnd['profit_split']*100:.0f}% split), while "
                 f"**{_fnd['blow_before_payout_rate']*100:.0f}%** bust the floor "
                 f"before getting there."
@@ -864,7 +875,7 @@ if ss.daily_pnls is not None:
                 f"{_fnd['dd_pct']:.0f}% drawdown floor with no profit target to "
                 f"chase — survival, not target-hitting, becomes the whole game."
             )
-            st.caption(_fnd["label"])
+            st.caption(_md(_fnd["label"]))
 
         # --- Consistency cap (the "made money but still failed" trap) -------
         _con = full.get("consistency_risk")
@@ -879,13 +890,13 @@ if ss.daily_pnls is not None:
             cc3.metric("Caught by the cap", f"{_con['consistency_kill_rate']*100:.0f}%",
                        help="Of simulated runs that reach the profit target, the "
                             "share still eliminated by the consistency rule.")
-            st.write(f"- {_con['headline']}")
-            st.write(f"- {_con['detail']}")
-            st.caption(_con["label"])
+            st.write(_md(f"- {_con['headline']}"))
+            st.write(_md(f"- {_con['detail']}"))
+            st.caption(_md(_con["label"]))
         elif _con and not _con.get("applies"):
             st.markdown("**⚖️ Consistency cap**")
-            st.write(f"- {_con['headline']}")
-            st.caption(_con["label"])
+            st.write(_md(f"- {_con['headline']}"))
+            st.caption(_md(_con["label"]))
 
         # --- Out-of-sample validation (the model checking itself) -----------
         _rob = full.get("robustness")
@@ -903,9 +914,9 @@ if ss.daily_pnls is not None:
                        help="How well the odds learned on the first half of your "
                             "history reproduce on the second half it never saw. "
                             "Low = the headline number may be a hot streak.")
-            st.write(f"- **{_badge}** — {_rob['headline']}")
-            st.write(f"- {_rob['detail']}")
-            st.caption(_rob["label"])
+            st.write(_md(f"- **{_badge}** — {_rob['headline']}"))
+            st.write(_md(f"- {_rob['detail']}"))
+            st.caption(_md(_rob["label"]))
 
         # --- Personal danger rules -------------------------------------------
         _dr = full["danger_rules"]
