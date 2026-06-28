@@ -424,6 +424,34 @@ def build_pdf(full_report: dict) -> bytes:
             f"before getting there.", ss["Body"]))
         el.append(Paragraph(fnd["label"], ss["Small"]))
 
+    # consistency cap (the "made money but still failed" trap)
+    con = full_report.get("consistency_risk")
+    if con and con.get("applies"):
+        el.append(Paragraph("Consistency Cap — made the money, still failed?", ss["H2c"]))
+        el.append(Paragraph(
+            f"Cap: <b>{con['cap_pct']:.0f}%</b> ({con['cap_source']}) &nbsp;·&nbsp; "
+            f"your best day: <b>{con['best_day_share']*100:.0f}%</b> of total profit "
+            f"&nbsp;·&nbsp; caught by the cap: "
+            f"<b>{con['consistency_kill_rate']*100:.0f}%</b> of target-hitting runs.",
+            ss["Body"]))
+        el.append(Paragraph(con["headline"], ss["Body"]))
+        el.append(Paragraph(con["detail"], ss["Body"]))
+        el.append(Paragraph(con["label"], ss["Small"]))
+
+    # out-of-sample validation (the model checking itself)
+    rob = full_report.get("robustness")
+    if rob:
+        el.append(Paragraph("Self-Validation — does the model hold out-of-sample?", ss["H2c"]))
+        el.append(Paragraph(
+            f"Trained on first {rob['train_days']} days: "
+            f"<b>{rob['train_pass']*100:.0f}%</b> &nbsp;·&nbsp; tested on last "
+            f"{rob['test_days']} days: <b>{rob['test_pass']*100:.0f}%</b> "
+            f"&nbsp;·&nbsp; trust score: <b>{rob['trust_score']}/100</b> "
+            f"({rob['stability']}).", ss["Body"]))
+        el.append(Paragraph(rob["headline"], ss["Body"]))
+        el.append(Paragraph(rob["detail"], ss["Body"]))
+        el.append(Paragraph(rob["label"], ss["Small"]))
+
     # personal danger rules
     dr = full_report.get("danger_rules", {})
     if dr.get("rules"):

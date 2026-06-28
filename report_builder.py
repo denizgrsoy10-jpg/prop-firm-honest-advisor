@@ -25,6 +25,8 @@ import bayesian
 import kelly
 import leverage_map as leverage_map_mod
 import funded_survival as funded_survival_mod
+import consistency_risk as consistency_risk_mod
+import robustness as robustness_mod
 
 
 def _expected_fee_burn(fee, pass_prob):
@@ -128,6 +130,18 @@ def build_full_report(preview, daily_pnls, report_id=None):
     _funded = funded_survival_mod.best_funded_target(
         results, {f["firm_name"]: f for f in firms}, daily_pnls)
 
+    # --- Consistency cap layer (the "made money but still failed" trap) ------
+    # Many firms cap how much of total profit a single day can represent.
+    # This is a separate elimination path from drawdown/target rules.
+    _consistency = consistency_risk_mod.best_consistency_target(
+        results, {f["firm_name"]: f for f in firms}, daily_pnls)
+
+    # --- Out-of-sample validation layer (the model checking itself) ----------
+    # Splits history train/test and asks whether the headline odds reproduce,
+    # or whether they're the fingerprint of a hot streak. The only layer that
+    # grades the model's own trustworthiness.
+    _robust = robustness_mod.best_robustness(results, daily_pnls)
+
     return {
         "report_id": report_id or make_report_id(),
         "ruleset_version": ruleset_version(firms),
@@ -211,6 +225,35 @@ def build_full_report(preview, daily_pnls, report_id=None):
             "detail": _funded.detail,
             "label": _funded.label,
         } if _funded and _funded.available else None),
+        "consistency_risk": ({
+            "firm": _consistency.firm,
+            "cap_pct": _consistency.cap_pct,
+            "cap_source": _consistency.cap_source,
+            "applies": _consistency.applies,
+            "pass_target_rate": _consistency.pass_target_rate,
+            "consistency_kill_rate": _consistency.consistency_kill_rate,
+            "clean_pass_rate": _consistency.clean_pass_rate,
+            "best_day_share": _consistency.best_day_share,
+            "headroom": _consistency.headroom,
+            "headline": _consistency.headline,
+            "detail": _consistency.detail,
+            "label": _consistency.label,
+        } if _consistency and _consistency.available else None),
+        "robustness": ({
+            "firm": _robust.firm,
+            "n_days": _robust.n_days,
+            "train_days": _robust.train_days,
+            "test_days": _robust.test_days,
+            "train_pass": _robust.train_pass,
+            "test_pass": _robust.test_pass,
+            "full_pass": _robust.full_pass,
+            "gap": _robust.gap,
+            "stability": _robust.stability,
+            "trust_score": _robust.trust_score,
+            "headline": _robust.headline,
+            "detail": _robust.detail,
+            "label": _robust.label,
+        } if _robust and _robust.available else None),
         "disclaimer": ("Statistical simulation only. Not financial, investment or "
                        "trading advice. No outcome with any firm is guaranteed."),
     }

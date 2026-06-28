@@ -859,6 +859,47 @@ if ss.daily_pnls is not None:
             )
             st.caption(_fnd["label"])
 
+        # --- Consistency cap (the "made money but still failed" trap) -------
+        _con = full.get("consistency_risk")
+        if _con and _con.get("applies"):
+            st.markdown("**⚖️ Consistency cap — made the money, still failed?**")
+            cc1, cc2, cc3 = st.columns(3)
+            cc1.metric("Consistency cap", f"{_con['cap_pct']:.0f}%")
+            cc2.metric("Your best day share", f"{_con['best_day_share']*100:.0f}%",
+                       help="Your single best day as a share of total net "
+                            "profit. If this exceeds the cap, you're eliminated "
+                            "even after hitting the target.")
+            cc3.metric("Caught by the cap", f"{_con['consistency_kill_rate']*100:.0f}%",
+                       help="Of simulated runs that reach the profit target, the "
+                            "share still eliminated by the consistency rule.")
+            st.write(f"- {_con['headline']}")
+            st.write(f"- {_con['detail']}")
+            st.caption(_con["label"])
+        elif _con and not _con.get("applies"):
+            st.markdown("**⚖️ Consistency cap**")
+            st.write(f"- {_con['headline']}")
+            st.caption(_con["label"])
+
+        # --- Out-of-sample validation (the model checking itself) -----------
+        _rob = full.get("robustness")
+        if _rob:
+            st.markdown("**🔬 Self-validation — does the model hold out-of-sample?**")
+            _stab = _rob["stability"]
+            _badge = {"stable": "🟢 Stable", "moderate": "🟡 Moderate",
+                      "fragile": "🔴 Fragile"}.get(_stab, _stab)
+            rc1, rc2, rc3 = st.columns(3)
+            rc1.metric(f"Trained ({_rob['train_days']}d)",
+                       f"{_rob['train_pass']*100:.0f}%")
+            rc2.metric(f"Tested ({_rob['test_days']}d)",
+                       f"{_rob['test_pass']*100:.0f}%")
+            rc3.metric("Trust score", f"{_rob['trust_score']}/100",
+                       help="How well the odds learned on the first half of your "
+                            "history reproduce on the second half it never saw. "
+                            "Low = the headline number may be a hot streak.")
+            st.write(f"- **{_badge}** — {_rob['headline']}")
+            st.write(f"- {_rob['detail']}")
+            st.caption(_rob["label"])
+
         # --- Personal danger rules -------------------------------------------
         _dr = full["danger_rules"]
         st.markdown("**🛡️ Your personal danger rules**")
