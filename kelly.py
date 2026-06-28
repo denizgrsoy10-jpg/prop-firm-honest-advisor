@@ -46,6 +46,10 @@ class KellyResult:
     headline: str
     detail: str
     sizing_note: str
+    kelly_low: float = 0.0          # Kelly at the low end of the win-rate band
+    kelly_high: float = 0.0         # Kelly at the high end of the win-rate band
+    win_rate_low: float = 0.0       # win-rate credible interval, low
+    win_rate_high: float = 0.0      # win-rate credible interval, high
     disclaimer: str = ("Kelly analysis derived from your uploaded history. "
                        "Growth-optimal sizing is volatile; most professionals risk "
                        "a fraction of full Kelly. Diagnostic only -- not advice.")
@@ -113,30 +117,61 @@ def kelly_analysis(daily_pnls):
     else:
         half_k = kelly_f * 0.5
         quarter_k = kelly_f * 0.25
-        rec_label = (f"Full Kelly ~ {kelly_f*100:.0f}% of bankroll per bet "
-                     f"\u00b7 half-Kelly ~ {half_k*100:.0f}% \u00b7 quarter-Kelly ~ "
-                     f"{quarter_k*100:.0f}%")
+
+        # --- Propagate win-rate uncertainty into the Kelly fraction ----------
+        # The win rate is itself a small-sample estimate. A 63-trade history
+        # pins it only to roughly +/-6 points, and Kelly is highly sensitive to
+        # that: the same payoff ratio with a lower win rate can collapse the
+        # fraction toward zero. So we recompute Kelly at the low and high ends
+        # of the win-rate credible interval and show a RANGE, not a single
+        # false-precision number.
+        n_days = len(daily_pnls)
+        try:
+            import bayesian as _bayes
+            wlo, whi = _bayes.credible_interval(win_rate, n_days)
+        except Exception:
+            # Fallback: normal-approx +/-1 SE if bayesian unavailable
+            import math
+            se = math.sqrt(max(win_rate * (1 - win_rate), 1e-9) / max(n_days, 1))
+            wlo, whi = max(0.0, win_rate - se), min(1.0, win_rate + se)
+
+        def _kelly_at(p_):
+            q_ = 1.0 - p_
+            return max(0.0, p_ - q_ / b) if b > 0 else 0.0
+
+        kelly_low = _kelly_at(wlo)
+        kelly_high = _kelly_at(whi)
+
+        rec_label = (f"Full Kelly ~ {kelly_low*100:.0f}\u2013{kelly_high*100:.0f}% "
+                     f"of bankroll (point estimate {kelly_f*100:.0f}%) "
+                     f"\u00b7 half-Kelly ~ {half_k*100:.0f}% "
+                     f"\u00b7 quarter-Kelly ~ {quarter_k*100:.0f}%")
 
         if kelly_f >= 0.20 and b >= 1.0:
             edge_grade = "strong"
-            headline = (f"Solid edge in this sample: full Kelly ~ "
-                        f"{kelly_f*100:.0f}% of bankroll per bet.")
+            headline = (f"Solid edge in this sample: full Kelly lands around "
+                        f"{kelly_low*100:.0f}\u2013{kelly_high*100:.0f}% of bankroll "
+                        f"per bet (point estimate {kelly_f*100:.0f}%).")
         elif kelly_f >= 0.05:
             edge_grade = "thin"
-            headline = (f"Thin but positive edge: full Kelly ~ "
-                        f"{kelly_f*100:.0f}% of bankroll per bet - small enough "
-                        f"that estimation error matters.")
+            headline = (f"Thin but positive edge: full Kelly spans "
+                        f"{kelly_low*100:.0f}\u2013{kelly_high*100:.0f}% "
+                        f"\u2014 wide enough that estimation error dominates.")
         else:
             edge_grade = "marginal"
-            headline = (f"Marginal edge: full Kelly ~ {kelly_f*100:.0f}% - barely "
-                        f"above zero, so treat it as fragile.")
+            headline = (f"Marginal edge: full Kelly ~ {kelly_low*100:.0f}\u2013"
+                        f"{kelly_high*100:.0f}%, barely above zero \u2014 treat it "
+                        f"as fragile.")
 
         detail = ("Full Kelly maximises long-run growth but is famously volatile - "
                   "deep drawdowns are normal even when sized 'correctly'. Under a "
                   "challenge's hard drawdown floor that volatility is dangerous, so "
                   "the prudent range is half- to quarter-Kelly: you give up a little "
                   "growth for a large cut in ruin risk and a smoother equity path "
-                  "that survives more orderings of the same days.")
+                  "that survives more orderings of the same days. The range above "
+                  "comes from the uncertainty in your win rate alone - at the low "
+                  "end your edge is slim, so the cautious end of the range is the "
+                  "safer planning number.")
 
         sizing_note = ("Mapping this to YOUR live size needs your account size and "
                        "per-trade risk %, which the upload doesn't include - so we "
@@ -144,6 +179,13 @@ def kelly_analysis(daily_pnls):
                        "current size. If you risk well under half-Kelly per trade, "
                        "oversizing isn't your risk; if you're near or above full "
                        "Kelly, the challenge floor makes that the danger.")
+
+    # Range fields only exist in the has-edge branch; default the rest to the
+    # point estimate so the dataclass is always well-formed.
+    _k_low = locals().get("kelly_low", kelly_f)
+    _k_high = locals().get("kelly_high", kelly_f)
+    _w_low = locals().get("wlo", win_rate)
+    _w_high = locals().get("whi", win_rate)
 
     return KellyResult(
         has_edge=has_edge,
@@ -156,4 +198,8 @@ def kelly_analysis(daily_pnls):
         headline=headline,
         detail=detail,
         sizing_note=sizing_note,
+        kelly_low=_k_low,
+        kelly_high=_k_high,
+        win_rate_low=_w_low,
+        win_rate_high=_w_high,
     )

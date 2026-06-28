@@ -743,10 +743,17 @@ if ss.daily_pnls is not None:
                        "∞" if _pr == float("inf") else f"{_pr:.2f}",
                        help="Average win ÷ average loss.")
             _kf = _kel.get("kelly_fraction", 0)
-            kc3.metric("Full Kelly",
-                       f"{_kf*100:.0f}%",
+            _klo = _kel.get("kelly_low", _kf)
+            _khi = _kel.get("kelly_high", _kf)
+            if _khi > _klo:
+                _kval = f"{_klo*100:.0f}–{_khi*100:.0f}%"
+            else:
+                _kval = f"{_kf*100:.0f}%"
+            kc3.metric("Full Kelly range", _kval,
                        help="Growth-optimal fraction of bankroll per bet, from "
-                            "your own edge. Most pros risk a fraction of this.")
+                            "your own edge — shown as a range because your win "
+                            "rate is itself uncertain on this sample size. Most "
+                            "pros risk a fraction of this.")
             st.write(f"- {_kel['headline']}")
             st.write(f"- **Prudent range:** {_kel['recommended_fraction_label']}")
             st.write(f"- {_kel['detail']}")

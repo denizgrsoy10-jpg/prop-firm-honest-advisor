@@ -168,8 +168,13 @@ def risk_drift(daily_pnls: list[float]) -> dict | None:
 # ---------------------------------------------------------------------------
 # Top-level: assemble the regime report + a trust adjustment
 # ---------------------------------------------------------------------------
-def regime_report(daily_pnls: list[float]) -> dict | None:
-    """Full regime diagnostic. Returns None if the series is too short."""
+def regime_report(daily_pnls: list[float], robustness: dict | None = None) -> dict | None:
+    """Full regime diagnostic. Returns None if the series is too short.
+
+    `robustness` (optional) is the out-of-sample validation result. When the
+    two halves of the history diverge (a 'fragile' self-validation), the regime
+    read must not claim the history is stationary — the two layers have to agree.
+    """
     if len(daily_pnls) < 6:
         return None
 
@@ -192,30 +197,51 @@ def regime_report(daily_pnls: list[float]) -> dict | None:
                     f"your day-to-day volatility is fairly even.")
 
     # Overall "regime stability" trust note — should the trader trust a single
-    # full-history pass number?
+    # full-history pass number? ANY strong trend in the mean (improving OR
+    # deteriorating) is non-stationarity, not just decline — a monotone climb in
+    # win rate is itself a regime shift. We also defer to the out-of-sample
+    # check: if the two halves diverge, this history is NOT stationary, full stop.
     flags = 0
     if vc is not None and vc > 0.20:
         flags += 1
-    if rs and rs["edge_state"] == "deteriorating":
-        flags += 1
+    if rs and rs["edge_state"] in ("deteriorating", "improving"):
+        flags += 1   # any strong directional trend, not only decline
     if rs and rs["vol_rising"]:
         flags += 1
     if rd and rd["state"] == "rising":
         flags += 1
 
-    if flags >= 2:
-        trust_label = ("Multiple regime signals fired (deteriorating edge, rising "
-                       "volatility, or rising size). Treat a single full-history "
-                       "pass number with extra caution — your recent regime looks "
-                       "different from your average.")
+    # Out-of-sample override: a fragile split is decisive evidence of regime
+    # instability and must dominate the regime read so the two layers agree.
+    oos_fragile = bool(robustness and robustness.get("stability") == "fragile")
+    oos_moderate = bool(robustness and robustness.get("stability") == "moderate")
+
+    if oos_fragile or flags >= 2:
+        if oos_fragile:
+            trust_label = (
+                "Out-of-sample validation splits this history into two halves "
+                "that disagree sharply, and the average results trend across "
+                "thirds rather than holding steady. This history is not "
+                "stationary — treat any single full-history pass number with "
+                "strong caution, and weight your most recent form over the "
+                "headline average.")
+        else:
+            trust_label = (
+                "Multiple regime signals fired (a directional trend in your "
+                "edge, rising volatility, or rising size). Treat a single "
+                "full-history pass number with extra caution — your recent "
+                "regime looks different from your average.")
         trust = "low"
-    elif flags == 1:
-        trust_label = ("One regime signal fired. Your history is mostly stable but "
-                       "watch the flagged dimension.")
+    elif flags == 1 or oos_moderate:
+        trust_label = (
+            "Some regime drift is present: your earlier and later trading differ "
+            "enough that a single full-history pass number is a rough summary "
+            "rather than a precise one. Watch the flagged dimension.")
         trust = "medium"
     else:
-        trust_label = ("No strong regime instability: your history looks reasonably "
-                       "stationary, so full-history pass odds are a fair summary.")
+        trust_label = (
+            "No strong regime instability and the out-of-sample halves broadly "
+            "agree, so full-history pass odds are a fair summary of this record.")
         trust = "high"
 
     return {

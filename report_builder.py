@@ -29,19 +29,65 @@ import consistency_risk as consistency_risk_mod
 import robustness as robustness_mod
 
 
-def _expected_fee_burn(fee, pass_prob):
-    """Expected total fees = fee * expected attempts (1/p). Honest about low p."""
+def _expected_fee_burn(fee, pass_prob, n_effective=None):
+    """Expected total fees across the retry loop, shown as a RANGE.
+
+    Expected attempts to pass once is 1/p, but p itself is uncertain (a Bayesian
+    credible interval, not a point). So instead of a single false-precision
+    figure ("$8,181"), we propagate the odds uncertainty into the attempt count
+    and total cost: a high p gives few attempts (low end), a low p gives many
+    (high end). The point estimate is kept only as a midpoint for ranking.
+    """
     if pass_prob <= 0.0:
         return None, "Pass odds near zero — no fee makes statistical sense here."
-    attempts = 1.0 / pass_prob
-    total = fee * attempts
-    if attempts >= 5:
-        msg = f"~{attempts:.1f} attempts on average (${total:,.0f}) — an expensive habit."
-    elif attempts >= 2:
-        msg = f"~{attempts:.1f} attempts on average (${total:,.0f})."
+
+    # Point estimate (used for ranking / sorting only)
+    attempts_mid = 1.0 / pass_prob
+    total_mid = fee * attempts_mid
+
+    # Propagate odds uncertainty: attempts = 1/p, so the LOW odds bound gives
+    # the HIGH attempt count and vice-versa.
+    lo_p, hi_p = bayesian.credible_interval(pass_prob, n_effective)
+    # Guard tiny lower bounds so the high end stays finite and honest.
+    lo_p_safe = max(lo_p, 0.01)
+    attempts_hi = 1.0 / lo_p_safe   # worst-case: many attempts
+    attempts_lo = 1.0 / hi_p        # best-case: few attempts
+    cost_lo = fee * attempts_lo
+    cost_hi = fee * attempts_hi
+
+    def _fmt_attempts(a):
+        return f"{a:.0f}" if a >= 2 else f"{a:.1f}"
+
+    # Round costs to ~2 significant figures so we never imply dollar precision.
+    def _round_sig(x, sig=2):
+        if x <= 0:
+            return 0
+        import math
+        d = sig - int(math.floor(math.log10(abs(x)))) - 1
+        return round(x, d)
+
+    c_lo = _round_sig(cost_lo)
+    c_hi = _round_sig(cost_hi)
+
+    a_lo_s = _fmt_attempts(attempts_lo)
+    a_hi_s = _fmt_attempts(attempts_hi)
+
+    # Severity wording keyed off the midpoint, but numbers shown as ranges.
+    if attempts_mid >= 5:
+        tail = " — an expensive loop once you account for the odds range."
     else:
-        msg = f"~{attempts:.1f} attempt on average (${total:,.0f})."
-    return total, msg
+        tail = ""
+
+    if c_lo >= 1000 or c_hi >= 1000:
+        cost_str = f"${c_lo:,.0f}–${c_hi:,.0f}"
+    else:
+        cost_str = f"${c_lo:,.0f}–${c_hi:,.0f}"
+
+    msg = (f"~{a_lo_s}–{a_hi_s} attempts (≈{cost_str}), depending where your true "
+           f"odds sit in their range{tail}")
+
+    # Return the midpoint total for ranking, plus the range message.
+    return total_mid, msg
 
 
 def build_preview(daily_pnls, firms, meta, iters=2000):
@@ -66,10 +112,11 @@ def build_preview(daily_pnls, firms, meta, iters=2000):
 
 def build_full_report(preview, daily_pnls, report_id=None):
     results = preview["_results"]
+    _n_tr = preview["data"].get("n_trades")
     firm_rows = []
     for r in results:
         fee = r.firm.get("fee", 0) or 0
-        burn_total, burn_msg = _expected_fee_burn(fee, r.pass_prob)
+        burn_total, burn_msg = _expected_fee_burn(fee, r.pass_prob, _n_tr)
         firm_rows.append({
             "firm": f"{r.firm['firm_name']} — {r.firm['product']}",
             "pass_prob": r.pass_prob,
@@ -111,8 +158,16 @@ def build_full_report(preview, daily_pnls, report_id=None):
         "n_trades": _n_trades,
     }
 
+    # --- Out-of-sample validation layer (the model checking itself) ----------
+    # Computed early so the regime read can defer to it: if the two halves of
+    # the history diverge, regime must not call the record stationary.
+    _robust = robustness_mod.best_robustness(results, daily_pnls)
+    _robust_dict = ({"stability": _robust.stability, "gap": _robust.gap}
+                    if _robust and _robust.available else None)
+
     # --- Regime layer (trader-level; uses raw history, firm-independent) -------
-    _regime = regime_analysis.regime_report(daily_pnls)
+    # Passes the out-of-sample result so regime trust and self-validation agree.
+    _regime = regime_analysis.regime_report(daily_pnls, robustness=_robust_dict)
 
     # --- Rule interaction layer (how rules compound for best-fit firm) --------
     _ri = rule_interaction.rule_interaction_analysis(
@@ -135,12 +190,6 @@ def build_full_report(preview, daily_pnls, report_id=None):
     # This is a separate elimination path from drawdown/target rules.
     _consistency = consistency_risk_mod.best_consistency_target(
         results, {f["firm_name"]: f for f in firms}, daily_pnls)
-
-    # --- Out-of-sample validation layer (the model checking itself) ----------
-    # Splits history train/test and asks whether the headline odds reproduce,
-    # or whether they're the fingerprint of a hot streak. The only layer that
-    # grades the model's own trustworthiness.
-    _robust = robustness_mod.best_robustness(results, daily_pnls)
 
     return {
         "report_id": report_id or make_report_id(),
@@ -182,6 +231,10 @@ def build_full_report(preview, daily_pnls, report_id=None):
             "win_rate": _kelly.win_rate,
             "payoff_ratio": _kelly.payoff_ratio,
             "kelly_fraction": _kelly.kelly_fraction,
+            "kelly_low": _kelly.kelly_low,
+            "kelly_high": _kelly.kelly_high,
+            "win_rate_low": _kelly.win_rate_low,
+            "win_rate_high": _kelly.win_rate_high,
             "recommended_fraction_label": _kelly.recommended_fraction_label,
             "headline": _kelly.headline,
             "detail": _kelly.detail,

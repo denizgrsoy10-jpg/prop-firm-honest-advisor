@@ -323,10 +323,19 @@ def build_pdf(full_report: dict) -> bytes:
         el.append(Paragraph("Growth-optimal fraction estimate, not a live size recommendation.", ss["Small"]))
         pr = kel.get("payoff_ratio", 0)
         pr_str = "infinite" if pr == float("inf") else f"{pr:.2f}"
+        _kf = kel.get("kelly_fraction", 0)
+        _klo = kel.get("kelly_low", _kf)
+        _khi = kel.get("kelly_high", _kf)
+        _wlo = kel.get("win_rate_low", kel["win_rate"])
+        _whi = kel.get("win_rate_high", kel["win_rate"])
+        _krange = (f"{_klo*100:.0f}\u2013{_khi*100:.0f}%" if _khi > _klo
+                   else f"{_kf*100:.0f}%")
         el.append(Paragraph(
-            f"Win rate: <b>{kel['win_rate']*100:.0f}%</b> &nbsp;·&nbsp; "
+            f"Win rate: <b>{kel['win_rate']*100:.0f}%</b> "
+            f"(range {_wlo*100:.0f}\u2013{_whi*100:.0f}%) &nbsp;·&nbsp; "
             f"Payoff ratio: <b>{pr_str}</b> &nbsp;·&nbsp; "
-            f"Full Kelly: <b>{kel.get('kelly_fraction',0)*100:.0f}%</b> of bankroll per bet",
+            f"Full Kelly: <b>{_krange}</b> of bankroll "
+            f"(point estimate {_kf*100:.0f}%)",
             ss["Body"]))
         el.append(Paragraph(kel["headline"], ss["Body"]))
         el.append(Paragraph(f"<b>Prudent range:</b> {kel['recommended_fraction_label']}", ss["Body"]))
