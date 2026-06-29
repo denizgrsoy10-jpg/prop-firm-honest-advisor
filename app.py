@@ -632,6 +632,43 @@ if ss.daily_pnls is not None:
         st.write(f"Generated {full['generated']} · {full['data']['n_trades']} trades · "
                  f"{full['data']['n_days']} trading days")
 
+        # --- Reality Summary (shareable first screen) -----------------------
+        _rs = full.get("reality_summary")
+        if _rs:
+            st.markdown("### 📋 Reality Summary")
+            rsa, rsb = st.columns(2)
+            if _rs.get("highest_fit"):
+                _hf = _rs["highest_fit"]
+                rsa.metric("Highest historical fit",
+                           _hf["range"],
+                           _hf["firm"].split("—")[0].strip(),
+                           delta_color="off")
+            if _rs.get("severe_mismatch"):
+                _sm = _rs["severe_mismatch"]
+                rsb.metric("Severe mismatch",
+                           _sm["range"],
+                           _sm["firm"].split("—")[0].strip(),
+                           delta_color="off")
+            _summary_lines = []
+            if _rs.get("dominant_blocker"):
+                _summary_lines.append(
+                    f"- **Dominant blocker:** {_rs['dominant_blocker']} "
+                    f"({_rs['dominant_blocker_count']} firms)")
+            _summary_lines.append(f"- **Killer rule:** {_rs['killer_rule']}")
+            _summary_lines.append(f"- **Data confidence:** {_rs['data_confidence']}")
+            if _rs.get("stability_trust_label"):
+                _summary_lines.append(
+                    f"- **Stability trust:** {_rs['stability_trust_label']}")
+            _summary_lines.append(f"- **Main finding:** {_rs['main_warning']}")
+            st.markdown(_md("\n".join(_summary_lines)))
+            st.caption(_rs["disclaimer"])
+
+            # Stability warning — reconciles strong fit vs low stability trust
+            _sw = _rs.get("stability_warning")
+            if _sw:
+                st.warning(f"**{_sw['headline']}** — {_sw['body']}")
+            st.divider()
+
         _dq = full["data_audit"]
         with st.expander(f"Data quality — confidence: {_dq['confidence']}", expanded=False):
             st.write(f"- Trades detected: {_dq['n_trades']}")

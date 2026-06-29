@@ -283,4 +283,4 @@ def personal_danger_rules(autopsy: dict, dna: dict, best_result) -> dict:
         if r not in seen:
             seen.add(r); final.append(r)
     return {"rules": final[:5],
-            "label": "Risk-control checklist derived from your pattern — not financial advice."}
+            "label": "Risk pattern notes derived from your history — diagnostic only, not advice."}

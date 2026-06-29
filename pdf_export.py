@@ -207,6 +207,35 @@ def build_pdf(full_report: dict) -> bytes:
         f"Profitable days: {d.get('profitable_days')}<br/>"
         f"Source: {d.get('source_hint')}", ss["Body"]))
 
+    # --- Reality Summary (shareable first screen) ----------------------------
+    _rs = full_report.get("reality_summary")
+    if _rs:
+        el.append(Paragraph("Reality Summary", ss["H2c"]))
+        _lines = []
+        if _rs.get("highest_fit"):
+            _hf = _rs["highest_fit"]
+            _lines.append(f"Highest historical fit: <b>{_hf['firm']}</b> "
+                          f"({_hf['range']})")
+        if _rs.get("severe_mismatch"):
+            _sm = _rs["severe_mismatch"]
+            _lines.append(f"Severe mismatch: <b>{_sm['firm']}</b> "
+                          f"({_sm['range']})")
+        if _rs.get("dominant_blocker"):
+            _lines.append(f"Dominant blocker: <b>{_rs['dominant_blocker']}</b> "
+                          f"({_rs['dominant_blocker_count']} firms)")
+        _lines.append(f"Killer rule: <b>{_rs['killer_rule']}</b>")
+        _lines.append(f"Data confidence: <b>{_rs['data_confidence']}</b>")
+        if _rs.get("stability_trust_label"):
+            _lines.append(f"Stability trust: <b>{_rs['stability_trust_label']}</b>")
+        _lines.append(f"Main finding: {_rs['main_warning']}")
+        el.append(Paragraph("<br/>".join(_lines), ss["Body"]))
+        el.append(Paragraph(_rs["disclaimer"], ss["Small"]))
+
+        _sw = _rs.get("stability_warning")
+        if _sw:
+            el.append(Paragraph(f"<b>{_sw['headline']}</b>", ss["H2c"]))
+            el.append(Paragraph(_sw["body"], ss["Body"]))
+
     # firm comparison
     el.append(Paragraph("Firm comparison", ss["H2c"]))
     el.append(Paragraph(

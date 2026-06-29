@@ -110,6 +110,113 @@ def build_preview(daily_pnls, firms, meta, iters=2000):
     }
 
 
+def _build_reality_summary(firm_rows, best, results, _leverage, _robust,
+                           confidence, n_trades):
+    """Assemble the shareable Reality Summary + a stability-warning card.
+
+    This is the first screen a reader (or an influencer screenshot) sees: the
+    handful of facts that matter, plus an explicit reconciliation of the two
+    different trust signals (data confidence vs. self-validation stability) so
+    a strong fit alongside a low stability score never reads as a contradiction.
+    """
+    # Highest and lowest fit firms (results are sorted best-first)
+    best_row = firm_rows[0] if firm_rows else None
+    worst_row = firm_rows[-1] if firm_rows else None
+
+    def _range_str(pass_prob):
+        return bayesian.credible_interval_pct(pass_prob, n_trades)
+
+    highest_fit = None
+    if best_row:
+        highest_fit = {
+            "firm": best_row["firm"],
+            "range": _range_str(best_row["pass_prob"]),
+            "verdict": best_row["verdict"],
+        }
+    severe_mismatch = None
+    if worst_row and worst_row is not best_row:
+        severe_mismatch = {
+            "firm": worst_row["firm"],
+            "range": _range_str(worst_row["pass_prob"]),
+            "verdict": worst_row["verdict"],
+        }
+
+    # Dominant blocker + whether failure modes contradict
+    dominant_blocker = None
+    blocker_count = None
+    contradiction = False
+    if _leverage:
+        dominant_blocker = _leverage.dominant_blocker_label
+        blocker_count = (f"{_leverage.firms_blocked_by_dominant} of "
+                         f"{_leverage.total_firms}")
+        contradiction = bool(_leverage.contradiction)
+
+    # Stability trust from out-of-sample validation
+    stability_trust = None
+    stability_label = None
+    if _robust and _robust.available:
+        stability_trust = _robust.stability      # stable | moderate | fragile
+        stability_label = {
+            "stable": "Stable",
+            "moderate": "Moderate",
+            "fragile": "Low / Fragile",
+        }.get(_robust.stability, _robust.stability)
+
+    # Main warning line: opposite failure modes is the headline risk when present
+    if contradiction:
+        main_warning = ("Same behavior creates opposite failure modes across "
+                        "rulesets — there is no single fix.")
+    else:
+        main_warning = (f"{dominant_blocker} is the broadest blocker "
+                        f"({blocker_count} firms)." if dominant_blocker else
+                        "See the per-ruleset breakdown below.")
+
+    # --- Stability warning card -----------------------------------------------
+    # Only fires when fit looks strong but the history is not stable, i.e. the
+    # exact situation that would otherwise read as a contradiction.
+    stability_warning = None
+    strong_fit = bool(best_row and best_row["pass_prob"] >= 0.50)
+    if stability_trust == "fragile":
+        warn_headline = ("Strong fit \u00b7 Low stability trust" if strong_fit
+                         else "Low stability trust")
+        stability_warning = {
+            "headline": warn_headline,
+            "body": (
+                "This history shows "
+                + ("a strong ruleset fit, but low stability trust. "
+                   if strong_fit else "low stability trust. ")
+                + "Your earlier and recent halves behave very differently, so "
+                "treat the headline ranges as provisional until more trades are "
+                "added. Data confidence and stability trust measure two different "
+                "things: confidence reflects how many trades you have, while "
+                "stability reflects whether those trades tell a consistent story. "
+                "You can have enough data to form a range and still find that the "
+                "range is unstable."),
+        }
+    elif stability_trust == "moderate" and strong_fit:
+        stability_warning = {
+            "headline": "Strong fit \u00b7 Moderate stability trust",
+            "body": (
+                "This history shows a strong ruleset fit with moderate stability "
+                "trust. Your earlier and recent trading differ somewhat, so the "
+                "headline ranges are a reasonable summary but not a precise one."),
+        }
+
+    return {
+        "highest_fit": highest_fit,
+        "severe_mismatch": severe_mismatch,
+        "dominant_blocker": dominant_blocker,
+        "dominant_blocker_count": blocker_count,
+        "killer_rule": best.killer_rule_label,
+        "data_confidence": confidence,
+        "stability_trust": stability_trust,
+        "stability_trust_label": stability_label,
+        "main_warning": main_warning,
+        "disclaimer": "Diagnostic only — not a recommendation.",
+        "stability_warning": stability_warning,
+    }
+
+
 def build_full_report(preview, daily_pnls, report_id=None):
     results = preview["_results"]
     _n_tr = preview["data"].get("n_trades")
@@ -191,7 +298,13 @@ def build_full_report(preview, daily_pnls, report_id=None):
     _consistency = consistency_risk_mod.best_consistency_target(
         results, {f["firm_name"]: f for f in firms}, daily_pnls)
 
+    # --- Reality Summary (shareable first screen + stability reconciliation) --
+    _reality = _build_reality_summary(
+        firm_rows, best, results, _leverage, _robust,
+        confidence_from(preview["data"]), _n_tr)
+
     return {
+        "reality_summary": _reality,
         "report_id": report_id or make_report_id(),
         "ruleset_version": ruleset_version(firms),
         "simulation_date": preview["generated"],
