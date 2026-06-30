@@ -43,6 +43,16 @@ st.set_page_config(page_title="Candor RealityCheck",
                    page_icon=_asset("candor-favicon-32.png") or "🔦",
                    layout="centered")
 
+# Ask the browser not to auto-translate the app. Candor's report is English by
+# design; a partial machine translation (e.g. a Turkish-locale browser turning
+# "Candor" into "Dürüstlük" while leaving the dynamic report in English) would
+# produce a confusing mixed-language screen. This keeps the surface consistent.
+st.markdown(
+    '<meta name="google" content="notranslate">'
+    '<style>html{-webkit-translate:no;}</style>',
+    unsafe_allow_html=True,
+)
+
 # --- routing to extra surfaces (?page=outcome|honesty-ledger|admin|signal) ----
 import views
 _qp = st.query_params
@@ -639,16 +649,12 @@ if ss.daily_pnls is not None:
             rsa, rsb = st.columns(2)
             if _rs.get("highest_fit"):
                 _hf = _rs["highest_fit"]
-                rsa.metric("Highest historical fit",
-                           _hf["range"],
-                           _hf["firm"].split("—")[0].strip(),
-                           delta_color="off")
+                rsa.metric(f"Highest fit · {_hf['firm']}",
+                           _hf["range"])
             if _rs.get("severe_mismatch"):
                 _sm = _rs["severe_mismatch"]
-                rsb.metric("Severe mismatch",
-                           _sm["range"],
-                           _sm["firm"].split("—")[0].strip(),
-                           delta_color="off")
+                rsb.metric(f"Severe mismatch · {_sm['firm']}",
+                           _sm["range"])
             _summary_lines = []
             if _rs.get("dominant_blocker"):
                 _summary_lines.append(
