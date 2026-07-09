@@ -80,13 +80,6 @@ if _qp_mode in ("own", "own_account"):
     ss["mode"] = "own_account"
 elif _qp_mode in ("prop", "prop_firm"):
     ss["mode"] = "prop_firm"
-
-# --- PAYMENT RETURN: ?paid=1 geldiyse raporu aç ------------------------------
-# LemonSqueezy odeme sonrasi kullaniciyi buraya ?paid=1 ile geri yonlendirir.
-# Ayni sekmede kaldiysa session korunur; boyle durumda direkt kilidi ac.
-if _qp.get("paid") == "1":
-    ss["unlocked"] = True
-
 ss.setdefault("daily_pnls", None)
 ss.setdefault("meta", None)
 ss.setdefault("preview", None)
@@ -100,6 +93,14 @@ ss.setdefault("logged", False)
 ss.setdefault("used_demo", False)
 ss.setdefault("oa_preview", None)
 ss.setdefault("mode", "prop_firm")
+
+# --- PAYMENT RETURN --------------------------------------------------------
+# LemonSqueezy odeme tamamlaninca kullaniciyi ?paid=1 ile bu adrese geri
+# yonlendirir (payments.py checkout URL'sine redirect_url ekliyor). SADECE
+# gercek odeme donusu (?paid=1) kilidi acar; kullanici bir sey tiklamaz.
+# Guvenlik: checkout baslatilmis olmali ki elle yazilan bos ?paid=1 kilit acmasin.
+if _qp.get("paid") == "1" and ss.get("checkout"):
+    ss["unlocked"] = True
 
 
 def _reset():
@@ -120,52 +121,6 @@ def _demo_path():
         if os.path.exists(p):
             return p
     return None
-
-
-def _render_paywall_cta(consent_ok: bool, product_key: str, event_prefix: str = ""):
-    """Shared payment CTA used by both funnels.
-
-    In LIVE mode we keep the user on THIS tab: the checkout opens in a new tab,
-    the user pays, then a manual "I've paid — unlock" button flips ss.unlocked.
-    This preserves the uploaded CSV + computed report across the payment step,
-    which a full-page redirect back into Streamlit would otherwise wipe.
-    """
-    ev = event_prefix
-    if payments.mode() == "mock":
-        # Mock: single button, instant unlock, no network.
-        btn_label = "Unlock (demo — no charge)"
-        if st.button(btn_label, type="primary", disabled=not consent_ok,
-                     key=f"{ev}unlock_mock"):
-            analytics.log_event(f"{ev}unlock_clicked")
-            ss.checkout = payments.create_checkout(product_key)
-        if ss.checkout and ss.checkout["checkout_url"] == "MOCK_CHECKOUT":
-            if payments.verify_payment(ss.checkout["session_id"]):
-                ss.unlocked = True
-                analytics.log_event(f"{ev}payment_success", {"product": product_key})
-                st.rerun()
-        return
-
-    # LIVE mode -------------------------------------------------------------
-    price = payments.get_price_display(product_key)
-    if not ss.checkout:
-        if st.button(f"Get early access — {price}", type="primary",
-                     disabled=not consent_ok, key=f"{ev}unlock_live"):
-            analytics.log_event(f"{ev}unlock_clicked")
-            ss.checkout = payments.create_checkout(product_key)
-            st.rerun()
-    if ss.checkout and ss.checkout["checkout_url"] != "MOCK_CHECKOUT":
-        st.link_button(f"① Pay {price} securely (opens new tab)",
-                       ss.checkout["checkout_url"])
-        st.caption("A secure LemonSqueezy checkout opens in a new tab. "
-                   "Keep **this** tab open — your report is waiting here.")
-        st.write("")
-        if st.button("② I've paid — unlock my report", type="primary",
-                     key=f"{ev}confirm_paid"):
-            ss.unlocked = True
-            analytics.log_event(f"{ev}payment_success", {"product": product_key})
-            st.rerun()
-        st.caption("Click ② after the payment completes in the other tab.")
-
 # ============================================================================
 # Own Account RealityCheck — full mode flow
 # ============================================================================
@@ -287,12 +242,30 @@ def _render_own_account():
                  "checklist, PDF.")
         _consent_payment = st.checkbox(PAY_CONSENT_TEXT,
                                        key="oa_consent_payment")
-        if _consent_payment and not ss.get("legal_logged_payment"):
-            tracking.log_legal_acceptance(
-                source="payment", consent_text=PAY_CONSENT_TEXT,
-                report_id=rep.get("report_id"))
-            ss["legal_logged_payment"] = True
-        _render_paywall_cta(_consent_payment, "full_report", event_prefix="oa_")
+        btn_label = ("Unlock (demo — no charge)" if payments.mode() == "mock"
+                     else "Get early access — $9")
+        if st.button(btn_label, type="primary",
+                     disabled=not _consent_payment, key="oa_unlock"):
+            analytics.log_event("oa_unlock_clicked")
+            if not ss.get("legal_logged_payment"):
+                tracking.log_legal_acceptance(
+                    source="payment", consent_text=PAY_CONSENT_TEXT,
+                    report_id=rep.get("report_id"))
+                ss["legal_logged_payment"] = True
+            ss.checkout = payments.create_checkout(
+                "full_report", success_url="?paid=1", cancel_url="?")
+        if ss.checkout:
+            if ss.checkout["checkout_url"] == "MOCK_CHECKOUT":
+                if payments.verify_payment(ss.checkout["session_id"]):
+                    ss.unlocked = True
+                    analytics.log_event("oa_payment_success",
+                                        {"product": "own_account_report"})
+                    st.rerun()
+            else:
+                st.link_button("Complete payment",
+                               ss.checkout["checkout_url"])
+                st.caption("After paying you'll return here with the "
+                           "report unlocked.")
 
     # --- 5) full report -----------------------------------------------------
     if ss.unlocked:
@@ -630,15 +603,33 @@ if ss.daily_pnls is not None:
         _consent_payment = st.checkbox(
             "Digital report. Statistical simulation only. No guaranteed outcome. Sales are generally final after report generation.",
             key="consent_payment")
-        if _consent_payment and not ss.get("legal_logged_payment"):
-            tracking.log_legal_acceptance(
-                source="payment",
-                consent_text="Digital report. Statistical simulation only. No guaranteed outcome. Sales are generally final after report generation.",
-                report_id=ss.get("report_id"),
-            )
-            ss["legal_logged_payment"] = True
 
-        _render_paywall_cta(_consent_payment, "full_report", event_prefix="")
+        btn_label = ("Unlock (demo — no charge)" if payments.mode() == "mock"
+                     else "Get early access — $9")
+        if st.button(btn_label, type="primary", disabled=not _consent_payment):
+            analytics.log_event("unlock_clicked")
+            # Real clickwrap record (payment-time consent)
+            if not ss.get("legal_logged_payment"):
+                tracking.log_legal_acceptance(
+                    source="payment",
+                    consent_text="Digital report. Statistical simulation only. No guaranteed outcome. Sales are generally final after report generation.",
+                    report_id=ss.get("report_id"),
+                )
+                ss["legal_logged_payment"] = True
+            ss.checkout = payments.create_checkout(
+                "full_report", success_url="?paid=1", cancel_url="?")
+
+        if ss.checkout:
+            if ss.checkout["checkout_url"] == "MOCK_CHECKOUT":
+                if payments.verify_payment(ss.checkout["session_id"]):
+                    ss.unlocked = True
+                    analytics.log_event("payment_success", {"product": "full_report"})
+                    st.rerun()
+            else:
+                st.link_button("Complete payment", ss.checkout["checkout_url"])
+                st.caption("A secure checkout opens in a new tab. After paying you'll "
+                           "be returned here and your report unlocks automatically. "
+                           "**Keep this tab open.**")
 
     # --- 4) full report ------------------------------------------------------
     if ss.unlocked:
