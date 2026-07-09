@@ -48,14 +48,16 @@ class PaymentError(Exception):
 
 # ── Public API ───────────────────────────────────────────────────────────────
 
-def create_checkout(product_key: str, success_url: str = "", cancel_url: str = "") -> dict:
+def create_checkout(product_key: str, report_id: str = "", **_kw) -> dict:
     """
     Returns {checkout_url, session_id}.
 
     In mock mode the checkout_url is a local sentinel the app can
     resolve immediately (for local testing).
 
-    In live mode it returns the real LemonSqueezy hosted checkout URL.
+    In live mode it returns the real LemonSqueezy hosted checkout URL
+    with a redirect back to the app including the report_id so the
+    returning user's report can be restored from cache.
     """
     if product_key not in PRODUCTS:
         raise PaymentError(f"Unknown product: {product_key}")
@@ -71,9 +73,12 @@ def create_checkout(product_key: str, success_url: str = "", cancel_url: str = "
     checkout_url = product["checkout_url"]
 
     # Append success redirect so user returns to the app after payment
+    # with ?paid=1&rid=REPORT_ID — the app restores state from cache.
     import urllib.parse
     app_base = "https://prop-firm-honest-advisor-i3qugmvz9vnb7jw2im4vny.streamlit.app"
     redirect = f"{app_base}/?mode=prop_firm&paid=1"
+    if report_id:
+        redirect += f"&rid={report_id}"
     checkout_url += "?" + urllib.parse.urlencode({
         "checkout[custom][redirect_url]": redirect,
     })

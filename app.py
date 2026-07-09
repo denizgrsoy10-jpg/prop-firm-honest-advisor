@@ -23,6 +23,7 @@ import payments
 import analytics
 import tracking
 import own_account
+import report_cache
 
 # --- branding assets (robust: never crash if a file is missing) --------------
 ASSETS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")
@@ -95,12 +96,29 @@ ss.setdefault("oa_preview", None)
 ss.setdefault("mode", "prop_firm")
 
 # --- PAYMENT RETURN --------------------------------------------------------
-# LemonSqueezy odeme tamamlaninca kullaniciyi ?paid=1 ile bu adrese geri
-# yonlendirir (payments.py checkout URL'sine redirect_url ekliyor). SADECE
-# gercek odeme donusu (?paid=1) kilidi acar; kullanici bir sey tiklamaz.
-# Guvenlik: checkout baslatilmis olmali ki elle yazilan bos ?paid=1 kilit acmasin.
-if _qp.get("paid") == "1" and ss.get("checkout"):
-    ss["unlocked"] = True
+# User returns from LemonSqueezy with ?paid=1&rid=REPORT_ID.
+# Session state is EMPTY (full page nav wipes it), so we restore from
+# the server-side cache that was saved before the checkout redirect.
+if _qp.get("paid") == "1":
+    _rid = _qp.get("rid", "")
+    if _rid:
+        _cached = report_cache.load(_rid)
+        if _cached:
+            # Restore all essential state from cache
+            ss["daily_pnls"] = _cached["daily_pnls"]
+            ss["meta"] = _cached["meta"]
+            ss["preview"] = _cached.get("preview")
+            ss["market_label"] = _cached.get("market_label")
+            ss["account_size"] = _cached.get("account_size")
+            ss["preview_market"] = _cached.get("preview_market")
+            ss["report_id"] = _cached.get("report_id")
+            ss["unlocked"] = True
+            ss["checkout"] = {"checkout_url": "PAID", "session_id": "paid"}
+            ss["mode"] = _cached.get("mode", "prop_firm")
+            ss["used_demo"] = _cached.get("used_demo", False)
+            # Own account specific
+            if _cached.get("oa_preview"):
+                ss["oa_preview"] = _cached["oa_preview"]
 
 
 def _reset():
@@ -252,8 +270,18 @@ def _render_own_account():
                     source="payment", consent_text=PAY_CONSENT_TEXT,
                     report_id=rep.get("report_id"))
                 ss["legal_logged_payment"] = True
+            # Save state to cache before checkout
+            _cache_rid = report_cache.make_rid()
+            report_cache.save(_cache_rid, {
+                "daily_pnls": ss.daily_pnls,
+                "meta": ss.meta,
+                "oa_preview": ss.get("oa_preview"),
+                "report_id": _cache_rid,
+                "mode": "own_account",
+                "used_demo": ss.get("used_demo", False),
+            })
             ss.checkout = payments.create_checkout(
-                "full_report", success_url="?paid=1", cancel_url="?")
+                "full_report", report_id=_cache_rid)
         if ss.checkout:
             if ss.checkout["checkout_url"] == "MOCK_CHECKOUT":
                 if payments.verify_payment(ss.checkout["session_id"]):
@@ -616,8 +644,22 @@ if ss.daily_pnls is not None:
                     report_id=ss.get("report_id"),
                 )
                 ss["legal_logged_payment"] = True
+            # Save state to server-side cache BEFORE redirecting to checkout.
+            # When the user returns with ?paid=1&rid=X, we restore from here.
+            _cache_rid = report_cache.make_rid()
+            report_cache.save(_cache_rid, {
+                "daily_pnls": ss.daily_pnls,
+                "meta": ss.meta,
+                "preview": ss.preview,
+                "market_label": ss.market_label,
+                "account_size": ss.account_size,
+                "preview_market": ss.preview_market,
+                "report_id": _cache_rid,
+                "mode": "prop_firm",
+                "used_demo": ss.get("used_demo", False),
+            })
             ss.checkout = payments.create_checkout(
-                "full_report", success_url="?paid=1", cancel_url="?")
+                "full_report", report_id=_cache_rid)
 
         if ss.checkout:
             if ss.checkout["checkout_url"] == "MOCK_CHECKOUT":
