@@ -94,6 +94,12 @@ ss.setdefault("used_demo", False)
 ss.setdefault("oa_preview", None)
 ss.setdefault("mode", "prop_firm")
 ss.setdefault("paid", False)
+# Which product the user is buying: "full_report" ($9) or "bundle3" ($19).
+# Landing page's "Get bundle" button links with ?plan=bundle.
+_qp_plan = _qp.get("plan")
+if _qp_plan in ("bundle", "bundle3"):
+    ss["plan"] = "bundle3"
+ss.setdefault("plan", "full_report")
 
 # --- PAYMENT RETURN --------------------------------------------------------
 # User returns from LemonSqueezy with ?paid=1 after a successful payment.
@@ -592,11 +598,24 @@ if ss.daily_pnls is not None:
 
     # --- 3) paywall / locked full report ------------------------------------
     if not ss.unlocked:
-        st.subheader("3 · Early access — $9")
-        st.info("**Candor is in early access.** The engine works, reports are real. "
-                "$9 gets you a full report now + locked-in pricing when monitoring "
-                "launches. Early access pricing won\u2019t last forever, but "
-                "there\u2019s no fake countdown.", icon="🔦")
+        # Which plan is the user on? bundle3 = $19 (3 reports), else full_report = $9
+        _plan = ss.get("plan", "full_report")
+        _is_bundle = (_plan == "bundle3")
+        _price = "$19" if _is_bundle else "$9"
+
+        if _is_bundle:
+            st.subheader("3 · Early access — Bundle · 3 reports · $19")
+            st.info("**Candor is in early access.** The engine works, reports are "
+                    "real. $19 gets you the 3-report bundle — run different "
+                    "histories, compare firms, or re-check after adjusting your "
+                    "strategy. Locked-in pricing when monitoring launches.",
+                    icon="🔦")
+        else:
+            st.subheader("3 · Early access — $9")
+            st.info("**Candor is in early access.** The engine works, reports are real. "
+                    "$9 gets you a full report now + locked-in pricing when monitoring "
+                    "launches. Early access pricing won\u2019t last forever, but "
+                    "there\u2019s no fake countdown.", icon="🔦")
         if payments.mode() == "mock":
             st.warning("DEMO / TEST MODE — clicking below does **not** charge "
                        "anything. Live payments are not connected yet.", icon="⚠️")
@@ -611,12 +630,24 @@ if ss.daily_pnls is not None:
             unsafe_allow_html=True)
         st.write("")
 
+        # Let the user switch plan right here (so ?plan is not the only way)
+        _plan_choice = st.radio(
+            "Choose your plan",
+            ["Full report — $9", "Bundle · 3 reports — $19"],
+            index=(1 if _is_bundle else 0), horizontal=True,
+            key="plan_choice")
+        _picked_bundle = _plan_choice.startswith("Bundle")
+        if _picked_bundle != _is_bundle:
+            ss["plan"] = "bundle3" if _picked_bundle else "full_report"
+            st.rerun()
+        _product_key = "bundle3" if _is_bundle else "full_report"
+
         _consent_payment = st.checkbox(
             "Digital report. Statistical simulation only. No guaranteed outcome. Sales are generally final after report generation.",
             key="consent_payment")
 
         btn_label = ("Unlock (demo — no charge)" if payments.mode() == "mock"
-                     else "Get early access — $9")
+                     else f"Get early access — {_price}")
         if st.button(btn_label, type="primary", disabled=not _consent_payment):
             analytics.log_event("unlock_clicked")
             # Real clickwrap record (payment-time consent)
@@ -627,14 +658,14 @@ if ss.daily_pnls is not None:
                     report_id=ss.get("report_id"),
                 )
                 ss["legal_logged_payment"] = True
-            ss.checkout = payments.create_checkout("full_report")
+            ss.checkout = payments.create_checkout(_product_key)
 
         if ss.checkout:
             if ss.checkout["checkout_url"] == "MOCK_CHECKOUT":
                 if payments.verify_payment(ss.checkout["session_id"]):
                     ss.unlocked = True
                     ss.paid = True
-                    analytics.log_event("payment_success", {"product": "full_report"})
+                    analytics.log_event("payment_success", {"product": _product_key})
                     st.rerun()
             else:
                 st.link_button("Complete payment", ss.checkout["checkout_url"])

@@ -55,9 +55,10 @@ def create_checkout(product_key: str, report_id: str = "", **_kw) -> dict:
     In mock mode the checkout_url is a local sentinel the app can
     resolve immediately (for local testing).
 
-    In live mode it returns the real LemonSqueezy hosted checkout URL
-    with a redirect back to the app including the report_id so the
-    returning user's report can be restored from cache.
+    In live mode it returns the real LemonSqueezy hosted checkout URL.
+    The post-payment return to the app is handled by LemonSqueezy's
+    per-product "Confirmation modal" button (set in the dashboard), which
+    sends the buyer to ...streamlit.app/?paid=1 after payment.
     """
     if product_key not in PRODUCTS:
         raise PaymentError(f"Unknown product: {product_key}")
@@ -68,23 +69,9 @@ def create_checkout(product_key: str, report_id: str = "", **_kw) -> dict:
             "session_id": f"mock_{uuid.uuid4().hex[:12]}",
         }
 
-    # ── Live mode: return the real LemonSqueezy checkout URL ──
-    product = PRODUCTS[product_key]
-    checkout_url = product["checkout_url"]
-
-    # Append success redirect so user returns to the app after payment
-    # with ?paid=1&rid=REPORT_ID — the app restores state from cache.
-    import urllib.parse
-    app_base = "https://prop-firm-honest-advisor-i3qugmvz9vnb7jw2im4vny.streamlit.app"
-    redirect = f"{app_base}/?mode=prop_firm&paid=1"
-    if report_id:
-        redirect += f"&rid={report_id}"
-    checkout_url += "?" + urllib.parse.urlencode({
-        "checkout[custom][redirect_url]": redirect,
-    })
-
+    # ── Live mode: return the real LemonSqueezy hosted checkout URL ──
     return {
-        "checkout_url": checkout_url,
+        "checkout_url": PRODUCTS[product_key]["checkout_url"],
         "session_id": f"ls_{uuid.uuid4().hex[:12]}",
     }
 
