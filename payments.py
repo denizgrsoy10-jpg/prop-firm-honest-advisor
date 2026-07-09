@@ -70,12 +70,13 @@ def create_checkout(product_key: str, success_url: str = "", cancel_url: str = "
     product = PRODUCTS[product_key]
     checkout_url = product["checkout_url"]
 
-    # Append email pre-fill or success redirect if provided
-    params = []
-    if success_url:
-        params.append(f"checkout[custom][success_url]={success_url}")
-    if params:
-        checkout_url += "?" + "&".join(params)
+    # Append success redirect so user returns to the app after payment
+    import urllib.parse
+    app_base = "https://prop-firm-honest-advisor-i3qugmvz9vnb7jw2im4vny.streamlit.app"
+    redirect = f"{app_base}/?mode=prop_firm&paid=1"
+    checkout_url += "?" + urllib.parse.urlencode({
+        "checkout[custom][redirect_url]": redirect,
+    })
 
     return {
         "checkout_url": checkout_url,
@@ -113,7 +114,13 @@ def get_checkout_url(product_key: str) -> str:
     if mode() == "mock":
         return "MOCK_CHECKOUT"
 
-    return PRODUCTS[product_key]["checkout_url"]
+    import urllib.parse
+    base = PRODUCTS[product_key]["checkout_url"]
+    app_base = "https://prop-firm-honest-advisor-i3qugmvz9vnb7jw2im4vny.streamlit.app"
+    redirect = f"{app_base}/?mode=prop_firm&paid=1"
+    return base + "?" + urllib.parse.urlencode({
+        "checkout[custom][redirect_url]": redirect,
+    })
 
 
 def get_price_display(product_key: str) -> str:
