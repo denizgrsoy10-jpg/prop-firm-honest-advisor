@@ -23,7 +23,6 @@ import payments
 import analytics
 import tracking
 import own_account
-import report_cache
 
 # --- branding assets (robust: never crash if a file is missing) --------------
 ASSETS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")
@@ -94,38 +93,26 @@ ss.setdefault("logged", False)
 ss.setdefault("used_demo", False)
 ss.setdefault("oa_preview", None)
 ss.setdefault("mode", "prop_firm")
+ss.setdefault("paid", False)
 
 # --- PAYMENT RETURN --------------------------------------------------------
-# User returns from LemonSqueezy with ?paid=1&rid=REPORT_ID.
-# Session state is EMPTY (full page nav wipes it), so we restore from
-# the server-side cache that was saved before the checkout redirect.
+# User returns from LemonSqueezy with ?paid=1 after a successful payment.
+# A full page navigation wipes the uploaded CSV / preview, so we can't show
+# the report immediately. Instead we set a PERSISTENT "paid" flag: for the
+# rest of this session the user is a paying customer, so when they re-upload
+# their CSV the full report is shown directly (no second paywall).
 if _qp.get("paid") == "1":
-    _rid = _qp.get("rid", "")
-    if _rid:
-        _cached = report_cache.load(_rid)
-        if _cached:
-            # Restore all essential state from cache
-            ss["daily_pnls"] = _cached["daily_pnls"]
-            ss["meta"] = _cached["meta"]
-            ss["preview"] = _cached.get("preview")
-            ss["market_label"] = _cached.get("market_label")
-            ss["account_size"] = _cached.get("account_size")
-            ss["preview_market"] = _cached.get("preview_market")
-            ss["report_id"] = _cached.get("report_id")
-            ss["unlocked"] = True
-            ss["checkout"] = {"checkout_url": "PAID", "session_id": "paid"}
-            ss["mode"] = _cached.get("mode", "prop_firm")
-            ss["used_demo"] = _cached.get("used_demo", False)
-            # Own account specific
-            if _cached.get("oa_preview"):
-                ss["oa_preview"] = _cached["oa_preview"]
+    ss["paid"] = True
+    ss["unlocked"] = True
 
 
 def _reset():
     for k in ("daily_pnls", "meta", "preview", "checkout", "market_label",
               "preview_market", "report_id", "oa_preview", "account_size"):
         ss[k] = None
-    ss["unlocked"] = False
+    # A paying customer stays unlocked even after "Start over" so they can
+    # re-run on new data without paying again this session.
+    ss["unlocked"] = bool(ss.get("paid"))
     ss["logged"] = False
     ss["legal_logged_upload"] = False
     ss["legal_logged_payment"] = False
@@ -270,30 +257,20 @@ def _render_own_account():
                     source="payment", consent_text=PAY_CONSENT_TEXT,
                     report_id=rep.get("report_id"))
                 ss["legal_logged_payment"] = True
-            # Save state to cache before checkout
-            _cache_rid = report_cache.make_rid()
-            report_cache.save(_cache_rid, {
-                "daily_pnls": ss.daily_pnls,
-                "meta": ss.meta,
-                "oa_preview": ss.get("oa_preview"),
-                "report_id": _cache_rid,
-                "mode": "own_account",
-                "used_demo": ss.get("used_demo", False),
-            })
-            ss.checkout = payments.create_checkout(
-                "full_report", report_id=_cache_rid)
+            ss.checkout = payments.create_checkout("full_report")
         if ss.checkout:
             if ss.checkout["checkout_url"] == "MOCK_CHECKOUT":
                 if payments.verify_payment(ss.checkout["session_id"]):
                     ss.unlocked = True
+                    ss.paid = True
                     analytics.log_event("oa_payment_success",
                                         {"product": "own_account_report"})
                     st.rerun()
             else:
                 st.link_button("Complete payment",
                                ss.checkout["checkout_url"])
-                st.caption("After paying you'll return here with the "
-                           "report unlocked.")
+                st.caption("Pay in the new tab, then click **“Open my full "
+                           "report”** on the confirmation to return here.")
 
     # --- 5) full report -----------------------------------------------------
     if ss.unlocked:
@@ -492,6 +469,12 @@ if ss.mode == "own_account":
 firms = load_firms()
 
 # --- 1) upload ---------------------------------------------------------------
+# Paying customer who returned from checkout: greet them and skip the paywall.
+if ss.get("paid") and ss.daily_pnls is None:
+    st.success("✅ **Payment received — thank you!** Upload your trade history "
+               "CSV below and your full report opens immediately. No second "
+               "payment.", icon="✅")
+
 st.subheader("1 · Upload your trading history")
 st.write("Export a CSV from your platform. Currently supports: **MT4 / MT5 history "
          "export** and **generic CSV** with a profit column. Your file is used only "
@@ -644,34 +627,20 @@ if ss.daily_pnls is not None:
                     report_id=ss.get("report_id"),
                 )
                 ss["legal_logged_payment"] = True
-            # Save state to server-side cache BEFORE redirecting to checkout.
-            # When the user returns with ?paid=1&rid=X, we restore from here.
-            _cache_rid = report_cache.make_rid()
-            report_cache.save(_cache_rid, {
-                "daily_pnls": ss.daily_pnls,
-                "meta": ss.meta,
-                "preview": ss.preview,
-                "market_label": ss.market_label,
-                "account_size": ss.account_size,
-                "preview_market": ss.preview_market,
-                "report_id": _cache_rid,
-                "mode": "prop_firm",
-                "used_demo": ss.get("used_demo", False),
-            })
-            ss.checkout = payments.create_checkout(
-                "full_report", report_id=_cache_rid)
+            ss.checkout = payments.create_checkout("full_report")
 
         if ss.checkout:
             if ss.checkout["checkout_url"] == "MOCK_CHECKOUT":
                 if payments.verify_payment(ss.checkout["session_id"]):
                     ss.unlocked = True
+                    ss.paid = True
                     analytics.log_event("payment_success", {"product": "full_report"})
                     st.rerun()
             else:
                 st.link_button("Complete payment", ss.checkout["checkout_url"])
-                st.caption("A secure checkout opens in a new tab. After paying you'll "
-                           "be returned here and your report unlocks automatically. "
-                           "**Keep this tab open.**")
+                st.caption("A secure checkout opens in a new tab. Pay there, then "
+                           "click **“Open my full report”** on the confirmation — "
+                           "you'll return here and your full report opens.")
 
     # --- 4) full report ------------------------------------------------------
     if ss.unlocked:
