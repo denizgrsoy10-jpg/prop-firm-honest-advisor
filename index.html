@@ -580,15 +580,15 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
 <!-- TICKER -->
 <div class="ticker"><div class="track" id="tick">
   <span><b class="read gold">RULESET VERIFIED</b> &middot; 2026-06-05</span>
-  <span><b class="grn">SAMPLE EOD-STYLE RULESET</b> &middot; 58–73% &middot; med conf &middot; Strong fit</span>
-  <span><b class="grn">SAMPLE TRAILING COMBINE RULESET</b> &middot; 49–64% &middot; med conf &middot; Strong fit</span>
-  <span><b class="gold">SAMPLE TWO-STEP STANDARD RULESET</b> &middot; 42–58% &middot; med conf &middot; Borderline</span>
-  <span><b class="gold">SAMPLE ONE-STEP RULESET</b> &middot; 33–49% &middot; med conf &middot; Borderline</span>
-  <span><b class="gold">SAMPLE TWO-PHASE RULESET</b> &middot; 26–41% &middot; med conf &middot; Borderline</span>
-  <span><b class="red">SAMPLE STELLAR TWO-STEP RULESET</b> &middot; 6–16% &middot; med conf &middot; High mismatch</span>
-  <span><b class="red">SAMPLE HIGH-STAKES TWO-STEP RULESET</b> &middot; 6–16% &middot; med conf &middot; High mismatch</span>
-  <span><b class="red">SAMPLE ONE-STEP HIGH-TARGET RULESET</b> &middot; 4–13% &middot; med conf &middot; High mismatch</span>
-  <span><b class="red">SAMPLE TWO-STEP HIGH-TARGET RULESET</b> &middot; 2–8% &middot; med conf &middot; High mismatch</span>
+  <span><b class="gold">SAMPLE EOD-STYLE RULESET</b> &middot; 46–53% &middot; high conf &middot; Borderline</span>
+  <span><b class="gold">SAMPLE TRAILING COMBINE RULESET</b> &middot; 29–36% &middot; high conf &middot; Borderline</span>
+  <span><b class="grn">SAMPLE TWO-STEP STANDARD RULESET</b> &middot; 76–82% &middot; high conf &middot; Strong fit</span>
+  <span><b class="grn">SAMPLE ONE-STEP RULESET</b> &middot; 63–70% &middot; high conf &middot; Strong fit</span>
+  <span><b class="grn">SAMPLE TWO-PHASE RULESET</b> &middot; 62–69% &middot; high conf &middot; Strong fit</span>
+  <span><b class="gold">SAMPLE STELLAR TWO-STEP RULESET</b> &middot; 33–41% &middot; high conf &middot; Borderline</span>
+  <span><b class="gold">SAMPLE HIGH-STAKES TWO-STEP RULESET</b> &middot; 33–41% &middot; high conf &middot; Borderline</span>
+  <span><b class="red">SAMPLE ONE-STEP HIGH-TARGET RULESET</b> &middot; 26–33% &middot; high conf &middot; High mismatch</span>
+  <span><b class="red">SAMPLE TWO-STEP HIGH-TARGET RULESET</b> &middot; 20–26% &middot; high conf &middot; High mismatch</span>
 </div></div>
 
 <!-- NAV -->
@@ -632,21 +632,21 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
       <div class="scan-line done">&nbsp;&nbsp;110 trading days</div>
       <div class="scan-line gold-line">&nbsp;&nbsp;9 verified rulesets &middot; 15 engines &#10003;</div>
       <div class="term-results">
-        <div class="term-row"><span class="term-firm">EOD-STYLE RULESET</span><span class="term-pct grn">58–73%</span><span class="term-badge go">Strong fit</span></div>
-        <div class="term-row"><span class="term-firm">TWO-STEP STANDARD</span><span class="term-pct gold">42–58%</span><span class="term-badge wait">Borderline</span></div>
-        <div class="term-row"><span class="term-firm">TWO-PHASE (CFD)</span><span class="term-pct gold">26–41%</span><span class="term-badge wait">Borderline</span></div>
-        <div class="term-row"><span class="term-firm">ONE-STEP HIGH-TARGET</span><span class="term-pct red">4–13%</span><span class="term-badge skip">High mismatch</span></div>
-        <div class="term-row"><span class="term-firm">TWO-STEP HIGH-TARGET</span><span class="term-pct red">2–8%</span><span class="term-badge skip">High mismatch</span></div>
+        <div class="term-row"><span class="term-firm">TWO-STEP STANDARD</span><span class="term-pct grn">76–82%</span><span class="term-badge go">Strong fit</span></div>
+        <div class="term-row"><span class="term-firm">TWO-PHASE (CFD)</span><span class="term-pct grn">62–69%</span><span class="term-badge go">Strong fit</span></div>
+        <div class="term-row"><span class="term-firm">EOD-STYLE RULESET</span><span class="term-pct gold">46–53%</span><span class="term-badge wait">Borderline</span></div>
+        <div class="term-row"><span class="term-firm">ONE-STEP HIGH-TARGET</span><span class="term-pct red">26–33%</span><span class="term-badge skip">High mismatch</span></div>
+        <div class="term-row"><span class="term-firm">TWO-STEP HIGH-TARGET</span><span class="term-pct red">20–26%</span><span class="term-badge skip">High mismatch</span></div>
       </div>
       <div class="term-conf">ranges sharpen as you add data &middot; never a fake 0&#37; or 100&#37;</div>
       <div class="term-killer">
         <div class="warn">&#9888; KILLER RULE DETECTED</div>
-        <div class="rule">Trailing drawdown <span>&mdash; 62% of simulated failures</span></div>
+        <div class="rule">Profit target not reached <span>&mdash; dominant blocker, 5 of 9 rulesets</span></div>
       </div>
       <div class="term-insights">
-        <div class="ti-row"><span class="ti-icon">&#9889;</span><span class="ti-text">Leverage map: <b>broadest blocker hits 6 of 9</b></span></div>
-        <div class="ti-row"><span class="ti-icon">&#128256;</span><span class="ti-text">Sequence risk: <b>order sensitivity 33%</b></span></div>
-        <div class="ti-row"><span class="ti-icon">&#128300;</span><span class="ti-text">Self-validation: <b>is the edge real or a hot streak?</b></span></div>
+        <div class="ti-row"><span class="ti-icon">&#9889;</span><span class="ti-text">Leverage map: <b>broadest blocker hits 5 of 9</b></span></div>
+        <div class="ti-row"><span class="ti-icon">&#128256;</span><span class="ti-text">Sequence risk: <b>order sensitivity 2%</b></span></div>
+        <div class="ti-row"><span class="ti-icon">&#128300;</span><span class="ti-text">Self-validation: <b>91/100 trust &middot; 68%/66% split &middot; Stable</b></span></div>
       </div>
     </div>
   </div>
@@ -657,9 +657,9 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
   <div class="grain"></div>
   <div class="scene-eyebrow"><span class="dot"></span>Candor risk scanner &mdash; live</div>
   <div class="cone"></div>
-  <span class="risk r1">Trailing drawdown</span>
-  <span class="risk r2">Spike-then-floor trap</span>
-  <span class="risk r3">Order sensitivity: 33%</span>
+  <span class="risk r1">Profit target not reached</span>
+  <span class="risk r2">Daily loss limit breach</span>
+  <span class="risk r3">Order sensitivity: 2%</span>
   <span class="risk r4">Overbet pressure</span>
   <span class="risk r5">Edge decaying</span>
 </div></section>
@@ -692,7 +692,7 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
         <li>Expected fee burn across the retry loop</li>
         <li>What-if simulator &mdash; scaled risk &rarr; pass-odds shift</li>
       </ul>
-      <div class="mode-risk">Hidden risk found: <b>Trailing drawdown &middot; killer rule</b></div>
+      <div class="mode-risk">Hidden risk found: <b>Profit target not reached &middot; killer rule</b></div>
       <div class="mode-cta"><span>Run Prop RealityCheck</span><span class="arr">&rarr;</span></div>
       <span class="lantern-sweep"></span>
     </a>
@@ -741,22 +741,22 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
   <div class="compare-grid">
     <div class="compare-card go">
       <span class="best-tag">HIGHEST FIT</span>
-      <div class="pct">58–73%</div>
-      <div class="firm-name">EOD-Style Ruleset</div>
+      <div class="pct">76–82%</div>
+      <div class="firm-name">Two-Step Standard Ruleset</div>
       <div class="story">Highest historical fit</div>
-      <div class="fee">Est. fee: ~$150</div>
+      <div class="fee">Est. fee: ~$290</div>
     </div>
     <div class="compare-card wait">
-      <div class="pct">33–49%</div>
-      <div class="firm-name">One-Step Ruleset</div>
+      <div class="pct">33–41%</div>
+      <div class="firm-name">Stellar Two-Step Ruleset</div>
       <div class="story">Possible, but fragile</div>
-      <div class="fee">Est. fee: ~$250</div>
+      <div class="fee">Est. fee: ~$320</div>
     </div>
     <div class="compare-card skip">
-      <div class="pct">2–8%</div>
+      <div class="pct">20–26%</div>
       <div class="firm-name">Two-Step High-Target Ruleset</div>
       <div class="story">Retry loop risk</div>
-      <div class="fee">Est. fee: ~$500+</div>
+      <div class="fee">Est. fee: ~$310</div>
     </div>
   </div>
   <p class="sec-sub" style="margin-top:24px;font-size:13px">Odds are 80% confidence ranges from this trader&rsquo;s 292-trade history &mdash; not single-point certainty. A wider sample narrows every range.</p>
@@ -768,10 +768,10 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
     <!-- Killer Rule -->
     <div class="duo-card" style="background:rgba(255,77,79,.05);border:1px solid rgba(255,77,79,.2);">
       <div class="label red">YOUR KILLER RULE</div>
-      <h3>Trailing Drawdown</h3>
-      <p class="desc">This is the rule most likely to end your challenge. 62% of simulated failures hit this limit first.</p>
-      <div class="bar-track"><div class="bar-fill" style="width:62%;background:var(--red)"></div></div>
-      <div class="bar-labels"><span>Trailing DD 62%</span><span>Daily limit 23%</span><span>Other 15%</span></div>
+      <h3>Profit Target Not Reached</h3>
+      <p class="desc">This is the rule most likely to end your challenge. In this sample it's the dominant blocker across 5 of 9 rulesets &mdash; you run out of time, not capital.</p>
+      <div class="bar-track"><div class="bar-fill" style="width:56%;background:var(--red)"></div></div>
+      <div class="bar-labels"><span>Profit target 5/9</span><span>Risk-limit breach 4/9</span></div>
       <p class="slogan-line">Every challenge has a killer rule.<br>Candor finds yours before you pay.</p>
     </div>
     <!-- Fee Burn -->
@@ -780,12 +780,12 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
       <h3 style="font-size:18px;font-weight:500;">The challenge fee is not the real cost.<br>The retry loop is.</h3>
       <div style="margin-top:16px">
         <div class="fee-row">
-          <div><div class="fee-firm">TWO-STEP HIGH-TARGET RULESET</div><div class="fee-detail">Pass: 2–8% &middot; ~12–60 attempts depending on true odds</div></div>
-          <div class="fee-amount red">≈$7K–32K</div>
+          <div><div class="fee-firm">TWO-STEP HIGH-TARGET RULESET</div><div class="fee-detail">Pass: 20–26% &middot; ~4–5 attempts depending on true odds</div></div>
+          <div class="fee-amount red">≈$1.2K–1.6K</div>
         </div>
         <div class="fee-row">
-          <div><div class="fee-firm">EOD-STYLE RULESET</div><div class="fee-detail">Pass: 58–73% &middot; ~1.4–1.7 attempts typically</div></div>
-          <div class="fee-amount grn">~$150</div>
+          <div><div class="fee-firm">TWO-STEP STANDARD RULESET</div><div class="fee-detail">Pass: 76–82% &middot; ~1.2–1.3 attempts typically</div></div>
+          <div class="fee-amount grn">~$350</div>
         </div>
       </div>
     </div>
@@ -849,15 +849,15 @@ window.__CANDOR_GATE__={VERSION:'2026-06-07',KEY:'candor_gate_accept'};(function
     <table class="tbl">
       <thead><tr><th>Ruleset</th><th style="text-align:right">Pass odds</th><th>Risk label</th><th class="hide-sm">Killer rule</th><th class="hide-sm" style="text-align:right">Fee</th></tr></thead>
       <tbody>
-        <tr><td><span class="firm">EOD-Style Ruleset</span> <span class="sub2">Futures</span></td><td style="text-align:right" class="num grn">58–73%</td><td><span class="vp go">Strong fit</span></td><td class="hide-sm">Trailing drawdown</td><td class="hide-sm num" style="text-align:right">~$150</td></tr>
-        <tr><td><span class="firm">Trailing Combine Ruleset</span> <span class="sub2">Futures</span></td><td style="text-align:right" class="num grn">49–64%</td><td><span class="vp go">Strong fit</span></td><td class="hide-sm">Trailing drawdown</td><td class="hide-sm num" style="text-align:right">~$50</td></tr>
-        <tr><td><span class="firm">Two-Step Standard Ruleset</span> <span class="sub2">2-step</span></td><td style="text-align:right" class="num gold">42–58%</td><td><span class="vp wait">Borderline</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">~$290</td></tr>
-        <tr><td><span class="firm">One-Step Ruleset</span> <span class="sub2">1-step</span></td><td style="text-align:right" class="num gold">33–49%</td><td><span class="vp wait">Borderline</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">~$150</td></tr>
-        <tr><td><span class="firm">Two-Phase Ruleset</span> <span class="sub2">CFD</span></td><td style="text-align:right" class="num gold">26–41%</td><td><span class="vp wait">Borderline</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">~$300</td></tr>
-        <tr><td><span class="firm">Stellar Two-Step Ruleset</span> <span class="sub2">2-step</span></td><td style="text-align:right" class="num red">6–16%</td><td><span class="vp skip">High mismatch</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">~$320</td></tr>
-        <tr><td><span class="firm">High-Stakes Two-Step Ruleset</span> <span class="sub2">2-step</span></td><td style="text-align:right" class="num red">6–16%</td><td><span class="vp skip">High mismatch</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">~$345</td></tr>
-        <tr><td><span class="firm">One-Step High-Target Ruleset</span></td><td style="text-align:right" class="num red">4–13%</td><td><span class="vp skip">High mismatch</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">~$310</td></tr>
-        <tr><td><span class="firm">Two-Step High-Target Ruleset</span></td><td style="text-align:right" class="num red">2–8%</td><td><span class="vp skip">High mismatch</span></td><td class="hide-sm">Profit target</td><td class="hide-sm num" style="text-align:right">~$310</td></tr>
+        <tr><td><span class="firm">Two-Step Standard Ruleset</span> <span class="sub2">2-step</span></td><td style="text-align:right" class="num grn">76–82%</td><td><span class="vp go">Strong fit</span></td><td class="hide-sm">Profit target not reached</td><td class="hide-sm num" style="text-align:right">~$290</td></tr>
+        <tr><td><span class="firm">One-Step Ruleset</span> <span class="sub2">1-step</span></td><td style="text-align:right" class="num grn">63–70%</td><td><span class="vp go">Strong fit</span></td><td class="hide-sm">Profit target not reached</td><td class="hide-sm num" style="text-align:right">~$150</td></tr>
+        <tr><td><span class="firm">Two-Phase Ruleset</span> <span class="sub2">CFD</span></td><td style="text-align:right" class="num grn">62–69%</td><td><span class="vp go">Strong fit</span></td><td class="hide-sm">Profit target not reached</td><td class="hide-sm num" style="text-align:right">~$300</td></tr>
+        <tr><td><span class="firm">EOD-Style Ruleset</span> <span class="sub2">Futures</span></td><td style="text-align:right" class="num gold">46–53%</td><td><span class="vp wait">Borderline</span></td><td class="hide-sm">Daily loss limit</td><td class="hide-sm num" style="text-align:right">~$100</td></tr>
+        <tr><td><span class="firm">Stellar Two-Step Ruleset</span> <span class="sub2">2-step</span></td><td style="text-align:right" class="num gold">33–41%</td><td><span class="vp wait">Borderline</span></td><td class="hide-sm">Profit target not reached</td><td class="hide-sm num" style="text-align:right">~$320</td></tr>
+        <tr><td><span class="firm">High-Stakes Two-Step Ruleset</span> <span class="sub2">2-step</span></td><td style="text-align:right" class="num gold">33–41%</td><td><span class="vp wait">Borderline</span></td><td class="hide-sm">Profit target not reached</td><td class="hide-sm num" style="text-align:right">~$345</td></tr>
+        <tr><td><span class="firm">Trailing Combine Ruleset</span> <span class="sub2">Futures</span></td><td style="text-align:right" class="num gold">29–36%</td><td><span class="vp wait">Borderline</span></td><td class="hide-sm">Daily loss limit</td><td class="hide-sm num" style="text-align:right">~$50</td></tr>
+        <tr><td><span class="firm">One-Step High-Target Ruleset</span> <span class="sub2">1-step</span></td><td style="text-align:right" class="num red">26–33%</td><td><span class="vp skip">High mismatch</span></td><td class="hide-sm">Profit target not reached</td><td class="hide-sm num" style="text-align:right">~$310</td></tr>
+        <tr><td><span class="firm">Two-Step High-Target Ruleset</span> <span class="sub2">2-step</span></td><td style="text-align:right" class="num red">20–26%</td><td><span class="vp skip">High mismatch</span></td><td class="hide-sm">Profit target not reached</td><td class="hide-sm num" style="text-align:right">~$310</td></tr>
       </tbody>
     </table>
     <p style="font-size:12px;color:var(--faint);margin:14px 18px 0;line-height:1.5"><b style="color:var(--muted)">Pass odds are shown as ranges, not false precision.</b> Each range is an 80% confidence band from this 292-trade sample (high confidence); more trades narrow it. Sample data shown with generic ruleset labels. Inside the app and your report, supported rule sets are named by firm purely to identify their publicly available rules. Candor is independent and is not affiliated with, endorsed by, sponsored by, or approved by any prop firm. All trademarks belong to their respective owners.</p>
