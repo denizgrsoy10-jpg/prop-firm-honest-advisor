@@ -597,8 +597,8 @@ if ss.daily_pnls is not None:
                 killer_rule=_killer_name,
                 fit_label=VERDICT_COPY[p["verdict"]][0],
                 n_trades=_n or 0,
-                blocks=None,           # set "X of 9" here if you compute it
-                url="candor.app",      # TODO: your landing domain
+                blocks=None,
+                url="candor.app",
             )
             _cc1, _cc2 = st.columns([2, 1])
             _cc1.caption("Share your Risk Card \u2014 \u201cMy killer rule is "
@@ -932,7 +932,9 @@ if ss.daily_pnls is not None:
                      f"usually does it: **{_seq['dominant_breach_label']}**.")
             st.caption("Same days, same totals — only the order changes. This "
                        "isolates run-of-the-cards risk that a single win-rate "
-                       "can't show. Diagnostic only, not advice.")
+                       "can't show. It uses your full history and does not apply "
+                       "the challenge time window, so it is not directly comparable "
+                       "to the pass-odds ranges above. Diagnostic only, not advice.")
         else:
             st.caption(_stk.get("label", "Not enough data for a sequence read."))
 

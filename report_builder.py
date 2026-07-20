@@ -78,12 +78,12 @@ def _expected_fee_burn(fee, pass_prob, n_effective=None):
     else:
         tail = ""
 
-    if c_lo >= 1000 or c_hi >= 1000:
-        cost_str = f"${c_lo:,.0f}–${c_hi:,.0f}"
-    else:
-        cost_str = f"${c_lo:,.0f}–${c_hi:,.0f}"
+    # Collapse equal bounds so we never print "~3–3 attempts" or "$140–$140".
+    cost_str = (f"${c_lo:,.0f}" if c_lo == c_hi
+                else f"${c_lo:,.0f}–${c_hi:,.0f}")
+    attempts_str = a_lo_s if a_lo_s == a_hi_s else f"{a_lo_s}–{a_hi_s}"
 
-    msg = (f"~{a_lo_s}–{a_hi_s} attempts (≈{cost_str}), depending where your true "
+    msg = (f"~{attempts_str} attempts (≈{cost_str}), depending where your true "
            f"odds sit in their range{tail}")
 
     # Return the midpoint total for ranking, plus the range message.
@@ -177,7 +177,7 @@ def _build_reality_summary(firm_rows, best, results, _leverage, _robust,
     stability_warning = None
     strong_fit = bool(best_row and best_row["pass_prob"] >= 0.50)
     if stability_trust == "fragile":
-        warn_headline = ("Strong fit \u00b7 Low stability trust" if strong_fit
+        warn_headline = ("Strong fit · Low stability trust" if strong_fit
                          else "Low stability trust")
         stability_warning = {
             "headline": warn_headline,
@@ -195,7 +195,7 @@ def _build_reality_summary(firm_rows, best, results, _leverage, _robust,
         }
     elif stability_trust == "moderate" and strong_fit:
         stability_warning = {
-            "headline": "Strong fit \u00b7 Moderate stability trust",
+            "headline": "Strong fit · Moderate stability trust",
             "body": (
                 "This history shows a strong ruleset fit with moderate stability "
                 "trust. Your earlier and recent trading differ somewhat, so the "
