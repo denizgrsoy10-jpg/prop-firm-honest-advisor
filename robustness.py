@@ -174,15 +174,15 @@ def robustness_report(
 
     if stability == "stable":
         detail = (
-            f"Your pattern reproduces across both halves, so the headline "
-            f"{full_pass*100:.0f}% is a fair summary rather than an artifact of "
+            f"Your pattern reproduces across both halves, so the full-history "
+            f"self-validation figure ({full_pass*100:.0f}%) is a fair summary rather than an artifact of "
             f"one lucky stretch. This is the strongest case the data can make "
             f"for treating the odds as real."
         )
     elif stability == "moderate":
         detail = (
             f"There is some drift between your earlier and later trading, so the "
-            f"headline {full_pass*100:.0f}% is reasonable but not rock-solid. "
+            f"full-history figure ({full_pass*100:.0f}%) is reasonable but not rock-solid. "
             f"Treat it as a central estimate with real uncertainty on either side."
         )
     else:
