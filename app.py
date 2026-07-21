@@ -485,7 +485,8 @@ with st.expander("📥 What do I upload, and how? (MT4 / MT5 → CSV)"):
     st.markdown(
         "**All the engine needs is a CSV with a `Profit` column** — one row per "
         "trade showing that trade's profit/loss. A close-time or date column makes "
-        "the read sharper but is not required.\n\n"
+        "the read sharper but is not required. Extra columns (Symbol, Type, Size, "
+        "prices) are fine — they are simply ignored.\n\n"
         "**MetaTrader 5** — Toolbox (Ctrl+T) → **History** tab → right-click → "
         "**Report** (or **Save as Detailed Report**). If it saves as HTML or XLSX, "
         "open it in Excel / Google Sheets and **Save As / Download → CSV**.\n\n"
@@ -495,17 +496,19 @@ with st.expander("📥 What do I upload, and how? (MT4 / MT5 → CSV)"):
         "**No MT4/MT5?** Any spreadsheet works — just export a CSV that has a "
         "**Profit** (or P/L) column. Account numbers, names and emails are removed "
         "automatically before anything is processed.\n\n"
-        "Not sure about the format? Download the sample below, or hit "
-        "**Use demo data** to see a full report instantly — no upload needed."
+        "Not sure about the format? Download the sample below to see exactly what a "
+        "valid file looks like, or hit **Use demo data** for a full report instantly "
+        "— no upload needed."
     )
     _sample_csv = (
-        "Close Time,Profit\n"
-        "2026-01-05 14:32,125.40\n"
-        "2026-01-05 16:10,-60.20\n"
-        "2026-01-06 11:05,88.00\n"
-        "2026-01-07 09:48,-42.10\n"
-        "2026-01-07 15:20,210.75\n"
-        "2026-01-08 10:15,64.30\n"
+        "Ticket,Open Time,Type,Size,Symbol,Open Price,Close Time,Close Price,Commission,Swap,Profit\n"
+        "10482913,2026-01-05 09:14,buy,0.50,XAUUSD,2032.10,2026-01-05 14:32,2035.05,-3.20,-0.80,125.40\n"
+        "10482914,2026-01-05 15:02,sell,0.30,EURUSD,1.09120,2026-01-05 16:10,1.09300,-1.90,0.00,-60.20\n"
+        "10482915,2026-01-06 08:47,buy,0.20,NAS100,17240.0,2026-01-06 11:05,17284.0,-1.10,-0.40,88.00\n"
+        "10482916,2026-01-07 07:33,sell,0.40,GBPUSD,1.27410,2026-01-07 09:48,1.27520,-2.40,0.00,-42.10\n"
+        "10482917,2026-01-07 13:05,buy,0.60,XAUUSD,2041.30,2026-01-07 15:20,2045.90,-3.80,-1.20,210.75\n"
+        "10482918,2026-01-08 08:20,buy,0.25,USDJPY,148.10,2026-01-08 10:15,148.42,-1.30,-0.30,64.30\n"
+        "10482919,2026-01-08 12:41,sell,0.35,US30,38210.0,2026-01-08 16:03,38150.0,-2.10,0.00,151.20\n"
     )
     st.download_button("⬇ Download sample CSV", _sample_csv,
                        file_name="candor-sample-trades.csv", mime="text/csv")
