@@ -480,6 +480,36 @@ st.write("Export a CSV from your platform. Currently supports: **MT4 / MT5 histo
          "export** and **generic CSV** with a profit column. Your file is used only "
          "for this simulation and is not stored.")
 
+# --- upload helper: what & how to upload (top-of-funnel friction killer) ---
+with st.expander("📥 What do I upload, and how? (MT4 / MT5 → CSV)"):
+    st.markdown(
+        "**All the engine needs is a CSV with a `Profit` column** — one row per "
+        "trade showing that trade's profit/loss. A close-time or date column makes "
+        "the read sharper but is not required.\n\n"
+        "**MetaTrader 5** — Toolbox (Ctrl+T) → **History** tab → right-click → "
+        "**Report** (or **Save as Detailed Report**). If it saves as HTML or XLSX, "
+        "open it in Excel / Google Sheets and **Save As / Download → CSV**.\n\n"
+        "**MetaTrader 4** — Terminal (Ctrl+T) → **Account History** tab → right-click "
+        "→ **Save as Report**. Open the saved file in Excel / Google Sheets and "
+        "**Save As → CSV**.\n\n"
+        "**No MT4/MT5?** Any spreadsheet works — just export a CSV that has a "
+        "**Profit** (or P/L) column. Account numbers, names and emails are removed "
+        "automatically before anything is processed.\n\n"
+        "Not sure about the format? Download the sample below, or hit "
+        "**Use demo data** to see a full report instantly — no upload needed."
+    )
+    _sample_csv = (
+        "Close Time,Profit\n"
+        "2026-01-05 14:32,125.40\n"
+        "2026-01-05 16:10,-60.20\n"
+        "2026-01-06 11:05,88.00\n"
+        "2026-01-07 09:48,-42.10\n"
+        "2026-01-07 15:20,210.75\n"
+        "2026-01-08 10:15,64.30\n"
+    )
+    st.download_button("⬇ Download sample CSV", _sample_csv,
+                       file_name="candor-sample-trades.csv", mime="text/csv")
+
 # Pre-upload consent (clickwrap, logged to Supabase on first valid upload)
 _consent_upload = st.checkbox(
     "I understand this report is a statistical simulation and risk-diagnostics report, not financial, investment, or trading advice.",
