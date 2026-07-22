@@ -1,0 +1,40 @@
+{
+  "id": "etf_eval",
+  "firm_name": "Elite Trader Funding",
+  "product": "Evaluation 50K (Futures)",
+  "account_size": 50000,
+  "fee": 130,
+  "phases": [
+    {
+      "target_pct": 6
+    }
+  ],
+  "max_drawdown_pct": 4,
+  "drawdown_type": "trailing_eod",
+  "trailing_drawdown": true,
+  "daily_loss_limit_pct": null,
+  "consistency_rule_pct": null,
+  "min_trading_days": 0,
+  "min_profitable_days": 0,
+  "size_tiers": [
+    {
+      "size": 25000,
+      "fee": 80
+    },
+    {
+      "size": 50000,
+      "fee": 130
+    },
+    {
+      "size": 100000,
+      "fee": 230
+    },
+    {
+      "size": 150000,
+      "fee": 330
+    }
+  ],
+  "size_tiers_verified": false,
+  "verification_status": "needs_verification",
+  "last_verified_date": "2026-07-22"
+}

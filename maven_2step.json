@@ -1,0 +1,43 @@
+{
+  "id": "maven_2step",
+  "firm_name": "Maven Trading",
+  "product": "2-Step (Forex)",
+  "account_size": 50000,
+  "fee": 199,
+  "phases": [
+    {
+      "target_pct": 8
+    },
+    {
+      "target_pct": 5
+    }
+  ],
+  "max_drawdown_pct": 8,
+  "drawdown_type": "static",
+  "trailing_drawdown": false,
+  "daily_loss_limit_pct": 4,
+  "consistency_rule_pct": null,
+  "min_trading_days": 0,
+  "min_profitable_days": 3,
+  "size_tiers": [
+    {
+      "size": 5000,
+      "fee": 49
+    },
+    {
+      "size": 25000,
+      "fee": 129
+    },
+    {
+      "size": 50000,
+      "fee": 199
+    },
+    {
+      "size": 100000,
+      "fee": 349
+    }
+  ],
+  "size_tiers_verified": false,
+  "verification_status": "needs_verification",
+  "last_verified_date": "2026-07-22"
+}
