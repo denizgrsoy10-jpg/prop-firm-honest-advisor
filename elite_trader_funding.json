@@ -1,20 +1,20 @@
 {
   "id": "etf_eval",
   "firm_name": "Elite Trader Funding",
-  "product": "Evaluation 50K (Futures)",
+  "product": "Evaluation 50K EOD (Futures)",
   "account_size": 50000,
   "fee": 130,
   "phases": [
     {
-      "target_pct": 6
+      "target_pct": 8
     }
   ],
-  "max_drawdown_pct": 4,
+  "max_drawdown_pct": 5,
   "drawdown_type": "trailing_eod",
   "trailing_drawdown": true,
   "daily_loss_limit_pct": null,
   "consistency_rule_pct": null,
-  "min_trading_days": 0,
+  "min_trading_days": 5,
   "min_profitable_days": 0,
   "size_tiers": [
     {

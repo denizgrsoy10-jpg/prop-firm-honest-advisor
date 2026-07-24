@@ -5,8 +5,12 @@
   "account_size": 50000,
   "fee": 289,
   "phases": [
-    { "target_pct": 10 },
-    { "target_pct": 5 }
+    {
+      "target_pct": 10
+    },
+    {
+      "target_pct": 5
+    }
   ],
   "max_drawdown_pct": 10,
   "drawdown_type": "static",
@@ -16,13 +20,28 @@
   "min_trading_days": 0,
   "min_profitable_days": 0,
   "size_tiers": [
-    { "size": 10000, "fee": 89 },
-    { "size": 25000, "fee": 189 },
-    { "size": 50000, "fee": 289 },
-    { "size": 100000, "fee": 439 },
-    { "size": 200000, "fee": 819 }
+    {
+      "size": 10000,
+      "fee": 89
+    },
+    {
+      "size": 25000,
+      "fee": 189
+    },
+    {
+      "size": 50000,
+      "fee": 289
+    },
+    {
+      "size": 100000,
+      "fee": 439
+    },
+    {
+      "size": 200000,
+      "fee": 819
+    }
   ],
   "size_tiers_verified": false,
   "verification_status": "needs_verification",
-  "last_verified_date": "2026-07-20"
+  "last_verified_date": "2026-07-22"
 }

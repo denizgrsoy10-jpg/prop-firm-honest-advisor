@@ -13,8 +13,8 @@
   "drawdown_type": "trailing_eod",
   "trailing_drawdown": true,
   "daily_loss_limit_pct": null,
-  "consistency_rule_pct": null,
-  "min_trading_days": 0,
+  "consistency_rule_pct": 50,
+  "min_trading_days": 5,
   "min_profitable_days": 0,
   "size_tiers": [
     {

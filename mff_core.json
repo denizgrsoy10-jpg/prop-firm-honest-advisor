@@ -18,20 +18,8 @@
   "min_profitable_days": 0,
   "size_tiers": [
     {
-      "size": 25000,
-      "fee": 105
-    },
-    {
       "size": 50000,
       "fee": 165
-    },
-    {
-      "size": 100000,
-      "fee": 265
-    },
-    {
-      "size": 150000,
-      "fee": 365
     }
   ],
   "size_tiers_verified": false,
