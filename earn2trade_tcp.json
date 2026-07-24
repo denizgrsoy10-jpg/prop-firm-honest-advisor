@@ -13,7 +13,7 @@
   "drawdown_type": "trailing_eod",
   "trailing_drawdown": true,
   "daily_loss_limit_pct": null,
-  "consistency_rule_pct": 30,
+  "consistency_rule_pct": null,
   "min_trading_days": 0,
   "min_profitable_days": 0,
   "size_tiers": [
@@ -32,5 +32,5 @@
   ],
   "size_tiers_verified": false,
   "verification_status": "needs_verification",
-  "last_verified_date": "2026-07-22"
+  "last_verified_date": "2026-07-24"
 }
